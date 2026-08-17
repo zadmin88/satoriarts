@@ -1,0 +1,102 @@
+---
+import { SITE, SERVICES, servicePath, waDefaultMessage } from "@/config";
+import type { Locale } from "@/config";
+import { routePath } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
+
+interface Props {
+  locale: Locale;
+  alternates: Record<Locale, string>;
+}
+
+const { locale, alternates } = Astro.props;
+const t = useT(locale);
+
+const services = SERVICES.map((s) => ({
+  href: servicePath(locale, s),
+  label: s.i18n[locale].menuLabel,
+}));
+
+const mainLinks = [
+  { href: routePath(locale, "portfolio"), label: t("nav.portfolio") },
+  { href: routePath(locale, "journal"), label: t("nav.journal") },
+  { href: routePath(locale, "about"), label: t("nav.about") },
+  { href: routePath(locale, "contact"), label: t("nav.contact") },
+];
+---
+
+<header
+  class="sticky top-0 z-30 border-b border-border/70 bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60"
+>
+  <div class="container-tight flex h-16 items-center justify-between gap-3">
+    <a
+      href={routePath(locale, "home")}
+      class="flex items-baseline gap-2"
+      aria-label={`${SITE.brand} — ${t("nav.home")}`}
+    >
+      <span class="font-heading text-xl font-semibold tracking-tight text-foreground">
+        Satori<span class="text-gold">Arts</span>
+      </span>
+    </a>
+
+    <!-- Navegación de escritorio -->
+    <nav aria-label="Principal" class="hidden items-center gap-1 lg:flex">
+      <details class="group relative">
+        <summary
+          class="flex cursor-pointer list-none items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground [&::-webkit-details-marker]:hidden"
+        >
+          {t("nav.services")}
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5 transition-transform group-open:rotate-180"><path d="m6 9 6 6 6-6"/></svg>
+        </summary>
+        <div class="absolute left-0 top-full z-40 mt-2 flex w-60 flex-col gap-0.5 rounded-xl border border-border bg-popover p-2 shadow-xl shadow-black/30">
+          {services.map((s) => (
+            <a href={s.href} class="rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted">{s.label}</a>
+          ))}
+          <a href={routePath(locale, "portfolio")} class="mt-1 rounded-lg border-t border-border px-3 pt-2.5 pb-1 text-sm font-medium text-gold-deep hover:text-gold">{t("nav.portfolio")} →</a>
+        </div>
+      </details>
+      {
+        mainLinks.map((link) => (
+          <a
+            href={link.href}
+            class="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <div class="mx-2"><LanguageSwitcher locale={locale} alternates={alternates} /></div>
+      <WhatsAppButton message={waDefaultMessage(locale)} label={t("cta.whatsapp")} />
+    </nav>
+
+    <!-- Móvil: WhatsApp + menú <details> sin JavaScript -->
+    <div class="flex items-center gap-1 lg:hidden">
+      <WhatsAppButton message={waDefaultMessage(locale)} label={t("cta.whatsapp")} />
+      <details class="group relative">
+        <summary
+          class="flex size-10 cursor-pointer list-none items-center justify-center rounded-lg text-foreground hover:bg-muted [&::-webkit-details-marker]:hidden"
+          aria-label={t("a11y.menu")}
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-5 group-open:hidden"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden size-5 group-open:block"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </summary>
+        <nav
+          aria-label="Menú móvil"
+          class="absolute top-full right-0 z-40 mt-2 flex w-64 flex-col gap-0.5 rounded-xl border border-border bg-popover p-2 shadow-xl shadow-black/30"
+        >
+          <p class="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("nav.services")}</p>
+          {services.map((s) => (
+            <a href={s.href} class="rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted">{s.label}</a>
+          ))}
+          <div class="my-1 border-t border-border"></div>
+          {mainLinks.map((link) => (
+            <a href={link.href} class="rounded-lg px-3 py-2 font-medium text-foreground hover:bg-muted">{link.label}</a>
+          ))}
+          <div class="mt-1 border-t border-border px-3 pt-2.5"><LanguageSwitcher locale={locale} alternates={alternates} /></div>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

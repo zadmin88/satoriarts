@@ -1,0 +1,28 @@
+---
+import ServiceLayout from "@/layouts/ServiceLayout.astro";
+import { getService } from "@/config";
+import type { Locale, ServiceKey } from "@/config";
+import { SERVICE_CONTENT } from "@/i18n/services-content";
+
+interface Props {
+  locale: Locale;
+  serviceKey: ServiceKey;
+}
+
+const { locale, serviceKey } = Astro.props;
+const service = getService(serviceKey);
+const c = SERVICE_CONTENT[serviceKey][locale];
+---
+
+<ServiceLayout
+  locale={locale}
+  service={service}
+  seoTitle={c.seoTitle}
+  seoDescription={c.seoDescription}
+  heroIntro={c.heroIntro}
+  faqs={c.faqs}
+  gallery={c.gallery}
+>
+  <Fragment slot="h1">{c.h1}</Fragment>
+  <Fragment set:html={c.bodyHtml} />
+</ServiceLayout>

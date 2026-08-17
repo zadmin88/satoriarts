@@ -1,0 +1,24 @@
+---
+import Placeholder from "@/components/Placeholder.astro";
+
+interface Item {
+  label?: string;
+  ratio?: "portrait" | "landscape" | "square";
+  tone?: 1 | 2 | 3 | 4;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<!-- Mosaico sin JavaScript (CSS columns). Ver .masonry en global.css -->
+<div class="masonry">
+  {
+    items.map((item) => (
+      <Placeholder label={item.label} ratio={item.ratio} tone={item.tone} />
+    ))
+  }
+</div>

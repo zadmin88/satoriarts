@@ -1,0 +1,95 @@
+---
+import "@/styles/global.css";
+import { SITE, LOCALE_LANG, OG_LOCALE, LOCALES, waDefaultMessage } from "@/config";
+import type { Locale } from "@/config";
+import { businessSchema } from "@/lib/schema";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import WhatsAppFloat from "@/components/WhatsAppFloat.astro";
+import JsonLd from "@/components/JsonLd.astro";
+import { useT } from "@/i18n/ui";
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  /** Ruta equivalente en cada idioma (para hreflang y selector) */
+  alternates: Record<Locale, string>;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
+  /** Ruta de la imagen OG (por defecto /og-image.jpg) */
+  ogImage?: string;
+}
+
+const {
+  locale,
+  title,
+  description,
+  alternates,
+  jsonLd,
+  noindex = false,
+  ogImage = "/og-image.jpg",
+} = Astro.props;
+
+const t = useT(locale);
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImageUrl = new URL(ogImage, SITE.url).href;
+
+// hreflang: una etiqueta por idioma + x-default apuntando a español
+const hreflangs = LOCALES.map((l) => ({
+  lang: LOCALE_LANG[l],
+  href: new URL(alternates[l], SITE.url).href,
+}));
+
+// Combina schema del negocio + schema específico de la página
+const pageSchema = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const allSchema = [businessSchema(locale), ...pageSchema];
+---
+
+<!doctype html>
+<html lang={LOCALE_LANG[locale]}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="canonical" href={canonical} />
+
+    {hreflangs.map((h) => <link rel="alternate" hreflang={h.lang} href={h.href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(alternates.es, SITE.url).href} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#171512" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={SITE.brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content={OG_LOCALE[locale]} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <JsonLd data={allSchema} />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a
+      href="#contenido"
+      class="sr-only rounded-lg bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50"
+    >
+      {t("a11y.skip")}
+    </a>
+    <Header locale={locale} alternates={alternates} />
+    <main id="contenido" class="flex-1">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+    <WhatsAppFloat message={waDefaultMessage(locale)} label={t("cta.whatsapp.long")} />
+  </body>
+</html>

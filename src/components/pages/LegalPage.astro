@@ -1,0 +1,80 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { SITE } from "@/config";
+import type { Locale } from "@/config";
+import { routeAlternates } from "@/i18n/routes";
+import type { RouteKey } from "@/i18n/routes";
+
+interface Props {
+  locale: Locale;
+  kind: "legalNotice" | "privacy";
+}
+const { locale, kind } = Astro.props;
+
+const T: Record<Locale, Record<"legalNotice" | "privacy", { title: string; h1: string; body: string }>> = {
+  es: {
+    legalNotice: {
+      title: "Aviso legal · Satori Arts",
+      h1: "Aviso legal",
+      body: `<p>Titular: ${SITE.brand} (Satori Arts). NIF: [PENDIENTE]. Domicilio: [PENDIENTE]. Contacto: ${SITE.email}.</p>
+        <h2>Objeto</h2><p>Este sitio web tiene carácter informativo y presenta los servicios de fotografía y vídeo de Satori Arts.</p>
+        <h2>Propiedad intelectual</h2><p>Todas las imágenes y textos son propiedad de sus autores. No está permitido su uso sin autorización.</p>
+        <h2>Responsabilidad</h2><p>Nos esforzamos por mantener la información actualizada, pero no garantizamos la ausencia de errores.</p>`,
+    },
+    privacy: {
+      title: "Política de privacidad · Satori Arts",
+      h1: "Política de privacidad",
+      body: `<p>Responsable: ${SITE.brand}. Contacto: ${SITE.email}. NIF: [PENDIENTE].</p>
+        <h2>Qué datos tratamos</h2><p>Este sitio no incluye formularios: el contacto se realiza por WhatsApp o email, donde tratamos únicamente los datos que nos facilites para responder a tu consulta.</p>
+        <h2>Finalidad y base legal</h2><p>Responder a tu solicitud y, en su caso, prestar el servicio contratado. Base: tu consentimiento y la ejecución de un contrato.</p>
+        <h2>Tus derechos</h2><p>Puedes ejercer tus derechos de acceso, rectificación y supresión escribiendo a ${SITE.email}.</p>`,
+    },
+  },
+  en: {
+    legalNotice: {
+      title: "Legal notice · Satori Arts",
+      h1: "Legal notice",
+      body: `<p>Owner: ${SITE.brand} (Satori Arts). Tax ID: [PENDING]. Address: [PENDING]. Contact: ${SITE.email}.</p>
+        <h2>Purpose</h2><p>This website is informational and presents Satori Arts' photography and film services.</p>
+        <h2>Intellectual property</h2><p>All images and texts are the property of their authors. Use without authorisation is not permitted.</p>
+        <h2>Liability</h2><p>We strive to keep the information up to date but do not guarantee it is error-free.</p>`,
+    },
+    privacy: {
+      title: "Privacy policy · Satori Arts",
+      h1: "Privacy policy",
+      body: `<p>Controller: ${SITE.brand}. Contact: ${SITE.email}. Tax ID: [PENDING].</p>
+        <h2>What data we process</h2><p>This site has no forms: contact happens via WhatsApp or email, where we only process the data you provide to answer your enquiry.</p>
+        <h2>Purpose and legal basis</h2><p>To respond to your request and, where applicable, provide the contracted service. Basis: your consent and the performance of a contract.</p>
+        <h2>Your rights</h2><p>You can exercise your rights of access, rectification and erasure by writing to ${SITE.email}.</p>`,
+    },
+  },
+  ca: {
+    legalNotice: {
+      title: "Avís legal · Satori Arts",
+      h1: "Avís legal",
+      body: `<p>Titular: ${SITE.brand} (Satori Arts). NIF: [PENDENT]. Domicili: [PENDENT]. Contacte: ${SITE.email}.</p>
+        <h2>Objecte</h2><p>Aquest lloc web té caràcter informatiu i presenta els serveis de fotografia i vídeo de Satori Arts.</p>
+        <h2>Propietat intel·lectual</h2><p>Totes les imatges i textos són propietat dels seus autors. No se'n permet l'ús sense autorització.</p>
+        <h2>Responsabilitat</h2><p>Ens esforcem per mantenir la informació actualitzada, però no garantim l'absència d'errors.</p>`,
+    },
+    privacy: {
+      title: "Política de privacitat · Satori Arts",
+      h1: "Política de privacitat",
+      body: `<p>Responsable: ${SITE.brand}. Contacte: ${SITE.email}. NIF: [PENDENT].</p>
+        <h2>Quines dades tractem</h2><p>Aquest lloc no inclou formularis: el contacte es fa per WhatsApp o email, on tractem únicament les dades que ens facilitis per respondre la teva consulta.</p>
+        <h2>Finalitat i base legal</h2><p>Respondre la teva sol·licitud i, si escau, prestar el servei contractat. Base: el teu consentiment i l'execució d'un contracte.</p>
+        <h2>Els teus drets</h2><p>Pots exercir els drets d'accés, rectificació i supressió escrivint a ${SITE.email}.</p>`,
+    },
+  },
+};
+
+const c = T[locale][kind];
+const routeKey: RouteKey = kind;
+---
+
+<BaseLayout locale={locale} title={c.title} description={c.h1} alternates={routeAlternates(routeKey)} noindex={true}>
+  <section class="container-prose py-16 md:py-20">
+    <h1 class="font-heading text-3xl font-semibold text-foreground sm:text-4xl">{c.h1}</h1>
+    <div class="prose-body mt-8" set:html={c.body}></div>
+  </section>
+</BaseLayout>

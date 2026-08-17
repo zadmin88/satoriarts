@@ -1,0 +1,65 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CtaSection from "@/components/CtaSection.astro";
+import Gallery from "@/components/Gallery.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import { SERVICES, servicePath, waDefaultMessage } from "@/config";
+import type { Locale } from "@/config";
+import { routeAlternates } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+import { SERVICE_CONTENT } from "@/i18n/services-content";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useT(locale);
+
+const SEO: Record<Locale, { title: string; description: string; intro: string }> = {
+  es: {
+    title: "Portfolio · Fotografía y Film · Satori Arts",
+    description: "Portfolio de Satori Arts: bodas, eventos, hoteles y paisaje en foto y vídeo. Barcelona, Madrid y destino.",
+    intro: "Una selección de nuestro trabajo. Bodas, eventos, hoteles y paisaje, en foto y en film.",
+  },
+  en: {
+    title: "Portfolio · Photography & Film · Satori Arts",
+    description: "Satori Arts portfolio: weddings, events, hotels and landscape in photo and film. Barcelona, Madrid and destination.",
+    intro: "A selection of our work. Weddings, events, hotels and landscape, in photo and film.",
+  },
+  ca: {
+    title: "Portfolio · Fotografia i Film · Satori Arts",
+    description: "Portfolio de Satori Arts: casaments, esdeveniments, hotels i paisatge en foto i vídeo. Barcelona, Madrid i destí.",
+    intro: "Una selecció de la nostra feina. Casaments, esdeveniments, hotels i paisatge, en foto i film.",
+  },
+};
+const seo = SEO[locale];
+---
+
+<BaseLayout locale={locale} title={seo.title} description={seo.description} alternates={routeAlternates("portfolio")}>
+  <section class="container-tight py-16 md:py-20">
+    <p class="eyebrow mb-4">{t("nav.portfolio")}</p>
+    <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{seo.intro}</h1>
+  </section>
+
+  {
+    SERVICES.map((s) => (
+      <section aria-labelledby={`pf-${s.key}`} class="container-tight border-t border-border py-14">
+        <div class="mb-6 flex items-end justify-between gap-4">
+          <h2 id={`pf-${s.key}`} class="font-heading text-2xl font-semibold text-foreground sm:text-3xl">
+            {s.i18n[locale].title}
+          </h2>
+          <a href={servicePath(locale, s)} class="shrink-0 text-sm font-semibold text-gold-deep underline-offset-4 hover:text-gold hover:underline">
+            {t("cta.viewService")} →
+          </a>
+        </div>
+        <Gallery items={SERVICE_CONTENT[s.key][locale].gallery} />
+      </section>
+    ))
+  }
+
+  <section class="container-tight border-t border-border py-14">
+    <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
+  </section>
+
+  <CtaSection locale={locale} message={waDefaultMessage(locale)} />
+</BaseLayout>

@@ -1,0 +1,37 @@
+---
+import { SITE } from "@/config";
+import type { Locale } from "@/config";
+import { useT } from "@/i18n/ui";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+
+interface Props {
+  locale: Locale;
+  /** Mensaje de WhatsApp prellenado */
+  message: string;
+}
+
+const { locale, message } = Astro.props;
+const t = useT(locale);
+---
+
+<section aria-labelledby="cta-titulo" class="border-t border-border bg-card/60">
+  <div class="container-tight flex flex-col items-start gap-6 py-16 md:flex-row md:items-center md:justify-between">
+    <div class="flex max-w-xl flex-col gap-3">
+      <h2 id="cta-titulo" class="font-heading text-3xl font-semibold text-foreground sm:text-4xl">
+        {t("cta.blockTitle")}
+      </h2>
+      <p class="text-muted-foreground">{t("cta.blockText")}</p>
+    </div>
+    <div class="flex flex-col items-start gap-2">
+      <WhatsAppButton size="lg" message={message} label={t("cta.whatsapp.long")} />
+      <a
+        href={SITE.instagramUrl}
+        target="_blank"
+        rel="noopener me"
+        class="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+      >
+        {t("cta.instagram")} · @{SITE.instagram}
+      </a>
+    </div>
+  </div>
+</section>

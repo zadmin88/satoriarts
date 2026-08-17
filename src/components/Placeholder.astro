@@ -1,0 +1,44 @@
+---
+/**
+ * Marcador de imagen (placeholder) sin binarios.
+ * Cuando lleguen las fotos reales, sustituir por <Image> de astro:assets
+ * con `alt` descriptivo. Ver receta en CLAUDE.md.
+ */
+interface Props {
+  label?: string;
+  /** relación de aspecto: "portrait" | "landscape" | "square" */
+  ratio?: "portrait" | "landscape" | "square";
+  /** tono 1-4 para variar el degradado */
+  tone?: 1 | 2 | 3 | 4;
+  class?: string;
+}
+
+const { label, ratio = "landscape", tone = 1, class: className = "" } = Astro.props;
+
+const aspect =
+  ratio === "portrait" ? "aspect-[4/5]" : ratio === "square" ? "aspect-square" : "aspect-[3/2]";
+
+const tones: Record<number, string> = {
+  1: "from-[oklch(0.30_0.02_70)] to-[oklch(0.20_0.01_60)]",
+  2: "from-[oklch(0.32_0.03_40)] to-[oklch(0.19_0.01_70)]",
+  3: "from-[oklch(0.30_0.03_150)] to-[oklch(0.19_0.01_80)]",
+  4: "from-[oklch(0.34_0.04_85)] to-[oklch(0.20_0.01_60)]",
+};
+---
+
+<div
+  class:list={[
+    "relative flex items-center justify-center overflow-hidden rounded-lg border border-white/5 bg-gradient-to-br",
+    aspect,
+    tones[tone],
+    className,
+  ]}
+  role="img"
+  aria-label={label ?? "Fotografía de Satori Arts"}
+>
+  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" class="size-8 text-white/25">
+    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/>
+    <circle cx="12" cy="13" r="3.5"/>
+  </svg>
+  {label && <span class="absolute bottom-2 left-3 text-[0.7rem] font-medium tracking-wide text-white/40">{label}</span>}
+</div>

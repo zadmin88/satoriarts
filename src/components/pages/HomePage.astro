@@ -1,0 +1,146 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import ServiceCard from "@/components/ServiceCard.astro";
+import CtaSection from "@/components/CtaSection.astro";
+import Placeholder from "@/components/Placeholder.astro";
+import {
+  SITE,
+  SERVICES,
+  CITIES,
+  DISCIPLINE_LABEL,
+  waDefaultMessage,
+} from "@/config";
+import type { Locale } from "@/config";
+import { routePath, routeAlternates } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+import { WHY, TESTIMONIALS, HOME_SEO } from "@/i18n/home";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useT(locale);
+const seo = HOME_SEO[locale];
+const why = WHY[locale];
+const testimonials = TESTIMONIALS[locale];
+const tones: (1 | 2 | 3 | 4)[] = [1, 2, 3, 4];
+---
+
+<BaseLayout
+  locale={locale}
+  title={seo.title}
+  description={seo.description}
+  alternates={routeAlternates("home")}
+>
+  <!-- HERO -->
+  <section class="relative overflow-hidden border-b border-border">
+    <div class="absolute inset-0 -z-10 grid grid-cols-2 opacity-40 md:grid-cols-4">
+      <Placeholder ratio="portrait" tone={1} class="rounded-none border-0" />
+      <Placeholder ratio="portrait" tone={2} class="hidden rounded-none border-0 md:block" />
+      <Placeholder ratio="portrait" tone={3} class="rounded-none border-0" />
+      <Placeholder ratio="portrait" tone={4} class="hidden rounded-none border-0 md:block" />
+    </div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-background via-background/85 to-background/40"></div>
+    <div class="container-tight flex min-h-[78vh] flex-col justify-center py-24">
+      <p class="eyebrow mb-5">{t("hero.eyebrow")}</p>
+      <h1 class="max-w-4xl font-heading text-5xl font-semibold leading-[1.05] text-foreground sm:text-6xl md:text-7xl">
+        {t("hero.title")}
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{t("hero.subtitle")}</p>
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
+        <a
+          href={routePath(locale, "portfolio")}
+          class="inline-flex h-13 items-center gap-2 rounded-full border border-border px-6 text-base font-medium text-foreground transition-colors hover:border-gold/50 hover:text-gold"
+        >
+          {t("nav.portfolio")}
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-4"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section aria-labelledby="serv-titulo" class="container-tight py-20">
+    <div class="mb-10 flex flex-col gap-2">
+      <p class="eyebrow">{t("section.services")}</p>
+      <h2 id="serv-titulo" class="font-heading text-3xl font-semibold text-foreground sm:text-4xl">{t("section.services.sub")}</h2>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {SERVICES.map((s, i) => <ServiceCard service={s} locale={locale} tone={tones[i % 4]} />)}
+    </div>
+  </section>
+
+  <!-- DISCIPLINAS: Foto / Film -->
+  <section aria-labelledby="disc-titulo" class="border-y border-border bg-card/40">
+    <div class="container-tight grid gap-8 py-20 md:grid-cols-2">
+      <div class="md:col-span-2">
+        <p class="eyebrow">{t("section.disciplines")}</p>
+      </div>
+      <div class="rounded-xl border border-border bg-card p-7">
+        <h3 class="font-heading text-2xl font-semibold text-foreground">{DISCIPLINE_LABEL.photo[locale]}</h3>
+        <p class="mt-3 text-muted-foreground">{t("discipline.photo.blurb")}</p>
+      </div>
+      <div class="rounded-xl border border-border bg-card p-7">
+        <h3 class="font-heading text-2xl font-semibold text-foreground">{DISCIPLINE_LABEL.film[locale]}</h3>
+        <p class="mt-3 text-muted-foreground">{t("discipline.film.blurb")}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- POR QUÉ -->
+  <section aria-labelledby="why-titulo" class="container-tight py-20">
+    <div class="mb-10">
+      <p class="eyebrow">{t("section.why")}</p>
+    </div>
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        why.map((p, i) => (
+          <div class="flex flex-col gap-2">
+            <span class="font-heading text-3xl font-semibold text-gold">{String(i + 1).padStart(2, "0")}</span>
+            <h3 class="font-heading text-lg font-medium text-foreground">{p.title}</h3>
+            <p class="text-sm leading-relaxed text-muted-foreground">{p.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section aria-labelledby="test-titulo" class="border-y border-border bg-card/40">
+    <div class="container-tight py-20">
+      <h2 id="test-titulo" class="mb-10 font-heading text-3xl font-semibold text-foreground sm:text-4xl">{t("section.testimonials")}</h2>
+      <div class="grid gap-6 md:grid-cols-3">
+        {
+          testimonials.map((tm) => (
+            <figure class="flex flex-col gap-4 rounded-xl border border-border bg-card p-7">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-7 text-gold/60"><path d="M9.9 3C6 5 3.5 8.9 3.5 13.4c0 3.4 2 5.6 4.6 5.6 2.3 0 4-1.7 4-3.9 0-2.1-1.5-3.7-3.5-3.7-.4 0-.9.1-1 .2.3-2 2.2-4.4 4.4-5.6L9.9 3Zm9 0c-3.9 2-6.4 5.9-6.4 10.4 0 3.4 2 5.6 4.6 5.6 2.2 0 4-1.7 4-3.9 0-2.1-1.6-3.7-3.6-3.7-.3 0-.8.1-1 .2.4-2 2.3-4.4 4.5-5.6L18.9 3Z"/></svg>
+              <blockquote class="text-foreground/90">{tm.quote}</blockquote>
+              <figcaption class="mt-auto text-sm">
+                <span class="font-semibold text-foreground">{tm.author}</span>
+                <span class="text-muted-foreground"> · {tm.context}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CIUDADES -->
+  <section aria-labelledby="cities-titulo" class="container-tight py-20">
+    <p class="eyebrow mb-3">{t("section.cities")}</p>
+    <div class="flex flex-wrap items-center gap-3">
+      {
+        CITIES.map((c) => (
+          <span class="rounded-full border border-border px-5 py-2 text-lg font-medium text-foreground">{c.name}</span>
+        ))
+      }
+      <span class="text-muted-foreground">+ destinos</span>
+    </div>
+  </section>
+
+  <CtaSection locale={locale} message={waDefaultMessage(locale)} />
+</BaseLayout>

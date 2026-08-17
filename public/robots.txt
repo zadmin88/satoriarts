@@ -1,0 +1,7 @@
+# Satori Arts — robots.txt
+# ⚠️ [PLACEHOLDER] Actualiza el dominio del sitemap cuando sea el definitivo.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://satoriarts.vercel.app/sitemap-index.xml

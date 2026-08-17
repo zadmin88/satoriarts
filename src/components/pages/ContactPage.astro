@@ -1,0 +1,77 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import { SITE, CITIES, SERVICES, waDefaultMessage, waServiceMessage } from "@/config";
+import type { Locale } from "@/config";
+import { routeAlternates } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useT(locale);
+
+const CONTENT: Record<Locale, { title: string; description: string; h1: string; lead: string; quick: string; cities: string }> = {
+  es: {
+    title: "Contacto · Satori Arts · Fotografía y Film",
+    description: "Escríbenos por WhatsApp para bodas, eventos, hoteles o copias de paisaje. Barcelona, Madrid y destino.",
+    h1: "Hablemos de tu proyecto",
+    lead: "La forma más rápida de contactarnos es WhatsApp. Cuéntanos la fecha, el lugar y qué imaginas; te respondemos con disponibilidad e ideas.",
+    quick: "Atajos según lo que necesitas:",
+    cities: "Trabajamos en",
+  },
+  en: {
+    title: "Contact · Satori Arts · Photography & Film",
+    description: "Message us on WhatsApp for weddings, events, hotels or landscape prints. Barcelona, Madrid and destination.",
+    h1: "Let's talk about your project",
+    lead: "The fastest way to reach us is WhatsApp. Tell us the date, the place and what you picture; we'll reply with availability and ideas.",
+    quick: "Shortcuts by what you need:",
+    cities: "We work in",
+  },
+  ca: {
+    title: "Contacte · Satori Arts · Fotografia i Film",
+    description: "Escriu-nos per WhatsApp per a casaments, esdeveniments, hotels o còpies de paisatge. Barcelona, Madrid i destí.",
+    h1: "Parlem del teu projecte",
+    lead: "La manera més ràpida de contactar-nos és WhatsApp. Explica'ns la data, el lloc i què imagines; et responem amb disponibilitat i idees.",
+    quick: "Dreceres segons el que necessites:",
+    cities: "Treballem a",
+  },
+};
+const c = CONTENT[locale];
+---
+
+<BaseLayout locale={locale} title={c.title} description={c.description} alternates={routeAlternates("contact")}>
+  <section class="container-tight py-16 md:py-20">
+    <p class="eyebrow mb-4">{t("nav.contact")}</p>
+    <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{c.h1}</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{c.lead}</p>
+
+    <div class="mt-9 flex flex-wrap items-center gap-4">
+      <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.whatsapp.long")} />
+      <a href={SITE.instagramUrl} target="_blank" rel="noopener me" class="inline-flex h-13 items-center gap-2 rounded-full border border-border px-6 font-medium text-foreground transition-colors hover:border-gold/50 hover:text-gold">
+        Instagram · @{SITE.instagram}
+      </a>
+      <a href={`mailto:${SITE.email}`} class="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">{SITE.email}</a>
+    </div>
+  </section>
+
+  <section class="container-tight border-t border-border py-12">
+    <p class="mb-5 font-medium text-foreground">{c.quick}</p>
+    <div class="flex flex-wrap gap-3">
+      {SERVICES.map((s) => (
+        <WhatsAppButton variant="outline" message={waServiceMessage(locale, s)} label={s.i18n[locale].menuLabel} />
+      ))}
+    </div>
+  </section>
+
+  <section class="container-tight border-t border-border py-12">
+    <p class="eyebrow mb-3">{c.cities}</p>
+    <div class="flex flex-wrap gap-3">
+      {CITIES.map((city) => (
+        <span class="rounded-full border border-border px-5 py-2 text-lg font-medium text-foreground">{city.name}</span>
+      ))}
+      <span class="self-center text-muted-foreground">+ destinos</span>
+    </div>
+  </section>
+</BaseLayout>

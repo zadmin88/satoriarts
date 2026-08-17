@@ -1,0 +1,67 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CtaSection from "@/components/CtaSection.astro";
+import Gallery from "@/components/Gallery.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import { SITE, CITIES, getService, servicePath, waServiceMessage } from "@/config";
+import type { Locale, ServiceKey } from "@/config";
+import { useT } from "@/i18n/ui";
+import { SERVICE_CONTENT } from "@/i18n/services-content";
+import { cityServiceCopy, cityServicePath, cityServiceAlternates } from "@/i18n/city-service";
+
+interface Props {
+  locale: Locale;
+  serviceKey: ServiceKey;
+  citySlug: string;
+}
+const { locale, serviceKey, citySlug } = Astro.props;
+const t = useT(locale);
+const service = getService(serviceKey);
+const city = CITIES.find((c) => c.slug === citySlug)!;
+const copy = cityServiceCopy(locale, service, city);
+const gallery = SERVICE_CONTENT[serviceKey][locale].gallery;
+const pageUrl = new URL(cityServicePath(locale, serviceKey, city), SITE.url).href;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: `${service.i18n[locale].title} · ${city.name}`,
+    description: copy.description,
+    url: pageUrl,
+    serviceType: service.i18n[locale].title,
+    areaServed: { "@type": "City", name: city.name },
+    provider: { "@type": "ProfessionalService", name: SITE.brand, url: SITE.url },
+  },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={copy.title}
+  description={copy.description}
+  alternates={cityServiceAlternates(serviceKey, city)}
+  jsonLd={jsonLd}
+>
+  <header class="border-b border-border bg-card/40">
+    <div class="container-tight py-14 md:py-20">
+      <p class="eyebrow mb-3">{city.name} · {service.i18n[locale].title}</p>
+      <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{copy.h1}</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{copy.intro}</p>
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
+        <a href={servicePath(locale, service)} class="text-sm font-semibold text-gold-deep underline-offset-4 hover:text-gold hover:underline">
+          {service.i18n[locale].title} →
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="prose-body container-prose py-14" set:html={copy.bodyHtml}></div>
+
+  <section class="container-tight pb-14">
+    <Gallery items={gallery} />
+  </section>
+
+  <CtaSection locale={locale} message={waServiceMessage(locale, service)} />
+</BaseLayout>

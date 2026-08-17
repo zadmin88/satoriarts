@@ -1,0 +1,22 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import { waDefaultMessage } from "@/config";
+import { routePath, routeAlternates } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+
+const locale = "es" as const;
+const t = useT(locale);
+---
+
+<BaseLayout locale={locale} title="404 · Satori Arts" description="Página no encontrada." alternates={routeAlternates("home")} noindex={true}>
+  <section class="container-tight flex min-h-[60vh] flex-col items-start justify-center py-20">
+    <p class="eyebrow mb-3">404</p>
+    <h1 class="font-heading text-4xl font-semibold text-foreground sm:text-5xl">Esta página se nos escapó del encuadre</h1>
+    <p class="mt-4 max-w-lg text-muted-foreground">No encontramos lo que buscas. Vuelve al inicio o escríbenos y te ayudamos.</p>
+    <div class="mt-8 flex flex-wrap gap-4">
+      <a href={routePath(locale, "home")} class="inline-flex h-11 items-center rounded-full border border-border px-6 font-medium text-foreground hover:border-gold/50 hover:text-gold">{t("nav.home")}</a>
+      <WhatsAppButton message={waDefaultMessage(locale)} label={t("cta.whatsapp.long")} />
+    </div>
+  </section>
+</BaseLayout>

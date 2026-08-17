@@ -1,0 +1,40 @@
+---
+import type { Locale, Service } from "@/config";
+import { servicePath, DISCIPLINE_LABEL } from "@/config";
+import { useT } from "@/i18n/ui";
+import Placeholder from "@/components/Placeholder.astro";
+
+interface Props {
+  service: Service;
+  locale: Locale;
+  tone?: 1 | 2 | 3 | 4;
+}
+
+const { service, locale, tone = 1 } = Astro.props;
+const t = useT(locale);
+const copy = service.i18n[locale];
+---
+
+<a
+  href={servicePath(locale, service)}
+  class="group flex flex-col overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-xl hover:shadow-black/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+>
+  <Placeholder ratio="landscape" tone={tone} class="rounded-none border-0" />
+  <div class="flex flex-1 flex-col p-6">
+    <div class="mb-2 flex flex-wrap gap-1.5">
+      {service.disciplines.map((d) => (
+        <span class="rounded-full border border-border px-2 py-0.5 text-[0.68rem] font-medium uppercase tracking-wide text-muted-foreground">
+          {DISCIPLINE_LABEL[d][locale]}
+        </span>
+      ))}
+    </div>
+    <h3 class="font-heading text-xl font-semibold text-foreground">{copy.title}</h3>
+    <p class="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{copy.short}</p>
+    <span class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-gold-deep">
+      {t("cta.viewService")}
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 transition-transform group-hover:translate-x-0.5">
+        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+      </svg>
+    </span>
+  </div>
+</a>

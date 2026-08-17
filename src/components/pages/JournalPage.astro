@@ -1,0 +1,71 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CtaSection from "@/components/CtaSection.astro";
+import Placeholder from "@/components/Placeholder.astro";
+import { waDefaultMessage } from "@/config";
+import type { Locale } from "@/config";
+import { routeAlternates } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useT(locale);
+
+const SEO: Record<Locale, { title: string; description: string; h1: string; lead: string; soon: string }> = {
+  es: {
+    title: "Journal · Bodas, venues e ideas · Satori Arts",
+    description: "El journal de Satori Arts: reportajes de bodas y eventos, guías de venues en Barcelona y Madrid e ideas para tu día.",
+    h1: "Journal",
+    lead: "Reportajes reales, guías de espacios y consejos. Aquí publicamos las bodas y eventos que hacemos y las mejores fincas y hoteles donde disparamos.",
+    soon: "Próximamente",
+  },
+  en: {
+    title: "Journal · Weddings, venues and ideas · Satori Arts",
+    description: "The Satori Arts journal: wedding and event stories, venue guides in Barcelona and Madrid, and ideas for your day.",
+    h1: "Journal",
+    lead: "Real stories, venue guides and tips. Here we publish the weddings and events we shoot and the best estates and hotels we work in.",
+    soon: "Coming soon",
+  },
+  ca: {
+    title: "Journal · Casaments, venues i idees · Satori Arts",
+    description: "El journal de Satori Arts: reportatges de casaments i esdeveniments, guies de venues a Barcelona i Madrid i idees per al teu dia.",
+    h1: "Journal",
+    lead: "Reportatges reals, guies d'espais i consells. Aquí publiquem els casaments i esdeveniments que fem i les millors masies i hotels on disparem.",
+    soon: "Properament",
+  },
+};
+const seo = SEO[locale];
+
+// [PLACEHOLDER] Cuando haya artículos reales, sustituir por una content collection.
+const drafts = [
+  { title: "Boda en el Empordà", tone: 1 as const },
+  { title: "Hotel boutique · Barcelona", tone: 2 as const },
+  { title: "Fincas para bodas en Madrid", tone: 4 as const },
+];
+---
+
+<BaseLayout locale={locale} title={seo.title} description={seo.description} alternates={routeAlternates("journal")}>
+  <section class="container-tight py-16 md:py-20">
+    <p class="eyebrow mb-4">{t("nav.journal")}</p>
+    <h1 class="font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{seo.h1}</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{seo.lead}</p>
+  </section>
+
+  <section class="container-tight grid gap-6 pb-16 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      drafts.map((d) => (
+        <article class="overflow-hidden rounded-xl border border-border bg-card opacity-80">
+          <Placeholder ratio="landscape" tone={d.tone} class="rounded-none border-0" />
+          <div class="p-6">
+            <span class="text-xs font-semibold uppercase tracking-wide text-gold-deep">{seo.soon}</span>
+            <h2 class="mt-1 font-heading text-lg font-medium text-foreground">{d.title}</h2>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <CtaSection locale={locale} message={waDefaultMessage(locale)} />
+</BaseLayout>

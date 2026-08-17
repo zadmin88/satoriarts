@@ -1,0 +1,88 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CtaSection from "@/components/CtaSection.astro";
+import Placeholder from "@/components/Placeholder.astro";
+import { SITE, waDefaultMessage } from "@/config";
+import type { Locale } from "@/config";
+import { routeAlternates } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useT(locale);
+
+const CONTENT: Record<Locale, { title: string; description: string; h1: string; lead: string; body: string }> = {
+  es: {
+    title: "Nosotros · El dúo detrás de Satori Arts",
+    description: "Somos Satori Arts, un dúo de fotografía y film. Manu a la foto, Tefi al vídeo. Bodas, eventos, hoteles y paisaje en Barcelona y Madrid.",
+    h1: "Dos personas, una misma mirada",
+    lead: "Somos Manu y Tefi. Foto y film. Nos conocimos por la fotografía y acabamos montando un estudio para contar historias que merecen mirarse mil veces.",
+    body: `
+      <h2>Cómo trabajamos</h2>
+      <p>Uno documenta con la cámara de fotos y el otro con la de vídeo. Esa es nuestra ventaja: dos miradas coordinadas, así no se escapa nada. Somos discretos, cercanos y obsesivos con la luz y la edición.</p>
+      <h2>Qué nos mueve</h2>
+      <p>Nos gusta lo real. Las risas de verdad, los nervios antes de la ceremonia, el detalle que nadie más ve. Ponemos el mismo cariño en una boda íntima que en el reportaje de un hotel.</p>
+      <h2>Dónde</h2>
+      <p>Barcelona y Madrid son nuestra base, pero viajamos a donde haga falta. Trabajamos en español, inglés y catalán.</p>
+    `,
+  },
+  en: {
+    title: "About · The duo behind Satori Arts",
+    description: "We are Satori Arts, a photography and film duo. Manu on photo, Tefi on film. Weddings, events, hotels and landscape in Barcelona and Madrid.",
+    h1: "Two people, one same eye",
+    lead: "We are Manu and Tefi. Photo and film. We met through photography and ended up building a studio to tell stories worth looking at a thousand times.",
+    body: `
+      <h2>How we work</h2>
+      <p>One documents with the stills camera, the other with the film camera. That's our edge: two coordinated eyes, so nothing slips away. We're discreet, warm and obsessive about light and editing.</p>
+      <h2>What drives us</h2>
+      <p>We love the real. Genuine laughter, the nerves before the ceremony, the detail no one else sees. We put the same care into an intimate wedding as into a hotel shoot.</p>
+      <h2>Where</h2>
+      <p>Barcelona and Madrid are our base, but we travel wherever needed. We work in Spanish, English and Catalan.</p>
+    `,
+  },
+  ca: {
+    title: "Nosaltres · El duo darrere de Satori Arts",
+    description: "Som Satori Arts, un duo de fotografia i film. Manu a la foto, Tefi al vídeo. Casaments, esdeveniments, hotels i paisatge a Barcelona i Madrid.",
+    h1: "Dues persones, una mateixa mirada",
+    lead: "Som en Manu i la Tefi. Foto i film. Ens vam conèixer per la fotografia i vam acabar muntant un estudi per explicar històries que mereixen mirar-se mil vegades.",
+    body: `
+      <h2>Com treballem</h2>
+      <p>Un documenta amb la càmera de fotos i l'altre amb la de vídeo. Aquest és el nostre avantatge: dues mirades coordinades, així no s'escapa res. Som discrets, propers i obsessius amb la llum i l'edició.</p>
+      <h2>Què ens mou</h2>
+      <p>Ens agrada el real. Els riures de veritat, els nervis abans de la cerimònia, el detall que ningú més veu. Posem la mateixa cura en un casament íntim que en el reportatge d'un hotel.</p>
+      <h2>On</h2>
+      <p>Barcelona i Madrid són la nostra base, però viatgem on calgui. Treballem en castellà, anglès i català.</p>
+    `,
+  },
+};
+const c = CONTENT[locale];
+---
+
+<BaseLayout locale={locale} title={c.title} description={c.description} alternates={routeAlternates("about")}>
+  <section class="container-tight py-16 md:py-20">
+    <p class="eyebrow mb-4">{t("nav.about")}</p>
+    <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{c.h1}</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{c.lead}</p>
+  </section>
+
+  <section class="container-tight grid gap-4 pb-6 sm:grid-cols-2">
+    {SITE.team.map((member, i) => (
+      <figure class="overflow-hidden rounded-xl border border-border bg-card">
+        <Placeholder ratio="portrait" tone={i === 0 ? 2 : 3} class="rounded-none border-0" label={`${member.name}`} />
+        <figcaption class="flex items-center justify-between gap-3 p-5">
+          <div>
+            <p class="font-heading text-lg font-semibold text-foreground">{member.name}</p>
+            <p class="text-sm text-muted-foreground">{member.role}</p>
+          </div>
+          <a href={`https://www.instagram.com/${member.instagram}/`} target="_blank" rel="noopener" class="text-sm text-gold-deep underline-offset-4 hover:text-gold hover:underline">@{member.instagram}</a>
+        </figcaption>
+      </figure>
+    ))}
+  </section>
+
+  <div class="prose-body container-prose py-12" set:html={c.body}></div>
+
+  <CtaSection locale={locale} message={waDefaultMessage(locale)} />
+</BaseLayout>

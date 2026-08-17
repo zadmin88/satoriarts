@@ -1,0 +1,15 @@
+---
+import CityServicePage from "@/components/pages/CityServicePage.astro";
+import { cityServiceCombos } from "@/i18n/city-service";
+
+export function getStaticPaths() {
+  return cityServiceCombos("ca").map((combo) => ({
+    params: { slug: combo.slug },
+    props: { serviceKey: combo.serviceKey, citySlug: combo.citySlug },
+  }));
+}
+
+const { serviceKey, citySlug } = Astro.props;
+---
+
+<CityServicePage locale="ca" serviceKey={serviceKey} citySlug={citySlug} />

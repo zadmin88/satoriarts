@@ -1,0 +1,148 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import CtaSection from "@/components/CtaSection.astro";
+import Faq from "@/components/Faq.astro";
+import type { FaqItem } from "@/components/Faq.astro";
+import Gallery from "@/components/Gallery.astro";
+import {
+  SITE,
+  SERVICES,
+  CITIES,
+  servicePath,
+  waServiceMessage,
+  DISCIPLINE_LABEL,
+} from "@/config";
+import type { Locale, Service } from "@/config";
+import { serviceAlternates, routePath } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+
+interface Props {
+  locale: Locale;
+  service: Service;
+  seoTitle: string;
+  seoDescription: string;
+  heroIntro: string;
+  faqs: FaqItem[];
+  /** Items para la galería del servicio */
+  gallery: { label?: string; ratio?: "portrait" | "landscape" | "square"; tone?: 1 | 2 | 3 | 4 }[];
+}
+
+const { locale, service, seoTitle, seoDescription, heroIntro, faqs, gallery } = Astro.props;
+const t = useT(locale);
+const copy = service.i18n[locale];
+
+const pageUrl = new URL(servicePath(locale, service), SITE.url).href;
+const alternates = serviceAlternates(service.key);
+const related = SERVICES.filter((s) => s.key !== service.key);
+
+const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "");
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t("nav.home"), item: new URL(routePath(locale, "home"), SITE.url).href },
+      { "@type": "ListItem", position: 2, name: copy.title, item: pageUrl },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: copy.title,
+    description: copy.short,
+    url: pageUrl,
+    serviceType: copy.title,
+    areaServed: CITIES.map((c) => ({ "@type": "City", name: c.name })),
+    provider: { "@type": "ProfessionalService", name: SITE.brand, url: SITE.url },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: stripHtml(f.a) },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={seoTitle}
+  description={seoDescription}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
+  <article>
+    <!-- Hero -->
+    <header class="border-b border-border bg-card/40">
+      <div class="container-tight py-14 md:py-20">
+        <nav aria-label="breadcrumb" class="mb-5 text-sm text-muted-foreground">
+          <a href={routePath(locale, "home")} class="underline-offset-4 hover:text-foreground hover:underline">{t("nav.home")}</a>
+          <span aria-hidden="true" class="mx-2">/</span>
+          <span class="text-foreground">{copy.title}</span>
+        </nav>
+        <div class="mb-3 flex flex-wrap gap-2">
+          {service.disciplines.map((d) => (
+            <span class="rounded-full border border-gold/30 px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide text-gold-deep">
+              {DISCIPLINE_LABEL[d][locale]}
+            </span>
+          ))}
+        </div>
+        <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">
+          <slot name="h1">{copy.title}</slot>
+        </h1>
+        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{heroIntro}</p>
+        <div class="mt-8">
+          <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
+        </div>
+      </div>
+    </header>
+
+    <!-- Cuerpo -->
+    <div class="prose-body container-prose py-14 md:py-16">
+      <slot />
+    </div>
+
+    <!-- Galería -->
+    <section aria-label={copy.title} class="container-tight pb-14">
+      <Gallery items={gallery} />
+    </section>
+
+    <!-- FAQ -->
+    <section aria-labelledby="faq-titulo" class="container-prose pb-16">
+      <h2 id="faq-titulo" class="font-heading text-2xl font-semibold text-foreground sm:text-3xl">
+        FAQ · {copy.title}
+      </h2>
+      <div class="mt-6">
+        <Faq items={faqs} />
+      </div>
+    </section>
+
+    <!-- Otros servicios -->
+    <section aria-labelledby="otros-titulo" class="border-t border-border bg-card/40">
+      <div class="container-tight py-12">
+        <h2 id="otros-titulo" class="font-heading text-2xl font-semibold text-foreground">{t("section.services")}</h2>
+        <ul class="mt-5 flex flex-wrap gap-3">
+          {
+            related.map((s) => (
+              <li>
+                <a
+                  href={servicePath(locale, s)}
+                  class="inline-block rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-gold/40 hover:text-gold"
+                >
+                  {s.i18n[locale].menuLabel}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </article>
+
+  <CtaSection locale={locale} message={waServiceMessage(locale, service)} />
+</BaseLayout>
