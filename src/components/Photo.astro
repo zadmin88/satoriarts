@@ -1,0 +1,46 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  /** clase de aspecto tailwind, p. ej. "aspect-[4/5]" */
+  aspect?: string;
+  class?: string;
+  sizes?: string;
+  loading?: "lazy" | "eager";
+  /** aplicar tratamiento duotono con revelado al hover */
+  duo?: boolean;
+  /** forma del recorte: rectángulo (por defecto) o círculo (motivo apertura) */
+  shape?: "rect" | "circle";
+}
+
+const {
+  image,
+  alt,
+  aspect = "aspect-[3/2]",
+  class: cls = "",
+  sizes = "(max-width: 768px) 100vw, 33vw",
+  loading = "lazy",
+  duo = true,
+  shape = "rect",
+} = Astro.props;
+
+const radius = shape === "circle" ? "rounded-full" : "rounded-lg";
+const ratio = shape === "circle" ? "aspect-square" : aspect;
+---
+
+<figure class={cn("relative", radius, duo && "duo", cls)}>
+  <div class={cn("overflow-hidden", radius, ratio)}>
+    <Image
+      src={image}
+      alt={alt}
+      widths={[360, 640, 960]}
+      sizes={sizes}
+      loading={loading}
+      class="h-full w-full object-cover"
+    />
+  </div>
+</figure>

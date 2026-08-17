@@ -1,12 +1,12 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CtaSection from "@/components/CtaSection.astro";
-import Gallery from "@/components/Gallery.astro";
+import EditorialGallery from "@/components/EditorialGallery.astro";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import { SITE, CITIES, getService, servicePath, waServiceMessage } from "@/config";
 import type { Locale, ServiceKey } from "@/config";
 import { useT } from "@/i18n/ui";
-import { SERVICE_CONTENT } from "@/i18n/services-content";
+import { servicePhotos, photoAlt } from "@/lib/photos";
 import { cityServiceCopy, cityServicePath, cityServiceAlternates } from "@/i18n/city-service";
 
 interface Props {
@@ -19,7 +19,7 @@ const t = useT(locale);
 const service = getService(serviceKey);
 const city = CITIES.find((c) => c.slug === citySlug)!;
 const copy = cityServiceCopy(locale, service, city);
-const gallery = SERVICE_CONTENT[serviceKey][locale].gallery;
+const galleryItems = servicePhotos(serviceKey).map((image, i) => ({ image, alt: photoAlt(locale, service.i18n[locale].title, i) }));
 const pageUrl = new URL(cityServicePath(locale, serviceKey, city), SITE.url).href;
 
 const jsonLd = [
@@ -60,7 +60,7 @@ const jsonLd = [
   <div class="prose-body container-prose py-14" set:html={copy.bodyHtml}></div>
 
   <section class="container-tight pb-14">
-    <Gallery items={gallery} />
+    <EditorialGallery items={galleryItems} />
   </section>
 
   <CtaSection locale={locale} message={waServiceMessage(locale, service)} />

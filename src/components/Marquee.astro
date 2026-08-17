@@ -1,0 +1,21 @@
+---
+interface Props {
+  items: string[];
+}
+const { items } = Astro.props;
+// Duplicamos el contenido para un bucle sin costuras (translateX -50%)
+const loop = [...items, ...items];
+---
+
+<div class="marquee border-y border-border bg-card/30 py-5" aria-hidden="true">
+  <div class="marquee-track">
+    {
+      loop.map((t) => (
+        <span class="inline-flex items-center font-heading text-2xl font-medium italic text-foreground/80 sm:text-3xl">
+          {t}
+          <span class="mx-6 text-lg not-italic text-gold">✦</span>
+        </span>
+      ))
+    }
+  </div>
+</div>

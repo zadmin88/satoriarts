@@ -79,9 +79,12 @@ npm run preview      # previsualiza el build
 - El sitio se envía **sin JS** al navegador (0 bytes de JS). No añadas islands de
   React con `client:*` salvo necesidad real. Interactividad simple con CSS o
   `<details>` (menú móvil, dropdown de servicios, FAQ, galería).
-- **Imágenes**: hoy hay marcadores (`Placeholder.astro` / `Gallery.astro`) sin
-  binarios. Cuando lleguen las fotos reales, sustituye por `<Image>` de
-  `astro:assets` con `alt` SIEMPRE, AVIF/WebP y `loading="lazy"`.
+- **Imágenes**: hay **fotos dummy** temáticas en `src/assets/photos/<carpeta>/`
+  cargadas con `astro:assets` vía `src/lib/photos.ts` (`import.meta.glob`).
+  Se muestran con `Photo.astro` (duotono + revelado) y `EditorialGallery.astro`
+  (retícula rota). `alt` SIEMPRE. Para producción, sustituye los archivos de
+  cada carpeta manteniendo los nombres. (Quedan sin uso `Placeholder.astro` y
+  `Gallery.astro`, del arranque; puedes borrarlos.)
 
 ### SEO (no tocar sin entender)
 
@@ -117,8 +120,9 @@ entrada a `SERVICES` en `src/config.ts` (con `i18n` de los 3 idiomas y
 **Cambiar colores/fuentes**: solo en `src/styles/global.css` (variables en
 `:root`). Comprueba contraste AA sobre el fondo oscuro.
 
-**Poner fotos reales**: sustituye `Placeholder`/`Gallery` por `<Image>` de
-`astro:assets`. Guarda las imágenes en `src/assets/` e impórtalas.
+**Poner fotos reales**: reemplaza los archivos en `src/assets/photos/<carpeta>/`
+(hero, bodas, eventos, hoteles, paisaje, team) manteniendo los nombres. El
+manifiesto `src/lib/photos.ts` los recoge solo; no hay que tocar código.
 
 **Antes de dar por terminado un cambio**: `npm run build` debe pasar sin errores
 y conviene mirar la página afectada con `npm run dev`.
@@ -128,8 +132,9 @@ y conviene mirar la página afectada con `npm run dev`.
 - `src/config.ts`: `whatsappNumber`, `phoneDisplay`, `email`, `url` y las
   `CITIES` reales. `site` en `astro.config.mjs` y el sitemap de
   `public/robots.txt` deben coincidir con `SITE.url`.
-- Falta `public/og-image.jpg` (1200×630) y **fotos reales** (hoy hay marcadores).
-- Fotos del dúo para `AboutPage`.
+- Falta `public/og-image.jpg` (1200×630). Las fotos actuales son **dummy**
+  (temáticas, loremflickr) en `src/assets/photos/` — sustituir por las reales.
+- Fotos reales del dúo para `AboutPage` (`src/assets/photos/team/`).
 - NIF y dirección en las páginas legales están como `[PENDIENTE]`.
 - `Journal`: hoy es un índice con tarjetas "próximamente". Para el SEO de venues,
   convertirlo en una content collection (`src/content/`) con un artículo por

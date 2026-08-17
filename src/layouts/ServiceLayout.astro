@@ -4,7 +4,8 @@ import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import CtaSection from "@/components/CtaSection.astro";
 import Faq from "@/components/Faq.astro";
 import type { FaqItem } from "@/components/Faq.astro";
-import Gallery from "@/components/Gallery.astro";
+import EditorialGallery from "@/components/EditorialGallery.astro";
+import Photo from "@/components/Photo.astro";
 import {
   SITE,
   SERVICES,
@@ -16,6 +17,7 @@ import {
 import type { Locale, Service } from "@/config";
 import { serviceAlternates, routePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
+import { servicePhotos, photoAlt } from "@/lib/photos";
 
 interface Props {
   locale: Locale;
@@ -24,17 +26,18 @@ interface Props {
   seoDescription: string;
   heroIntro: string;
   faqs: FaqItem[];
-  /** Items para la galería del servicio */
-  gallery: { label?: string; ratio?: "portrait" | "landscape" | "square"; tone?: 1 | 2 | 3 | 4 }[];
 }
 
-const { locale, service, seoTitle, seoDescription, heroIntro, faqs, gallery } = Astro.props;
+const { locale, service, seoTitle, seoDescription, heroIntro, faqs } = Astro.props;
 const t = useT(locale);
 const copy = service.i18n[locale];
 
 const pageUrl = new URL(servicePath(locale, service), SITE.url).href;
 const alternates = serviceAlternates(service.key);
 const related = SERVICES.filter((s) => s.key !== service.key);
+
+const photos = servicePhotos(service.key);
+const galleryItems = photos.map((image, i) => ({ image, alt: photoAlt(locale, copy.title, i) }));
 
 const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "");
 
@@ -77,45 +80,48 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <article>
-    <!-- Hero -->
-    <header class="border-b border-border bg-card/40">
-      <div class="container-tight py-14 md:py-20">
-        <nav aria-label="breadcrumb" class="mb-5 text-sm text-muted-foreground">
-          <a href={routePath(locale, "home")} class="underline-offset-4 hover:text-foreground hover:underline">{t("nav.home")}</a>
-          <span aria-hidden="true" class="mx-2">/</span>
-          <span class="text-foreground">{copy.title}</span>
-        </nav>
-        <div class="mb-3 flex flex-wrap gap-2">
-          {service.disciplines.map((d) => (
-            <span class="rounded-full border border-gold/30 px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide text-gold-deep">
-              {DISCIPLINE_LABEL[d][locale]}
-            </span>
-          ))}
+    <!-- Hero editorial con imagen -->
+    <header class="border-b border-border">
+      <div class="container-tight grid items-end gap-8 py-14 md:min-h-[70vh] md:grid-cols-12 md:py-16">
+        <div class="md:col-span-7">
+          <nav aria-label="breadcrumb" class="mb-6 text-sm text-muted-foreground">
+            <a href={routePath(locale, "home")} class="underline-offset-4 hover:text-foreground hover:underline">{t("nav.home")}</a>
+            <span aria-hidden="true" class="mx-2">/</span>
+            <span class="text-foreground">{copy.title}</span>
+          </nav>
+          <div class="mb-4 flex flex-wrap gap-2">
+            {service.disciplines.map((d) => (
+              <span class="rounded-full border border-gold/30 px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide text-gold-deep">{DISCIPLINE_LABEL[d][locale]}</span>
+            ))}
+          </div>
+          <h1 class="max-w-2xl font-heading text-4xl font-semibold leading-[0.98] text-foreground sm:text-6xl md:text-7xl">
+            <slot name="h1">{copy.title}</slot>
+          </h1>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{heroIntro}</p>
+          <div class="mt-8">
+            <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
+          </div>
         </div>
-        <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">
-          <slot name="h1">{copy.title}</slot>
-        </h1>
-        <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{heroIntro}</p>
-        <div class="mt-8">
-          <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
+        <div class="md:col-span-5">
+          <Photo image={photos[0]} alt={photoAlt(locale, copy.title, 0)} aspect="aspect-[4/5]" loading="eager" sizes="(max-width:768px) 100vw, 40vw" class="reveal" />
         </div>
       </div>
     </header>
 
     <!-- Cuerpo -->
-    <div class="prose-body container-prose py-14 md:py-16">
+    <div class="prose-body container-prose py-16 md:py-20">
       <slot />
     </div>
 
-    <!-- Galería -->
-    <section aria-label={copy.title} class="container-tight pb-14">
-      <Gallery items={gallery} />
+    <!-- Galería editorial -->
+    <section aria-label={copy.title} class="container-tight pb-16">
+      <EditorialGallery items={galleryItems} />
     </section>
 
     <!-- FAQ -->
     <section aria-labelledby="faq-titulo" class="container-prose pb-16">
       <h2 id="faq-titulo" class="font-heading text-2xl font-semibold text-foreground sm:text-3xl">
-        FAQ · {copy.title}
+        <span class="index-label mr-3">FAQ</span>{copy.title}
       </h2>
       <div class="mt-6">
         <Faq items={faqs} />

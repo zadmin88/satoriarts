@@ -2,12 +2,14 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
-@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/bodoni-moda";
+@import "@fontsource-variable/space-grotesk";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: 'Fraunces Variable', 'Geist Variable', Georgia, serif;
+    --font-heading: 'Bodoni Moda Variable', 'Times New Roman', Georgia, serif;
+    --font-label: 'Space Grotesk Variable', system-ui, sans-serif;
     --font-sans: 'Geist Variable', system-ui, sans-serif;
     --color-gold: var(--gold);
     --color-gold-deep: var(--gold-deep);
@@ -58,29 +60,30 @@
  * RESERVADO exclusivamente para las acciones de WhatsApp (--wa).
  */
 :root {
-    --gold: oklch(0.82 0.075 82);
-    --gold-deep: oklch(0.72 0.085 76);
+    /* Champán/oro antiguo refinado (firma de lujo) */
+    --gold: oklch(0.81 0.085 82);
+    --gold-deep: oklch(0.72 0.095 76);
     --wa: oklch(0.64 0.15 152);
     --wa-deep: oklch(0.55 0.13 152);
 
-    --background: oklch(0.17 0.006 70);
-    --foreground: oklch(0.94 0.006 80);
-    --card: oklch(0.21 0.007 70);
-    --card-foreground: oklch(0.94 0.006 80);
-    --popover: oklch(0.21 0.007 70);
-    --popover-foreground: oklch(0.94 0.006 80);
+    --background: oklch(0.16 0.006 60);
+    --foreground: oklch(0.93 0.01 82);
+    --card: oklch(0.2 0.007 60);
+    --card-foreground: oklch(0.93 0.01 82);
+    --popover: oklch(0.2 0.007 60);
+    --popover-foreground: oklch(0.93 0.01 82);
     --primary: var(--gold);
-    --primary-foreground: oklch(0.18 0.01 70);
-    --secondary: oklch(0.25 0.008 70);
-    --secondary-foreground: oklch(0.94 0.006 80);
-    --muted: oklch(0.24 0.007 70);
-    --muted-foreground: oklch(0.72 0.012 78);
-    --accent: oklch(0.3 0.03 78);
-    --accent-foreground: oklch(0.9 0.06 82);
+    --primary-foreground: oklch(0.16 0.01 60);
+    --secondary: oklch(0.24 0.008 60);
+    --secondary-foreground: oklch(0.93 0.01 82);
+    --muted: oklch(0.23 0.007 60);
+    --muted-foreground: oklch(0.7 0.014 70);
+    --accent: oklch(0.31 0.04 72);
+    --accent-foreground: oklch(0.87 0.08 82);
     --destructive: oklch(0.62 0.2 25);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 14%);
-    --ring: oklch(0.72 0.085 76);
+    --border: oklch(1 0 0 / 9%);
+    --input: oklch(1 0 0 / 13%);
+    --ring: oklch(0.72 0.095 76);
     --chart-1: var(--gold);
     --chart-2: oklch(0.7 0.06 60);
     --chart-3: var(--wa);
@@ -128,9 +131,22 @@
 }
 
 @layer components {
-  /* Ojal / eyebrow: rótulo pequeño en mayúsculas con letra espaciada */
+  /* Ojal / eyebrow: rótulo técnico (Space Grotesk) en mayúsculas */
   .eyebrow {
-    @apply font-sans text-xs font-semibold uppercase tracking-[0.2em] text-gold-deep;
+    font-family: var(--font-label);
+    @apply text-xs font-medium uppercase tracking-[0.28em] text-gold;
+  }
+
+  /* Etiqueta técnica reutilizable (Space Grotesk) */
+  .font-label { font-family: var(--font-label); }
+
+  /* Metadatos fotográficos como marginalia decorativa (35MM · f/1.4 · 41°N) */
+  .meta {
+    font-family: var(--font-label);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
   }
 
   /* Contenedor estándar */
@@ -175,4 +191,138 @@
     break-inside: avoid;
     margin-bottom: 0.75rem;
   }
+
+  /* Rótulo índice editorial (01 — Servicios) */
+  .index-label {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--gold);
+  }
+
+  /* Capitular en párrafos destacados */
+  .dropcap::first-letter {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 3.6em;
+    line-height: 0.72;
+    float: left;
+    margin: 0.08em 0.1em 0 0;
+    color: var(--gold);
+  }
+
+  /* Capitular aplicada al primer párrafo de un bloque de contenido */
+  .dropcap-lead > p:first-of-type::first-letter {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 3.6em;
+    line-height: 0.72;
+    float: left;
+    margin: 0.08em 0.1em 0 0;
+    color: var(--gold);
+  }
+
+  /* Etiqueta vertical (marginalia rotada) */
+  .vlabel {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    color: var(--muted-foreground);
+  }
+}
+
+/* ---------------------------------------------------------- */
+/*  Capa artística: grano, viñeta, duotono, marquesina, reveal */
+/* ---------------------------------------------------------- */
+
+/* Grano de película fijo sobre todo el sitio (no bloquea clics) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* Viñeta suave */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 44;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 55%, oklch(0 0 0 / 0.35) 100%);
+}
+
+/* Tratamiento duotono con revelado de color al pasar/enfocar */
+.duo {
+  position: relative;
+  overflow: hidden;
+}
+.duo img {
+  filter: grayscale(0.55) contrast(1.06) brightness(0.94);
+  transition: filter 0.7s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.duo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(200deg, color-mix(in oklch, var(--gold) 48%, transparent), color-mix(in oklch, oklch(0.22 0.05 250) 55%, transparent));
+  mix-blend-mode: color;
+  opacity: 0.5;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+.duo:hover img,
+.duo:focus-within img {
+  filter: none;
+  transform: scale(1.03);
+}
+.duo:hover::after,
+.duo:focus-within::after {
+  opacity: 0;
+}
+
+/* Marquesina infinita (CSS puro) */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+  animation: marquee 34s linear infinite;
+  will-change: transform;
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Revelado al hacer scroll (progressive enhancement, cero JS) */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 2% cover 22%;
+    }
+  }
+}
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  .duo img { transition: none; }
 }

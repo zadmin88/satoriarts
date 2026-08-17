@@ -1,13 +1,13 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CtaSection from "@/components/CtaSection.astro";
-import Gallery from "@/components/Gallery.astro";
+import EditorialGallery from "@/components/EditorialGallery.astro";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import { SERVICES, servicePath, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
 import { routeAlternates } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
-import { SERVICE_CONTENT } from "@/i18n/services-content";
+import { servicePhotos, photoAlt } from "@/lib/photos";
 
 interface Props {
   locale: Locale;
@@ -52,7 +52,7 @@ const seo = SEO[locale];
             {t("cta.viewService")} →
           </a>
         </div>
-        <Gallery items={SERVICE_CONTENT[s.key][locale].gallery} />
+        <EditorialGallery items={servicePhotos(s.key).map((image, i) => ({ image, alt: photoAlt(locale, s.i18n[locale].title, i) }))} />
       </section>
     ))
   }

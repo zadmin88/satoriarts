@@ -1,11 +1,12 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import CtaSection from "@/components/CtaSection.astro";
-import Placeholder from "@/components/Placeholder.astro";
+import Photo from "@/components/Photo.astro";
 import { waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
 import { routeAlternates } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
+import { servicePhotos } from "@/lib/photos";
 
 interface Props {
   locale: Locale;
@@ -40,9 +41,9 @@ const seo = SEO[locale];
 
 // [PLACEHOLDER] Cuando haya artículos reales, sustituir por una content collection.
 const drafts = [
-  { title: "Boda en el Empordà", tone: 1 as const },
-  { title: "Hotel boutique · Barcelona", tone: 2 as const },
-  { title: "Fincas para bodas en Madrid", tone: 4 as const },
+  { title: "Boda en el Empordà", image: servicePhotos("bodas")[1] },
+  { title: "Hotel boutique · Barcelona", image: servicePhotos("hoteles")[1] },
+  { title: "Fincas para bodas en Madrid", image: servicePhotos("paisaje")[3] },
 ];
 ---
 
@@ -56,11 +57,11 @@ const drafts = [
   <section class="container-tight grid gap-6 pb-16 sm:grid-cols-2 lg:grid-cols-3">
     {
       drafts.map((d) => (
-        <article class="overflow-hidden rounded-xl border border-border bg-card opacity-80">
-          <Placeholder ratio="landscape" tone={d.tone} class="rounded-none border-0" />
-          <div class="p-6">
+        <article class="reveal">
+          <Photo image={d.image} alt={d.title} aspect="aspect-[3/2]" sizes="(max-width:768px) 100vw, 33vw" />
+          <div class="pt-4">
             <span class="text-xs font-semibold uppercase tracking-wide text-gold-deep">{seo.soon}</span>
-            <h2 class="mt-1 font-heading text-lg font-medium text-foreground">{d.title}</h2>
+            <h2 class="mt-1 font-heading text-lg font-medium italic text-foreground">{d.title}</h2>
           </div>
         </article>
       ))
