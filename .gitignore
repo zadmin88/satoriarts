@@ -17,3 +17,6 @@ pnpm-debug.log*
 
 # macOS / editor
 .DS_Store
+
+# originales sin optimizar (no se despliegan)
+_originals-fotossatori/
