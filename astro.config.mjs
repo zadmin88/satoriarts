@@ -8,9 +8,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // ⚠️ [PLACEHOLDER] Cambia esta URL por el dominio definitivo.
-  // Debe coincidir con SITE.url en src/config.ts (sitemap, canonicals y hreflang dependen de esto).
-  site: 'https://satoriarts.vercel.app',
+  // Dominio definitivo. Debe coincidir con SITE.url en src/config.ts
+  // (sitemap, canonicals y hreflang dependen de esto).
+  site: 'https://satoriarts.es',
   trailingSlash: 'always',
 
   // Sitio trilingüe: es (raíz), en (/en), ca (/ca)

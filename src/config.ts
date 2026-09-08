@@ -115,10 +115,10 @@ export const SITE = {
   },
 
   /**
-   * [PLACEHOLDER] URL definitiva, SIN barra final.
+   * URL definitiva, SIN barra final.
    * Debe coincidir con `site` en astro.config.mjs.
    */
-  url: "https://satoriarts.vercel.app",
+  url: "https://satoriarts.es",
 
   /** [PLACEHOLDER] Nota media y nº de reseñas de la ficha de Google Business. */
   googleRating: 5.0,

@@ -15,6 +15,7 @@ export function businessSchema(locale: Locale): Record<string, unknown> {
     email: SITE.email,
     telephone: SITE.phoneDisplay,
     image: SITE.url + "/og-image.jpg",
+    logo: SITE.url + "/Satoriarts_Isotipo.png",
     priceRange: "€€€",
     inLanguage: LOCALE_LANG[locale],
     sameAs: [SITE.instagramUrl],
