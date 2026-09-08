@@ -74,7 +74,7 @@ const routeKey: RouteKey = kind;
 
 <BaseLayout locale={locale} title={c.title} description={c.h1} alternates={routeAlternates(routeKey)} noindex={true}>
   <section class="container-prose py-16 md:py-20">
-    <h1 class="font-heading text-3xl font-semibold text-foreground sm:text-4xl">{c.h1}</h1>
+    <h1 class="font-heading text-3xl font-medium text-foreground sm:text-4xl">{c.h1}</h1>
     <div class="prose-body mt-8" set:html={c.body}></div>
   </section>
 </BaseLayout>

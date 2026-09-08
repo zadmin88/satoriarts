@@ -1,8 +1,7 @@
 ---
-import { SITE } from "@/config";
+import { waLink } from "@/config";
 import type { Locale } from "@/config";
 import { useT } from "@/i18n/ui";
-import WhatsAppButton from "@/components/WhatsAppButton.astro";
 
 interface Props {
   locale: Locale;
@@ -14,24 +13,24 @@ const { locale, message } = Astro.props;
 const t = useT(locale);
 ---
 
-<section aria-labelledby="cta-titulo" class="border-t border-border bg-card/60">
-  <div class="container-tight flex flex-col items-start gap-6 py-16 md:flex-row md:items-center md:justify-between">
-    <div class="flex max-w-xl flex-col gap-3">
-      <h2 id="cta-titulo" class="font-heading text-3xl font-semibold text-foreground sm:text-4xl">
+<section aria-labelledby="cta-titulo" class="bg-card/60">
+  <div class="section-space container-prose flex flex-col items-start gap-6 text-left sm:items-center sm:text-center">
+    <div class="reveal flex flex-col gap-3">
+      <h2 id="cta-titulo" class="font-heading text-4xl font-medium text-foreground sm:text-5xl">
         {t("cta.blockTitle")}
       </h2>
-      <p class="text-muted-foreground">{t("cta.blockText")}</p>
+      <p class="text-lg leading-relaxed text-muted-foreground sm:mx-auto sm:max-w-xl">{t("cta.blockText")}</p>
     </div>
-    <div class="flex flex-col items-start gap-2">
-      <WhatsAppButton size="lg" message={message} label={t("cta.whatsapp.long")} />
-      <a
-        href={SITE.instagramUrl}
-        target="_blank"
-        rel="noopener me"
-        class="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-      >
-        {t("cta.instagram")} · @{SITE.instagram}
-      </a>
-    </div>
+    <a
+      href={waLink(message)}
+      target="_blank"
+      rel="noopener"
+      class="reveal inline-flex h-12 items-center justify-center rounded-sm bg-white px-7 text-black transition-colors hover:bg-white/90"
+    >
+      <span class="hover-flip inline-block">
+        <span class="flip-a block text-sm font-semibold uppercase tracking-[0.06em]">{t("cta.requestInfo")}</span>
+        <span aria-hidden="true" class="flip-b block text-sm font-semibold uppercase tracking-[0.06em]">{t("cta.requestInfo")}</span>
+      </span>
+    </a>
   </div>
 </section>

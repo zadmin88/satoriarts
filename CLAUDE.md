@@ -63,8 +63,9 @@ npm run preview      # previsualiza el build
 - Tema **oscuro editorial de lujo**: negro cálido + neutros + **champán/oro**
   (`text-gold`, `text-gold-deep`). Usa siempre tokens del tema
   (`bg-card`, `text-muted-foreground`, `border-border`…), nunca colores sueltos.
-- El **verde está reservado a WhatsApp** (`--wa`, `bg-wa`). No lo uses para nada
-  más: así verde = contactar.
+- **Nada de verde.** Los CTAs de WhatsApp usan la misma paleta neutra
+  (`bg-foreground`/`bg-background`) que el resto del sitio, no un color de
+  marca aparte.
 - Fuentes autoalojadas: **Fraunces** (títulos, `font-heading`) y **Geist**
   (cuerpo). No añadas Google Fonts por CDN.
 - Botones de WhatsApp: usa `src/components/WhatsAppButton.astro` (props
@@ -140,6 +141,10 @@ y conviene mirar la página afectada con `npm run dev`.
   trabajo; cuando haya selfies de Manu y Tefi, se pueden añadir ahí.
 - **Paisaje** tiene pocas fotos (2). Añadir más cuando las haya.
 - NIF y dirección en las páginas legales están como `[PENDIENTE]`.
+- El crédito "Diseño y desarrollo" del footer está como `[PENDIENTE]` (clave
+  `footer.credits` en `src/i18n/ui.ts`, texto en `Footer.astro`).
+- `CLIENTS` en `src/config.ts`: marquee de marcas/venues en la home (antes de
+  Testimonios), hoy con 5 `[PENDIENTE]`. Sustituir por nombres reales.
 - `Journal`: hoy es un índice con tarjetas "próximamente". Para el SEO de venues,
   convertirlo en una content collection (`src/content/`) con un artículo por
   finca/hotel.

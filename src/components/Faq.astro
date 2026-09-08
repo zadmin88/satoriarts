@@ -11,24 +11,13 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
+<div>
   {
     items.map((item) => (
-      <details class="group px-5 py-4">
+      <details class="group py-5">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-foreground [&::-webkit-details-marker]:hidden">
           {item.q}
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="size-4 shrink-0 text-gold-deep transition-transform group-open:rotate-180"
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
+          <span class="plus-icon shrink-0 text-foreground" aria-hidden="true" />
         </summary>
         <p class="pt-3 text-muted-foreground" set:html={item.a} />
       </details>

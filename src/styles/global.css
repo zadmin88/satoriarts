@@ -1,20 +1,46 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
-@import "@fontsource-variable/bodoni-moda";
-@import "@fontsource-variable/space-grotesk";
+
+/* General Sans (Fontshare, gratuita): alternativa libre a "Matter", la
+   fuente de studiogusto.com (de pago, fundición Displaay). Autoalojada
+   en public/fonts/general-sans/, sin CDN externo. */
+@font-face {
+    font-family: 'General Sans';
+    src: url('/fonts/general-sans/GeneralSans-400.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'General Sans';
+    src: url('/fonts/general-sans/GeneralSans-500.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'General Sans';
+    src: url('/fonts/general-sans/GeneralSans-600.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'General Sans';
+    src: url('/fonts/general-sans/GeneralSans-700.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: 'Bodoni Moda Variable', 'Times New Roman', Georgia, serif;
-    --font-label: 'Space Grotesk Variable', system-ui, sans-serif;
-    --font-sans: 'Geist Variable', system-ui, sans-serif;
-    --color-gold: var(--gold);
-    --color-gold-deep: var(--gold-deep);
-    --color-wa: var(--wa);
-    --color-wa-deep: var(--wa-deep);
+    --font-heading: 'General Sans', system-ui, sans-serif;
+    --font-label: 'General Sans', system-ui, sans-serif;
+    --font-sans: 'General Sans', system-ui, sans-serif;
+    --font-nav: 'General Sans', system-ui, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -55,49 +81,44 @@
 }
 
 /*
- * Paleta "editorial nocturna": negro cálido + neutros + champán (oro suave).
- * El sitio es OSCURO por defecto (imagen protagonista). El VERDE queda
- * RESERVADO exclusivamente para las acciones de WhatsApp (--wa).
+ * Paleta "editorial nocturna": negro cálido + neutros, estrictamente
+ * blanco y negro (sin ningún acento de color). El sitio es OSCURO por
+ * defecto (imagen protagonista).
  */
 :root {
-    /* Champán/oro antiguo refinado (firma de lujo) */
-    --gold: oklch(0.81 0.085 82);
-    --gold-deep: oklch(0.72 0.095 76);
-    --wa: oklch(0.64 0.15 152);
-    --wa-deep: oklch(0.55 0.13 152);
-
-    --background: oklch(0.16 0.006 60);
-    --foreground: oklch(0.93 0.01 82);
-    --card: oklch(0.2 0.007 60);
-    --card-foreground: oklch(0.93 0.01 82);
-    --popover: oklch(0.2 0.007 60);
-    --popover-foreground: oklch(0.93 0.01 82);
-    --primary: var(--gold);
-    --primary-foreground: oklch(0.16 0.01 60);
-    --secondary: oklch(0.24 0.008 60);
-    --secondary-foreground: oklch(0.93 0.01 82);
-    --muted: oklch(0.23 0.007 60);
-    --muted-foreground: oklch(0.7 0.014 70);
-    --accent: oklch(0.31 0.04 72);
-    --accent-foreground: oklch(0.87 0.08 82);
+    --background: oklch(0.045 0.002 60);
+    --foreground: oklch(0.96 0.004 80);
+    --card: oklch(0.09 0.004 60);
+    --card-foreground: oklch(0.96 0.004 80);
+    --popover: oklch(0.07 0.004 60);
+    --popover-foreground: oklch(0.96 0.004 80);
+    --primary: var(--foreground);
+    --primary-foreground: var(--background);
+    --secondary: oklch(0.13 0.006 60);
+    --secondary-foreground: oklch(0.96 0.004 80);
+    --muted: oklch(0.12 0.005 60);
+    --muted-foreground: oklch(0.66 0.012 70);
+    --accent: oklch(0.18 0 0);
+    --accent-foreground: oklch(0.92 0 0);
     --destructive: oklch(0.62 0.2 25);
-    --border: oklch(1 0 0 / 9%);
-    --input: oklch(1 0 0 / 13%);
-    --ring: oklch(0.72 0.095 76);
-    --chart-1: var(--gold);
-    --chart-2: oklch(0.7 0.06 60);
-    --chart-3: var(--wa);
-    --chart-4: oklch(0.6 0.04 80);
-    --chart-5: oklch(0.5 0.03 70);
-    --radius: 0.5rem;
-    --sidebar: oklch(0.2 0.007 70);
-    --sidebar-foreground: oklch(0.94 0.006 80);
-    --sidebar-primary: var(--gold);
-    --sidebar-primary-foreground: oklch(0.18 0.01 70);
-    --sidebar-accent: oklch(0.3 0.03 78);
-    --sidebar-accent-foreground: oklch(0.9 0.06 82);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 14%);
+    --ring: oklch(0.75 0 0);
+    --chart-1: oklch(0.8 0 0);
+    --chart-2: oklch(0.7 0 0);
+    --chart-3: oklch(0.66 0 0);
+    --chart-4: oklch(0.6 0 0);
+    --chart-5: oklch(0.5 0 0);
+    /* Nada de esquinas redondeadas en el sitio: CTAs, fotos, tarjetas... todo recto. */
+    --radius: 0rem;
+    --sidebar: oklch(0.08 0 0);
+    --sidebar-foreground: oklch(0.94 0 0);
+    --sidebar-primary: oklch(0.94 0 0);
+    --sidebar-primary-foreground: oklch(0.1 0 0);
+    --sidebar-accent: oklch(0.18 0 0);
+    --sidebar-accent-foreground: oklch(0.9 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.72 0.085 76);
+    --sidebar-ring: oklch(0.75 0 0);
 }
 
 /* Alias .dark = misma paleta (el sitio ya es oscuro por defecto) */
@@ -122,8 +143,8 @@
     font-optical-sizing: auto;
     }
   ::selection {
-    background: color-mix(in oklch, var(--gold) 35%, transparent);
-    color: var(--foreground);
+    background: color-mix(in oklch, var(--foreground) 35%, transparent);
+    color: var(--background);
     }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -134,11 +155,21 @@
   /* Ojal / eyebrow: rótulo técnico (Space Grotesk) en mayúsculas */
   .eyebrow {
     font-family: var(--font-label);
-    @apply text-xs font-medium uppercase tracking-[0.28em] text-gold;
+    @apply text-xs font-medium uppercase tracking-[0.28em] text-muted-foreground;
   }
 
   /* Etiqueta técnica reutilizable (Space Grotesk) */
   .font-label { font-family: var(--font-label); }
+
+  /* Tipografía de la barra de navegación (grotesca neutra) */
+  .font-nav { font-family: var(--font-nav); }
+
+  /* Celda de la barra de navegación: altura completa, separadores
+     verticales y relleno al pasar el ratón (ver sstr.tech). */
+  .nav-cell {
+    font-family: var(--font-nav);
+    @apply flex h-full items-center justify-center border-border/70 px-4 text-xs font-medium tracking-[0.04em] text-muted-foreground uppercase transition-colors hover:bg-white/5 hover:text-foreground;
+  }
 
   /* Metadatos fotográficos como marginalia decorativa (35MM · f/1.4 · 41°N) */
   .meta {
@@ -152,10 +183,15 @@
   /* Contenedor estándar */
   .container-tight { @apply mx-auto max-w-6xl px-5 sm:px-6; }
   .container-prose { @apply mx-auto max-w-3xl px-5 sm:px-6; }
+  /* Espaciado vertical estándar entre secciones: 40px en móvil, 64px en
+     tablet, 80px en desktop. Reutilizable en vez de márgenes/paddings
+     sueltos por bloque, para que el ritmo vertical del sitio sea
+     consistente. */
+  .section-space { @apply py-10 sm:py-16 md:py-20; }
 
   /* Tipografía de contenido largo (páginas de servicio, journal) */
   .prose-body h2 {
-    @apply font-heading text-foreground mt-12 mb-4 text-2xl font-semibold first:mt-0 sm:text-3xl;
+    @apply font-heading text-foreground mt-12 mb-4 text-2xl font-semibold uppercase first:mt-0 sm:text-3xl;
   }
   .prose-body h3 {
     @apply font-heading text-foreground mt-8 mb-2 text-xl font-medium;
@@ -177,7 +213,7 @@
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 9999px;
-    background-color: var(--gold);
+    background-color: var(--foreground);
   }
 
   /* Galería tipo mosaico sin JavaScript (CSS columns) */
@@ -195,31 +231,28 @@
   /* Rótulo índice editorial (01 — Servicios) */
   .index-label {
     font-family: var(--font-heading);
-    font-style: italic;
     font-weight: 500;
-    color: var(--gold);
+    color: var(--foreground);
   }
 
   /* Capitular en párrafos destacados */
   .dropcap::first-letter {
     font-family: var(--font-heading);
-    font-style: italic;
     font-size: 3.6em;
     line-height: 0.72;
     float: left;
     margin: 0.08em 0.1em 0 0;
-    color: var(--gold);
+    color: var(--foreground);
   }
 
   /* Capitular aplicada al primer párrafo de un bloque de contenido */
   .dropcap-lead > p:first-of-type::first-letter {
     font-family: var(--font-heading);
-    font-style: italic;
     font-size: 3.6em;
     line-height: 0.72;
     float: left;
     margin: 0.08em 0.1em 0 0;
-    color: var(--gold);
+    color: var(--foreground);
   }
 
   /* Etiqueta vertical (marginalia rotada) */
@@ -258,34 +291,31 @@ body::after {
   background: radial-gradient(120% 90% at 50% 40%, transparent 55%, oklch(0 0 0 / 0.35) 100%);
 }
 
-/* Tratamiento duotono con revelado de color al pasar/enfocar */
-.duo {
-  position: relative;
-  overflow: hidden;
+/* Carruseles (clientes, testimonios): scroll-snap nativo (arrastre
+   táctil o rueda del ratón), sin barra de scroll visible. Las flechas
+   mueven la pista con un poco de JS aislado (ver
+   testimonial-carousel.ts); sin él, el carrusel sigue funcionando
+   igual por arrastre/scroll. */
+.carousel-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-.duo img {
-  filter: grayscale(0.55) contrast(1.06) brightness(0.94);
-  transition: filter 0.7s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+/* La tarjeta en primer plano (marcada con "is-active" por
+   testimonial-carousel.ts vía IntersectionObserver) crece y gana
+   opacidad; el resto queda ligeramente reducida y apagada. */
+.carousel-track > * {
+  opacity: 0.4;
+  transform: scale(0.9);
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
 }
-.duo::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(200deg, color-mix(in oklch, var(--gold) 48%, transparent), color-mix(in oklch, oklch(0.22 0.05 250) 55%, transparent));
-  mix-blend-mode: color;
-  opacity: 0.5;
-  transition: opacity 0.7s ease;
-  pointer-events: none;
+.carousel-track > *.is-active {
+  opacity: 1;
+  transform: scale(1);
 }
-.duo:hover img,
-.duo:focus-within img {
-  filter: none;
-  transform: scale(1.03);
-}
-.duo:hover::after,
-.duo:focus-within::after {
-  opacity: 0;
+.carousel-track::-webkit-scrollbar {
+  display: none;
 }
 
 /* Marquesina infinita (CSS puro) */
@@ -307,22 +337,539 @@ body::after {
   to { transform: translateX(-50%); }
 }
 
-/* Revelado al hacer scroll (progressive enhancement, cero JS) */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      animation: reveal-in linear both;
-      animation-timeline: view();
-      animation-range: entry 2% cover 22%;
-    }
-  }
-}
-@keyframes reveal-in {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: none; }
-}
+/* Revelado al hacer scroll: gestionado por GSAP + ScrollTrigger
+   (ver src/scripts/scroll-reveal.ts). Sin JS, estos bloques se ven
+   simplemente en su estado final (visibles, sin animar) — nunca quedan
+   ocultos por CSS a la espera de un script que no llegó a cargar. */
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
-  .duo img { transition: none; }
+}
+
+/* ---------------------------------------------------------- */
+/*  Menú de pantalla completa (header) — cero JavaScript.       */
+/*  <details>/<summary> nativo; el panel se anima con          */
+/*  @starting-style + transition-behavior: allow-discrete.     */
+/*  Si el navegador no soporta esas reglas, el menú sigue       */
+/*  funcionando (abre/cierra) sin la animación de entrada.      */
+/* ---------------------------------------------------------- */
+
+details.menu > summary {
+  list-style: none;
+}
+details.menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Icono "+" → "×" de las preguntas frecuentes (cero JavaScript) */
+.plus-icon {
+  position: relative;
+  width: 0.9rem;
+  height: 0.9rem;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.plus-icon::before,
+.plus-icon::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.plus-icon::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  transform: translateY(-50%);
+}
+.plus-icon::after {
+  left: 50%;
+  top: 0;
+  width: 1.5px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+details[open] > summary .plus-icon {
+  transform: rotate(45deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .plus-icon { transition: none; }
+}
+
+/* Icono hamburguesa → X: dos líneas cortas, como makemepulse.com. */
+.hamburger {
+  position: relative;
+  display: inline-block;
+  width: 1.35rem;
+  height: 0.4rem;
+  flex: none;
+}
+.hamburger span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transition:
+    top 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hamburger span:nth-child(1) { top: 0; }
+.hamburger span:nth-child(2) { top: 100%; transform: translateY(-100%); }
+
+details.menu[open] .hamburger span:nth-child(1) {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+details.menu[open] .hamburger span:nth-child(2) {
+  top: 50%;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+/* .hamburger vive fuera de las capas de Tailwind, así que un simple
+   `md:hidden` no basta para ocultarlo en escritorio (las utilidades de
+   Tailwind, en su propia @layer, pierden frente a reglas sin capa). */
+@media (min-width: 768px) {
+  .hamburger {
+    display: none;
+  }
+}
+
+/* Panel a pantalla completa (div real, no ::details-content: mejor
+   soporte cruzado de navegadores para el par display+allow-discrete) */
+details.menu > .menu-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0;
+  background: var(--background);
+  transform-origin: top;
+  clip-path: inset(0 0 100% 0);
+  transition:
+    clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1),
+    display 0.6s allow-discrete;
+}
+details.menu[open] > .menu-panel {
+  clip-path: inset(0 0 0% 0);
+}
+@starting-style {
+  details.menu[open] > .menu-panel {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+/* Lista numerada con revelado escalonado */
+.menu-list li {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@starting-style {
+  details.menu[open] .menu-list li {
+    opacity: 0;
+    transform: translateY(1.1rem);
+  }
+}
+.menu-list li:nth-child(1) { transition-delay: 0.06s; }
+.menu-list li:nth-child(2) { transition-delay: 0.11s; }
+.menu-list li:nth-child(3) { transition-delay: 0.16s; }
+.menu-list li:nth-child(4) { transition-delay: 0.21s; }
+.menu-list li:nth-child(5) { transition-delay: 0.26s; }
+.menu-list li:nth-child(6) { transition-delay: 0.31s; }
+.menu-list li:nth-child(7) { transition-delay: 0.36s; }
+.menu-list li:nth-child(8) { transition-delay: 0.41s; }
+.menu-list li:nth-child(9) { transition-delay: 0.46s; }
+
+.menu-footer {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  transition-delay: 0.4s;
+}
+@starting-style {
+  details.menu[open] .menu-footer {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details.menu > .menu-panel,
+  .menu-list li,
+  .menu-footer {
+    transition: none;
+  }
+}
+
+/* Revelado palabra a palabra al abrir el menú (como verostudio.com):
+   cada palabra entra deslizándose desde abajo, con retraso creciente. */
+.word-reveal {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.word-reveal > span {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--wi, 0) * 45ms);
+}
+details.menu[open] .word-reveal > span {
+  transform: translateY(0);
+}
+@starting-style {
+  details.menu[open] .word-reveal > span {
+    transform: translateY(115%);
+  }
+}
+
+/* Hover del menú de pantalla completa (como verostudio.com): a
+   diferencia del hover-flip normal (que mueve todo el bloque de texto
+   como una sola pieza), aquí cada PALABRA es su propia cápsula con dos
+   capas —label/copy—, y se anima con un pequeño retraso creciente por
+   palabra (--i), dando una sensación de cascada en vez de un bloque
+   rígido. Vive dentro de .word-reveal (que controla la entrada al abrir
+   el menú); .word-roll controla el roll del hover, independiente. */
+.word-roll {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+}
+.word-roll-a,
+.word-roll-b {
+  display: inline-block;
+  /* line-height propio (mismo motivo que .hover-flip .flip-a/.flip-b):
+     sin él, la caja hereda una línea demasiado ajustada y el
+     overflow:hidden del .word-roll recorta la tilde de capitales como
+     "Ó" (visible como una marca/línea suelta bajo la letra). */
+  line-height: 1.3;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 50ms);
+}
+.word-roll-b {
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
+}
+.menu-link:hover .word-roll-a,
+.menu-link:focus-visible .word-roll-a,
+details[open] > .menu-link .word-roll-a {
+  transform: translateY(-100%);
+}
+.menu-link:hover .word-roll-b,
+.menu-link:focus-visible .word-roll-b,
+details[open] > .menu-link .word-roll-b {
+  transform: translateY(0);
+}
+
+/* Efecto "flip" al pasar el ratón por un enlace: el texto sube y
+   se sustituye por una copia idéntica que entra desde abajo.
+   En @layer components: así, cuando se combina con utilidades de
+   Tailwind como "hidden"/"md:inline-block" en el mismo elemento
+   (p. ej. el texto "Contacto" del header, oculto en móvil), esas
+   utilidades (capa "utilities", de mayor prioridad) ganan sobre el
+   "display: inline-block" de aquí — si esta regla viviera suelta,
+   fuera de toda @layer, ganaría ella por ir después en la hoja de
+   estilos, dejando el texto visible aunque llevara "hidden" (mismo
+   problema, ya resuelto aparte, que .hamburger más abajo). */
+@layer components {
+  .hover-flip {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hover-flip .flip-a,
+  .hover-flip .flip-b {
+    display: block;
+    /* line-height propio: si se hereda un "leading-none" del botón que
+       envuelve el enlace (p. ej. los CTAs del header), la caja del
+       texto queda más baja que su altura real y el overflow:hidden
+       recorta tildes (á, é, í, ó, ú, ñ) — visible como texto "cortado"
+       y, al no coincidir flip-a/flip-b en altura, como capas
+       superpuestas ("doble"). */
+    line-height: 1.3;
+    white-space: nowrap;
+    backface-visibility: hidden;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hover-flip .flip-b {
+    position: absolute;
+    inset: 0;
+    transform: translateY(100%);
+  }
+  /* Solo el propio elemento (nunca un ".group" ancestro): "group" es un
+     nombre de clase genérico reutilizado por completo con otro sentido
+     en muchos otros componentes (el <details> del menú de pantalla
+     completa, tarjetas de servicio, FAQ...). Engancharse a ".group:hover"
+     aquí hacía que, dentro de esos componentes, CUALQUIER hover en
+     cualquier parte disparara TODOS los hover-flip anidados a la vez
+     (p. ej. pasar el cursor por el menú animaba Instagram/Facebook/
+     YouTube juntos). Si algún día una tarjeta necesita animar su
+     hover-flip interno al pasar el cursor por toda la tarjeta, debe
+     usar una clase dedicada (p. ej. "card-hover"), no "group". */
+  .hover-flip:hover .flip-a,
+  .hover-flip:focus-visible .flip-a,
+  .hover-flip:active .flip-a {
+    transform: translateY(-100%);
+  }
+  .hover-flip:hover .flip-b,
+  .hover-flip:focus-visible .flip-b,
+  .hover-flip:active .flip-b {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-reveal > span,
+  .hover-flip .flip-a,
+  .hover-flip .flip-b,
+  .word-roll-a,
+  .word-roll-b {
+    transition: none;
+  }
+}
+
+/* Aparición suave del header al cargar la página (como verostudio.com) */
+/* [Retirado] .header-fade-in animaba opacity en un elemento position:fixed
+   con z-index; esa combinación, junto con el panel de menú (clip-path +
+   allow-discrete) que cuelga de él, podía dejar al header en un estado de
+   apilamiento ambiguo mientras la opacidad seguía animándose, dejando ver
+   por debajo el logo del hero. El header aparece ahora sin animación. */
+
+/* Insignia circular del logo: rotación continua (como era-residence.com) */
+.logo-spin {
+  animation: logo-spin 24s linear infinite;
+}
+@keyframes logo-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-spin { animation: none; }
+}
+
+/* ---------------------------------------------------------- */
+/*  Hero editorial (como verostudio.com) — cero JavaScript.    */
+/* ---------------------------------------------------------- */
+
+/* Revelado palabra a palabra al cargar la página (titular del hero) */
+.load-reveal {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.load-reveal > span {
+  display: inline-block;
+  animation: load-reveal-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--wi, 0) * 55ms);
+}
+@keyframes load-reveal-in {
+  from { transform: translateY(115%); }
+  to { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .load-reveal > span { animation: none; }
+}
+
+/* Entrada pausada del subtítulo y los CTA, después del titular */
+.hero-fade-up {
+  animation: hero-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-up { animation: none; }
+}
+
+/* Flecha de scroll bajo el hero (como verostudio.com) */
+.scroll-cue {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 50%;
+  z-index: 10;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: oklch(1 0 0 / 0.8);
+  transform: translateX(-50%);
+}
+
+/* ---------------------------------------------------------- */
+/*  Filtro de la galería de Proyectos (como videinfra.com/work): */
+/*  pestañas horizontales con pastillas de radio + :has(),       */
+/*  cero JavaScript.                                              */
+/* ---------------------------------------------------------- */
+
+.filter-pill {
+  display: inline-flex;
+  height: 3rem;
+  cursor: pointer;
+  align-items: center;
+  border-radius: 0;
+  border: none;
+  background: var(--card);
+  padding: 0 1.75rem;
+  font-family: var(--font-label);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground);
+  transition: background-color 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+.filter-pill:hover {
+  background: var(--secondary);
+}
+.filter-gallery input:checked + .filter-pill,
+.filter-pill.is-active {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.filter-gallery [data-service] {
+  display: none;
+}
+.filter-gallery:has(#pf-all:checked) [data-service] {
+  display: block;
+}
+.filter-gallery:has(#pf-filter-bodas:checked) [data-service="bodas"] {
+  display: block;
+}
+.filter-gallery:has(#pf-filter-eventos:checked) [data-service="eventos"] {
+  display: block;
+}
+.filter-gallery:has(#pf-filter-hoteles:checked) [data-service="hoteles"] {
+  display: block;
+}
+.filter-gallery:has(#pf-filter-paisaje:checked) [data-service="paisaje"] {
+  display: block;
+}
+
+/* Los CTAs (WhatsApp, "Solicitar información"...) son solo texto, sin
+   icono: el mismo hover-flip vertical que el resto de enlaces del
+   sitio, como en verostudio.com. */
+
+/* ---------------------------------------------------------- */
+/*  Header al hacer scroll: en home, el logo pequeño nace oculto  */
+/*  (la marca grande del hero ya cumple ese papel) y aparece solo  */
+/*  cuando el hero ha terminado de salir de la pantalla; a la vez  */
+/*  el header entero pasa a una barra negra sólida (como hobro.digital), */
+/*  el texto/iconos del menú se quedan siempre claros (los CTA son      */
+/*  pastillas blancas aparte, no dependen de este fondo).               */
+/*  Ligado a scroll(root) en porcentaje del recorrido total —no en */
+/*  vh: probado con CDP en scroll real, un view-timeline nombrado  */
+/*  anclado al hero (fase "exit") nunca llega a activarse en este  */
+/*  motor y se queda siempre en el valor base, así que se          */
+/*  descartó— para que dispare con cualquier gesto, sea cual sea   */
+/*  el largo de la página. El rango (15%–24%) es una aproximación  */
+/*  al punto en el que el hero (92vh) suele terminar de salir; sin */
+/*  soporte, el logo se ve siempre, el header se queda transparente */
+/*  y el texto se queda en su color base (claro). IMPORTANTE: usa  */
+/*  animation-name/-timing-function/-fill-mode por separado, NUNCA */
+/*  el atajo "animation:" seguido de "animation-timeline:" aparte  */
+/*  — probado con CDP en scroll real: con el atajo, animation-     */
+/*  timeline se queda en "auto" y la animación no llega a          */
+/*  engancharse al scroll aunque las reglas aparezcan como         */
+/*  "matched"; en longhand funciona bien.                          */
+/* ---------------------------------------------------------- */
+@property --header-ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: oklch(0.96 0.004 80);
+}
+header {
+  color: var(--header-ink);
+}
+.header-logo-reveal-on-scroll {
+  opacity: 1;
+  filter: invert(0);
+}
+@supports (animation-timeline: scroll(root)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .header-logo-reveal-on-scroll {
+      opacity: 0;
+      animation-name: header-logo-fade-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 15% 24%;
+    }
+  }
+}
+@keyframes header-logo-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Barra negra bajo el header entero (como hobro.digital): transparente
+   sobre el hero, y en cuanto el hero termina de salir de la pantalla
+   se solidifica a negro con blur, para que el menú quede siempre
+   legible sobre el contenido. Mismo rango 15%–24% que el logo. */
+.header-bar-reveal {
+  --header-ink: var(--foreground);
+  background-color: transparent;
+  backdrop-filter: blur(0px);
+}
+@supports (animation-timeline: scroll(root)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .header-bar-reveal {
+      animation-name: header-bar-fade-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 15% 24%;
+    }
+  }
+}
+@keyframes header-bar-fade-in {
+  from {
+    background-color: transparent;
+    backdrop-filter: blur(0px);
+    --header-ink: var(--foreground);
+  }
+  to {
+    background-color: oklch(0 0 0 / 96%);
+    backdrop-filter: blur(14px);
+    --header-ink: var(--foreground);
+  }
+}
+
+/* Pastillas del header (Menú, Contacto): siempre blancas a opacidad
+   completa, incluso sobre el hero — solo el fondo de la barra (arriba)
+   se solidifica al hacer scroll. */
+.header-bar-reveal .header-pill {
+  opacity: 1;
+}
+
+/* Ken Burns sutil sobre el vídeo de fondo del hero. El suelo de escala
+   (1.25) se queda siempre por encima de 1 a propósito: el vídeo fuente
+   tiene un ligero viñeteado/borde oscuro de fábrica que asoma como una
+   línea si se muestra a escala 1 con object-fit:cover; con este suelo
+   ese borde queda siempre fuera del encuadre. */
+.ken-burns {
+  animation: ken-burns 8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes ken-burns {
+  from { transform: scale(1.32); }
+  to { transform: scale(1.25); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ken-burns { animation: none; transform: scale(1.25); }
+}
+
+/* ---------------------------------------------------------- */
+/*  Revelado direccional al scroll (filas de servicios) y      */
+/*  stagger de cuadrículas: gestionado por GSAP + ScrollTrigger */
+/*  (ver src/scripts/scroll-reveal.ts).                         */
+/* ---------------------------------------------------------- */
+
+/* Panel del selector de idioma: sin fondo (a propósito), pero con una
+   sombra de texto marcada para que "ENGLISH"/"CATALÀ" se lean sobre
+   fotos claras del hero detrás. */
+.lang-dropdown a {
+  text-shadow: 0 1px 3px rgb(0 0 0 / 90%), 0 2px 10px rgb(0 0 0 / 70%);
 }

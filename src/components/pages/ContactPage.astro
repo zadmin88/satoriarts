@@ -15,11 +15,11 @@ const t = useT(locale);
 const CONTENT: Record<Locale, { title: string; description: string; h1: string; lead: string; quick: string; cities: string }> = {
   es: {
     title: "Contacto · Satori Arts · Fotografía y Film",
-    description: "Escríbenos por WhatsApp para bodas, eventos, hoteles o copias de paisaje. Barcelona, Madrid y destino.",
+    description: "Consulta disponibilidad por WhatsApp para bodas, eventos, hoteles o copias de paisaje. Barcelona, Madrid y destino.",
     h1: "Hablemos de tu proyecto",
-    lead: "La forma más rápida de contactarnos es WhatsApp. Cuéntanos la fecha, el lugar y qué imaginas; te respondemos con disponibilidad e ideas.",
-    quick: "Atajos según lo que necesitas:",
-    cities: "Trabajamos en",
+    lead: "Cuéntanos la fecha, el lugar y la visión que tienes en mente. Respondemos por WhatsApp con disponibilidad y una propuesta a medida.",
+    quick: "Elige el servicio que necesitas:",
+    cities: "Con base en",
   },
   en: {
     title: "Contact · Satori Arts · Photography & Film",
@@ -44,32 +44,40 @@ const c = CONTENT[locale];
 <BaseLayout locale={locale} title={c.title} description={c.description} alternates={routeAlternates("contact")}>
   <section class="container-tight py-16 md:py-20">
     <p class="eyebrow mb-4">{t("nav.contact")}</p>
-    <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{c.h1}</h1>
+    <h1 class="max-w-3xl font-heading text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">{c.h1}</h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{c.lead}</p>
 
     <div class="mt-9 flex flex-wrap items-center gap-4">
       <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.whatsapp.long")} />
-      <a href={SITE.instagramUrl} target="_blank" rel="noopener me" class="inline-flex h-13 items-center gap-2 rounded-full border border-border px-6 font-medium text-foreground transition-colors hover:border-gold/50 hover:text-gold">
-        Instagram · @{SITE.instagram}
+      <a href={SITE.instagramUrl} target="_blank" rel="noopener me" class="inline-flex h-12 items-center gap-2 rounded-none border border-border px-7 text-sm font-semibold uppercase leading-none tracking-[0.06em] text-foreground transition-colors hover:border-foreground/50">
+        <span class="hover-flip inline-block">
+          <span class="flip-a block">Instagram · @{SITE.instagram}</span>
+          <span aria-hidden="true" class="flip-b block">Instagram · @{SITE.instagram}</span>
+        </span>
       </a>
-      <a href={`mailto:${SITE.email}`} class="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">{SITE.email}</a>
+      <a href={`mailto:${SITE.email}`} class="hover-flip inline-block text-muted-foreground">
+        <span class="flip-a block">{SITE.email}</span>
+        <span aria-hidden="true" class="flip-b block text-foreground">{SITE.email}</span>
+      </a>
     </div>
   </section>
 
-  <section class="container-tight border-t border-border py-12">
-    <p class="mb-5 font-medium text-foreground">{c.quick}</p>
-    <div class="flex flex-wrap gap-3">
+  <section class="container-tight py-12">
+    <p class="reveal mb-5 font-medium text-foreground">{c.quick}</p>
+    <div class="stagger-grid flex flex-wrap gap-3">
       {SERVICES.map((s) => (
-        <WhatsAppButton variant="outline" message={waServiceMessage(locale, s)} label={s.i18n[locale].menuLabel} />
+        <div class="reveal">
+          <WhatsAppButton variant="outline" message={waServiceMessage(locale, s)} label={s.i18n[locale].menuLabel} />
+        </div>
       ))}
     </div>
   </section>
 
-  <section class="container-tight border-t border-border py-12">
-    <p class="eyebrow mb-3">{c.cities}</p>
-    <div class="flex flex-wrap gap-3">
+  <section class="container-tight py-12">
+    <p class="reveal eyebrow mb-3">{c.cities}</p>
+    <div class="stagger-grid flex flex-wrap gap-3">
       {CITIES.map((city) => (
-        <span class="rounded-full border border-border px-5 py-2 text-lg font-medium text-foreground">{city.name}</span>
+        <span class="reveal rounded-none border border-border px-5 py-2 text-lg font-medium text-foreground">{city.name}</span>
       ))}
       <span class="self-center text-muted-foreground">+ destinos</span>
     </div>
