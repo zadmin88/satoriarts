@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import CtaSection from "@/components/CtaSection.astro";
-import EditorialGallery from "@/components/EditorialGallery.astro";
+import { Image } from "astro:assets";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import { SERVICES, servicePath, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
@@ -17,49 +16,94 @@ const t = useT(locale);
 
 const SEO: Record<Locale, { title: string; description: string; intro: string }> = {
   es: {
-    title: "Portfolio · Fotografía y Film · Satori Arts",
-    description: "Portfolio de Satori Arts: bodas, eventos, hoteles y paisaje en foto y vídeo. Barcelona, Madrid y destino.",
+    title: "Proyectos · Fotografía y Film · Satori Arts",
+    description: "Proyectos de Satori Arts: bodas, eventos, hoteles y paisaje en foto y vídeo. Barcelona, Madrid y destino.",
     intro: "Una selección de nuestro trabajo. Bodas, eventos, hoteles y paisaje, en foto y en film.",
   },
   en: {
-    title: "Portfolio · Photography & Film · Satori Arts",
-    description: "Satori Arts portfolio: weddings, events, hotels and landscape in photo and film. Barcelona, Madrid and destination.",
+    title: "Projects · Photography & Film · Satori Arts",
+    description: "Satori Arts projects: weddings, events, hotels and landscape in photo and film. Barcelona, Madrid and destination.",
     intro: "A selection of our work. Weddings, events, hotels and landscape, in photo and film.",
   },
   ca: {
-    title: "Portfolio · Fotografia i Film · Satori Arts",
-    description: "Portfolio de Satori Arts: casaments, esdeveniments, hotels i paisatge en foto i vídeo. Barcelona, Madrid i destí.",
+    title: "Projectes · Fotografia i Film · Satori Arts",
+    description: "Projectes de Satori Arts: casaments, esdeveniments, hotels i paisatge en foto i vídeo. Barcelona, Madrid i destí.",
     intro: "Una selecció de la nostra feina. Casaments, esdeveniments, hotels i paisatge, en foto i film.",
   },
 };
 const seo = SEO[locale];
+
+// Todas las fotos de todos los servicios, como cuadrícula de tarjetas
+// (título bajo cada imagen), filtrable por servicio con radio + :has()
+// — cero JavaScript.
+const allPhotos = SERVICES.flatMap((s) => {
+  const copy = s.i18n[locale];
+  return servicePhotos(s.key).map((image, i) => ({
+    image,
+    alt: photoAlt(locale, copy.title, i),
+    key: s.key,
+    href: servicePath(locale, s),
+    title: copy.title,
+  }));
+});
 ---
 
 <BaseLayout locale={locale} title={seo.title} description={seo.description} alternates={routeAlternates("portfolio")}>
+  <!-- Cabecera: título (mismo tamaño que las secciones de la home) y
+       debajo la fila de filtros como pestañas horizontales, igual que
+       videinfra.com/work ("All Works" + categorías). -->
   <section class="container-tight py-16 md:py-20">
-    <p class="eyebrow mb-4">{t("nav.portfolio")}</p>
-    <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{seo.intro}</h1>
+    <h1 data-reveal-words class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
   </section>
 
-  {
-    SERVICES.map((s) => (
-      <section aria-labelledby={`pf-${s.key}`} class="container-tight border-t border-border py-14">
-        <div class="mb-6 flex items-end justify-between gap-4">
-          <h2 id={`pf-${s.key}`} class="font-heading text-2xl font-semibold text-foreground sm:text-3xl">
-            {s.i18n[locale].title}
-          </h2>
-          <a href={servicePath(locale, s)} class="shrink-0 text-sm font-semibold text-gold-deep underline-offset-4 hover:text-gold hover:underline">
-            {t("cta.viewService")} →
-          </a>
-        </div>
-        <EditorialGallery items={servicePhotos(s.key).map((image, i) => ({ image, alt: photoAlt(locale, s.i18n[locale].title, i) }))} />
-      </section>
-    ))
-  }
+  <!-- FILTRO + CUADRÍCULA: pestañas horizontales por servicio (radio +
+       :has(), cero JavaScript) y una cuadrícula de tarjetas —imagen,
+       título del proyecto y categoría debajo—, como videinfra.com/work. -->
+  <div class="filter-gallery container-tight pb-24">
+    <div class="reveal -mx-5 mb-10 flex flex-nowrap gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
+      <input type="radio" name="pf-filter" id="pf-all" class="sr-only" checked />
+      <label for="pf-all" class="filter-pill shrink-0">
+        <span class="hover-flip">
+          <span class="flip-a block">{t("portfolio.filterAll")}</span>
+          <span aria-hidden="true" class="flip-b block">{t("portfolio.filterAll")}</span>
+        </span>
+      </label>
 
-  <section class="container-tight border-t border-border py-14">
+      {
+        SERVICES.map((s) => (
+          <>
+            <input type="radio" name="pf-filter" id={`pf-filter-${s.key}`} class="sr-only" />
+            <label for={`pf-filter-${s.key}`} class="filter-pill shrink-0">
+              <span class="hover-flip">
+                <span class="flip-a block">{s.i18n[locale].title}</span>
+                <span aria-hidden="true" class="flip-b block">{s.i18n[locale].title}</span>
+              </span>
+            </label>
+          </>
+        ))
+      }
+    </div>
+
+    <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2">
+      {
+        allPhotos.map((p) => (
+          <a href={p.href} data-service={p.key} class="relative block overflow-hidden">
+            <Image
+              src={p.image}
+              alt={p.alt}
+              widths={[480, 768, 1024]}
+              sizes="(max-width: 640px) 100vw, 50vw"
+              loading="eager"
+              class="aspect-[16/9] w-full object-cover"
+            />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <section class="reveal container-tight flex flex-col items-start gap-6 py-14 text-left sm:items-center sm:py-24 md:py-32 sm:text-center">
+    <p class="font-heading text-2xl font-medium text-foreground sm:text-3xl">{t("cta.talkQuestion")}</p>
     <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
   </section>
-
-  <CtaSection locale={locale} message={waDefaultMessage(locale)} />
 </BaseLayout>

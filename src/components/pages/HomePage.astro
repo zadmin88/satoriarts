@@ -1,22 +1,15 @@
 ---
-import { Image } from "astro:assets";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import CtaSection from "@/components/CtaSection.astro";
-import EditorialGallery from "@/components/EditorialGallery.astro";
-import Marquee from "@/components/Marquee.astro";
 import Photo from "@/components/Photo.astro";
-import {
-  SERVICES,
-  CITIES,
-  DISCIPLINE_LABEL,
-  servicePath,
-  waDefaultMessage,
-} from "@/config";
+import Logo from "@/components/Logo.astro";
+import { SITE, SERVICES, CLIENTS, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
 import { routePath, routeAlternates } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
-import { WHY, TESTIMONIALS, HOME_SEO } from "@/i18n/home";
+import { TESTIMONIALS, HOME_SEO } from "@/i18n/home";
 import { servicePhotos, heroPhotos, photoAlt } from "@/lib/photos";
 
 interface Props {
@@ -26,19 +19,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = useT(locale);
 const seo = HOME_SEO[locale];
-const why = WHY[locale];
 const testimonials = TESTIMONIALS[locale];
-
-// Título del hero con la última palabra en cursiva dorada (acento editorial)
-const titleWords = t("hero.title").split(" ");
-const lastWord = titleWords.pop() ?? "";
-const firstPart = titleWords.join(" ");
-
-const marquee = [
-  ...SERVICES.map((s) => s.i18n[locale].title),
-  DISCIPLINE_LABEL.photo[locale],
-  DISCIPLINE_LABEL.film[locale],
-];
 
 const preview = [
   { image: servicePhotos("bodas")[0], alt: photoAlt(locale, SERVICES[0].i18n[locale].title, 0) },
@@ -48,6 +29,12 @@ const preview = [
   { image: servicePhotos("bodas")[2], alt: photoAlt(locale, SERVICES[0].i18n[locale].title, 2) },
   { image: servicePhotos("hoteles")[3], alt: photoAlt(locale, SERVICES[2].i18n[locale].title, 3) },
 ];
+
+// Retícula asimétrica (broken grid) para la vista previa: cada foto con
+// su propio ancho, proporción y desplazamiento vertical, sobre una base
+// de 6 columnas en escritorio.
+const previewSpan = ["col-span-2 sm:col-span-4", "col-span-1 sm:col-span-2", "col-span-1 sm:col-span-2", "col-span-1 sm:col-span-2", "col-span-1 sm:col-span-2", "col-span-2 sm:col-span-2"];
+const previewAspect = ["aspect-[16/9]", "aspect-[3/4]", "aspect-[1/1]", "aspect-[4/5]", "aspect-[3/2]", "aspect-[4/5]"];
 ---
 
 <BaseLayout
@@ -55,133 +42,190 @@ const preview = [
   title={seo.title}
   description={seo.description}
   alternates={routeAlternates("home")}
+  logoRevealsOnScroll
 >
-  <!-- HERO cinematográfico a sangre completa -->
-  <section class="relative flex h-[92vh] min-h-[560px] w-full items-end overflow-hidden">
-    <Image
-      src={heroPhotos[0]}
-      alt={photoAlt(locale, "Satori Arts", 0)}
-      widths={[640, 1000, 1200]}
-      sizes="100vw"
-      loading="eager"
-      class="absolute inset-0 h-full w-full object-cover"
-    />
-    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/25"></div>
+  <!-- HERO cinematográfico a sangre completa: sube por encima del padding
+       del <main> para que el header (con su fondo de cristal permanente)
+       quede justo sobre el vídeo, sin hueco. Solo la marca (logo + lema)
+       vive aquí, centrada a pantalla completa —igual que el "VERO" del
+       referente—; el titular y el CTA tienen su propia sección justo
+       debajo. -->
+  <section class="relative -mt-24 flex h-[92svh] min-h-[560px] w-full flex-col items-center justify-center overflow-hidden bg-background px-6 text-center md:-mt-28 md:h-[92dvh]">
+    <div data-parallax="0.1" class="absolute inset-0">
+      <video
+        src="/video_hero.mp4"
+        poster={heroPhotos[0].src}
+        preload="metadata"
+        autoplay
+        muted
+        loop
+        playsinline
+        aria-hidden="true"
+        class="ken-burns h-full w-full object-cover"
+      ></video>
+    </div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_top,var(--background)_0%,var(--background)_22%,color-mix(in_oklch,var(--background)_25%,transparent)_65%,transparent_100%)]"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-transparent"></div>
 
-    <div class="container-tight relative z-10 pb-16 md:pb-24">
-      <p class="eyebrow mb-6">{t("hero.eyebrow")}</p>
-      <h1 class="max-w-4xl font-heading text-[3rem] font-medium leading-[0.92] tracking-[-0.01em] text-foreground sm:text-7xl md:text-8xl">
-        {firstPart} <span class="italic font-semibold text-gold">{lastWord}</span>
-      </h1>
-      <p class="mt-7 max-w-lg text-lg leading-relaxed text-foreground/85">{t("hero.subtitle")}</p>
-      <div class="mt-9 flex flex-wrap items-center gap-4">
-        <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
-        <a
-          href={routePath(locale, "portfolio")}
-          class="group inline-flex items-center gap-2 text-base font-medium text-foreground underline-offset-8 hover:text-gold"
-        >
-          <span class="border-b border-foreground/30 pb-1 group-hover:border-gold">{t("nav.portfolio")}</span>
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-4 transition-transform group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    <!-- Marca centrada, como el "VERO" del referente -->
+    <div class="relative z-10 flex flex-col items-center">
+      <a href={routePath(locale, "home")} aria-label={`${SITE.brand} — ${t("nav.home")}`} class="hero-fade-up">
+        <Logo class="size-56 sm:size-64 md:size-80" />
+      </a>
+    </div>
+  </section>
+
+  <!-- TEXTO GRANDE: solo el lema "Fotografía y vídeo...", como la pantalla
+       de texto que sigue al hero en verostudio.com — sin CTA ni párrafo
+       aquí, para que la transición sea limpia. El "-mt-px" (1px) hace que
+       esta sección se superponga ligerísimamente sobre el hero: en
+       algunos móviles, la altura real del viewport (barra de
+       direcciones dinámica) deja un resto de subpíxel entre "92svh" y el
+       alto visible real, que sin este solape se ve como una línea justo
+       en el límite. Al superponerse con el mismo fondo (bg-background
+       en ambas), un solape de 1px es invisible pase lo que pase. -->
+  <section class="section-space container-tight relative -mt-px flex flex-col items-start justify-center bg-background text-left sm:items-center sm:text-center">
+    <h1 class="font-heading font-medium leading-[1.15] text-foreground">
+      {
+        t("hero.brandTagline")
+          .split("\n")
+          .map((line) => (
+            <span data-reveal-words class="block text-6xl sm:text-8xl md:text-9xl lg:text-[10rem]">
+              {line}
+            </span>
+          ))
+      }
+    </h1>
+  </section>
+
+  <!-- MANIFIESTO: declaración de criterio + CTA, en su propia sección -->
+  <section aria-labelledby="manifesto-titulo" class="section-space container-prose text-left sm:text-center">
+    <h2 id="manifesto-titulo" data-reveal-words class="font-heading text-3xl font-medium text-balance text-foreground sm:text-5xl">
+      {t("section.manifesto.title")}
+    </h2>
+    <p class="reveal mt-3 text-lg leading-relaxed text-muted-foreground">{t("section.manifesto.text")}</p>
+    <div class="reveal mt-6 flex flex-wrap items-center justify-start gap-4 sm:justify-center">
+      <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
+    </div>
+  </section>
+
+  <!-- PROYECTOS: vista previa en retícula asimétrica (broken grid), como
+       una pared de referencias editoriales: fotos de distinto tamaño y
+       proporción, no una cuadrícula uniforme. -->
+  <section aria-labelledby="pf-titulo">
+    <div class="section-space container-tight">
+      <div class="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
+        <h2 id="pf-titulo" data-reveal-words class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h2>
+        <a href={routePath(locale, "portfolio")} class="hover-flip font-label text-sm uppercase tracking-wider text-white">
+          <span class="flip-a block">{t("cta.seeMore")}</span>
+          <span aria-hidden="true" class="flip-b block">{t("cta.seeMore")}</span>
         </a>
       </div>
-    </div>
-  </section>
-
-  <Marquee items={marquee} />
-
-  <!-- SERVICIOS: filas editoriales -->
-  <section aria-labelledby="serv-titulo" class="container-tight py-24 md:py-32">
-    <div class="mb-16 max-w-2xl">
-      <p class="eyebrow mb-5">{t("section.services")}</p>
-      <h2 id="serv-titulo" class="font-heading text-4xl font-medium leading-tight text-foreground sm:text-6xl">{t("section.services.sub")}</h2>
-    </div>
-
-    <div class="flex flex-col">
-      {
-        SERVICES.map((s, i) => (
-          <a
-            href={servicePath(locale, s)}
-            class="reveal group grid items-center gap-6 border-t border-border py-10 md:grid-cols-12 md:gap-12 md:py-12 last:border-b"
-          >
-            <div class:list={["md:col-span-5", i % 2 === 1 && "md:order-2"]}>
-              <Photo image={servicePhotos(s.key)[0]} alt={photoAlt(locale, s.i18n[locale].title, 0)} aspect="aspect-[16/10]" sizes="(max-width:768px) 100vw, 42vw" />
-            </div>
-            <div class:list={["md:col-span-7", i % 2 === 1 && "md:order-1"]}>
-              <div class="flex items-baseline gap-4">
-                <span class="font-heading text-2xl italic text-gold/70">{String(i + 1).padStart(2, "0")}</span>
-                <h3 class="font-heading text-3xl font-medium text-foreground transition-colors group-hover:text-gold sm:text-5xl">{s.i18n[locale].title}</h3>
-              </div>
-              <div class="mt-4 ml-11 flex flex-wrap gap-2">
-                {s.disciplines.map((d) => (
-                  <span class="font-label rounded-full border border-border px-3 py-0.5 text-[0.7rem] uppercase tracking-wider text-muted-foreground">{DISCIPLINE_LABEL[d][locale]}</span>
-                ))}
-              </div>
-              <p class="mt-5 ml-11 max-w-md text-muted-foreground">{s.i18n[locale].short}</p>
-            </div>
-          </a>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- PORTFOLIO PREVIEW -->
-  <section aria-labelledby="pf-titulo" class="border-t border-border bg-card/30">
-    <div class="container-tight py-24 md:py-32">
-      <div class="mb-14 flex flex-wrap items-end justify-between gap-4">
-        <h2 id="pf-titulo" class="font-heading text-4xl font-medium text-foreground sm:text-6xl">{t("nav.portfolio")}</h2>
-        <a href={routePath(locale, "portfolio")} class="font-label text-sm uppercase tracking-wider text-gold-deep underline-offset-4 hover:text-gold hover:underline">{t("cta.seeMore")}</a>
-      </div>
-      <EditorialGallery items={preview} />
-    </div>
-  </section>
-
-  <!-- POR QUÉ -->
-  <section aria-labelledby="why-titulo" class="container-tight py-24 md:py-32">
-    <p class="eyebrow mb-14">{t("section.why")}</p>
-    <div class="grid gap-x-12 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        why.map((p, i) => (
-          <div class="reveal flex flex-col gap-3">
-            <span class="font-heading text-2xl italic text-gold/70">{String(i + 1).padStart(2, "0")}</span>
-            <h3 class="font-heading text-xl font-medium text-foreground">{p.title}</h3>
-            <p class="text-sm leading-relaxed text-muted-foreground">{p.text}</p>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- TESTIMONIOS -->
-  <section aria-labelledby="test-titulo" class="border-y border-border bg-card/30">
-    <div class="container-tight py-24 md:py-32">
-      <h2 id="test-titulo" class="mb-16 max-w-2xl font-heading text-3xl font-medium leading-tight text-foreground sm:text-5xl">{t("section.testimonials")}</h2>
-      <div class="grid gap-10 md:grid-cols-3">
+      <!-- La primera foto siempre a todo lo ancho (protagonista). El
+           resto: en móvil, columnas tipo masonry (cada columna encaja sus
+           fotos sin huecos). En escritorio: retícula de altura de fila
+           fija (auto-rows) — el ancho varía por foto (col-span), pero la
+           altura es siempre la misma dentro de cada fila, así el `gap`
+           queda idéntico en todas partes y no se generan huecos negros. -->
+      <Photo
+        image={preview[0].image}
+        alt={preview[0].alt}
+        aspect={previewAspect[0]}
+        class="reveal-img mb-3 sm:hidden [&_img]:transition-transform [&_img]:duration-500 hover:[&_img]:scale-[1.05]"
+        sizes="100vw"
+      />
+      <div class="columns-2 gap-3 sm:hidden">
         {
-          testimonials.map((tm) => (
-            <figure class="reveal flex flex-col gap-6">
-              <blockquote class="font-heading text-2xl italic leading-snug text-foreground/90">“{tm.quote}”</blockquote>
-              <figcaption class="mt-auto">
-                <span class="block font-medium text-foreground">{tm.author}</span>
-                <span class="font-label text-xs uppercase tracking-wider text-muted-foreground">{tm.context}</span>
-              </figcaption>
-            </figure>
+          preview.slice(1).map((p, i) => (
+            <Photo
+              image={p.image}
+              alt={p.alt}
+              aspect={previewAspect[(i + 1) % previewAspect.length]}
+              class="reveal-img mb-3 break-inside-avoid [&_img]:transition-transform [&_img]:duration-500 hover:[&_img]:scale-[1.05]"
+              sizes="50vw"
+            />
+          ))
+        }
+      </div>
+      <div class="hidden sm:grid sm:grid-cols-6 sm:gap-5" style="grid-auto-rows: 16rem;">
+        {
+          preview.map((p, i) => (
+            <div class:list={["reveal-img group relative overflow-hidden", previewSpan[i % previewSpan.length]]} style={i === 0 ? "grid-row: span 2;" : ""}>
+              <Image
+                src={p.image}
+                alt={p.alt}
+                widths={[480, 768, 1024]}
+                sizes="(max-width: 1024px) 50vw, 33vw"
+                loading={i === 0 ? "eager" : "lazy"}
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+              />
+            </div>
           ))
         }
       </div>
     </div>
   </section>
 
-  <!-- CIUDADES -->
-  <section aria-labelledby="cities-titulo" class="container-tight py-20">
-    <p class="eyebrow mb-6">{t("section.cities")}</p>
-    <div class="flex flex-wrap items-baseline gap-x-8 gap-y-2">
-      {CITIES.map((c) => (
-        <span class="font-heading text-4xl italic text-foreground sm:text-6xl">{c.name}</span>
-      ))}
-      <span class="font-label text-sm uppercase tracking-wider text-muted-foreground">+ destinos</span>
+  <!-- CLIENTES: tarjetas blancas horizontales, como el carrusel de
+       clientes de videinfra.com. [PENDIENTE]: cuando haya nombres y
+       descripciones reales, volver a envolver cada tarjeta en <details>
+       con nombre + icono "+" al pie, que despliega la descripción del
+       cliente (sin JS) — mientras tanto se muestra solo el logo. -->
+  <section aria-labelledby="clientes-titulo" class="reveal bg-background">
+    <div class="section-space container-tight">
+      <p id="clientes-titulo" data-reveal-words class="mb-6 font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("section.clients")}</p>
+      <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+        {
+          CLIENTS.map((c) => (
+            <div class="flex aspect-[4/3] items-center justify-center">
+              <Logo class="size-16 opacity-80" spin={false} />
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
+
+  <!-- TESTIMONIOS: carrusel de tarjetas sobre fondo negro, con una
+       barra de progreso delgada (JS mínimo, ver testimonial-carousel.ts,
+       con fallback de arrastre/scroll nativo si algo falla). -->
+  <section aria-labelledby="test-titulo" data-carousel class="bg-background">
+    <div class="section-space container-tight">
+      <div class="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
+        <h2 id="test-titulo" data-reveal-words class="font-heading text-3xl font-normal uppercase leading-tight text-foreground sm:text-5xl">{t("section.testimonials")}</h2>
+        <a href={SITE.googleReviewsUrl} target="_blank" rel="noopener" class="hover-flip inline-flex items-center gap-2 font-label text-sm uppercase tracking-wider">
+          <span class="flip-a flex items-center gap-2">
+            <span>{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-2.5 shrink-0"><path d="M8 5v14l11-7z" /></svg>
+          </span>
+          <span aria-hidden="true" class="flip-b flex items-center gap-2">
+            <span>{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-2.5 shrink-0"><path d="M8 5v14l11-7z" /></svg>
+          </span>
+        </a>
+      </div>
+      <div data-carousel-track class="carousel-track -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto px-5 pb-2 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
+        {
+          testimonials.map((tm) => (
+            <figure class="reveal flex w-[82%] shrink-0 snap-center flex-col gap-6 bg-card p-8 sm:w-[46%] lg:w-[38%]">
+              <blockquote class="font-heading text-lg leading-snug text-foreground/90">“{tm.quote}”</blockquote>
+              <figcaption>
+                <span class="block text-sm font-medium text-foreground">{tm.author}</span>
+                <span class="font-label text-xs uppercase tracking-wider text-muted-foreground">{tm.context}</span>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+      <div class="mt-6 h-px w-full overflow-hidden bg-border">
+        <div data-carousel-progress class="h-full w-1/4 bg-foreground transition-transform duration-300 ease-out"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import "@/scripts/testimonial-carousel";
+  </script>
 
   <CtaSection locale={locale} message={waDefaultMessage(locale)} />
 </BaseLayout>

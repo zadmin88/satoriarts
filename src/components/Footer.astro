@@ -1,5 +1,5 @@
 ---
-import { SITE, SERVICES, servicePath, waLink, waDefaultMessage } from "@/config";
+import { SITE } from "@/config";
 import type { Locale } from "@/config";
 import { routePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
@@ -12,87 +12,77 @@ const { locale } = Astro.props;
 const t = useT(locale);
 const year = new Date().getFullYear();
 
-const explore = [
+const nav = [
+  { href: routePath(locale, "home"), label: t("nav.home") },
+  { href: routePath(locale, "about"), label: t("nav.aboutMenu") },
   { href: routePath(locale, "portfolio"), label: t("nav.portfolio") },
   { href: routePath(locale, "journal"), label: t("nav.journal") },
-  { href: routePath(locale, "about"), label: t("nav.about") },
-  { href: routePath(locale, "contact"), label: t("nav.contact") },
 ];
 ---
 
-<footer class="border-t border-border bg-card/40">
-  <div class="container-tight grid gap-10 py-14 md:grid-cols-4">
-    <div class="flex flex-col gap-3 md:col-span-2">
-      <p class="font-heading text-xl font-semibold text-foreground">
-        Satori<span class="text-gold">Arts</span>
-      </p>
-      <p class="max-w-sm text-sm text-muted-foreground">{t("footer.tagline")}</p>
-      <div class="mt-1 flex flex-wrap items-center gap-4 text-sm">
-        <a
-          href={waLink(waDefaultMessage(locale))}
-          target="_blank"
-          rel="noopener"
-          class="font-semibold text-wa underline-offset-4 hover:underline"
-        >
-          WhatsApp: {SITE.phoneDisplay}
+<footer class="bg-white text-black">
+  <div class="stagger-grid container-tight py-14">
+    <div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+      <nav aria-label={t("footer.navLabel")} class="reveal flex flex-col gap-3">
+        <p class="font-heading text-sm font-medium uppercase text-black">{t("footer.navLabel")}</p>
+        {
+          nav.map((link) => (
+            <a href={link.href} class="hover-flip inline-block text-xs font-medium uppercase tracking-wide text-neutral-500 hover:text-black">
+              <span class="flip-a block">{link.label}</span>
+              <span aria-hidden="true" class="flip-b block">{link.label}</span>
+            </a>
+          ))
+        }
+      </nav>
+
+      <nav aria-label={t("footer.follow")} class="reveal flex flex-col gap-3">
+        <p class="font-heading text-sm font-medium uppercase text-black">{t("footer.follow")}</p>
+        <a href={SITE.instagramUrl} target="_blank" rel="noopener" class="hover-flip inline-block text-xs font-medium uppercase tracking-wide text-neutral-500 hover:text-black">
+          <span class="flip-a block">Instagram</span>
+          <span aria-hidden="true" class="flip-b block">Instagram</span>
         </a>
-        <a
-          href={SITE.instagramUrl}
-          target="_blank"
-          rel="noopener me"
-          class="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-        >
-          @{SITE.instagram}
+        <a href={SITE.facebookUrl} target="_blank" rel="noopener" class="hover-flip inline-block text-xs font-medium uppercase tracking-wide text-neutral-500 hover:text-black">
+          <span class="flip-a block">Facebook</span>
+          <span aria-hidden="true" class="flip-b block">Facebook</span>
+        </a>
+        <a href={SITE.youtubeUrl} target="_blank" rel="noopener" class="hover-flip inline-block text-xs font-medium uppercase tracking-wide text-neutral-500 hover:text-black">
+          <span class="flip-a block">YouTube</span>
+          <span aria-hidden="true" class="flip-b block">YouTube</span>
+        </a>
+      </nav>
+
+      <div class="reveal flex flex-col gap-3">
+        <a href="#top" class="hover-flip inline-flex items-center gap-2 text-sm font-heading font-medium uppercase text-black">
+          <span class="flip-a flex items-center gap-2">
+            <span>{t("a11y.backToTop")}</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-3.5 -rotate-90"><path d="M8 5v14l11-7z" /></svg>
+          </span>
+          <span aria-hidden="true" class="flip-b flex items-center gap-2">
+            <span>{t("a11y.backToTop")}</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-3.5 -rotate-90"><path d="M8 5v14l11-7z" /></svg>
+          </span>
         </a>
       </div>
-      <a
-        href={`mailto:${SITE.email}`}
-        class="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-      >
-        {SITE.email}
-      </a>
     </div>
 
-    <nav aria-label={t("footer.services")} class="flex flex-col gap-2">
-      <p class="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">
-        {t("footer.services")}
-      </p>
-      {
-        SERVICES.map((s) => (
-          <a
-            href={servicePath(locale, s)}
-            class="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-          >
-            {s.i18n[locale].menuLabel}
-          </a>
-        ))
-      }
-    </nav>
-
-    <nav aria-label={t("footer.explore")} class="flex flex-col gap-2">
-      <p class="font-heading text-sm font-semibold uppercase tracking-wide text-foreground">
-        {t("footer.explore")}
-      </p>
-      {
-        explore.map((link) => (
-          <a
-            href={link.href}
-            class="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-          >
-            {link.label}
-          </a>
-        ))
-      }
-    </nav>
-  </div>
-
-  <div class="border-t border-border">
-    <div class="container-tight flex flex-col gap-3 py-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-      <p>© {year} {SITE.brand}. {t("footer.rights")}</p>
-      <nav aria-label={t("footer.legal")} class="flex gap-4">
-        <a href={routePath(locale, "legalNotice")} class="underline-offset-4 hover:text-foreground hover:underline">{t("footer.legalNotice")}</a>
-        <a href={routePath(locale, "privacy")} class="underline-offset-4 hover:text-foreground hover:underline">{t("footer.privacy")}</a>
-      </nav>
+    <div class="reveal mt-12 flex flex-col items-start gap-3 pt-6 text-xs uppercase tracking-wide sm:flex-row-reverse sm:items-center sm:justify-between">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-left">
+        <a href={routePath(locale, "legalNotice")} class="hover-flip inline-block text-neutral-500 hover:text-black">
+          <span class="flip-a block">{t("footer.legalNotice")}</span>
+          <span aria-hidden="true" class="flip-b block">{t("footer.legalNotice")}</span>
+        </a>
+        <span aria-hidden="true" class="text-neutral-300">·</span>
+        <a href={routePath(locale, "privacy")} class="hover-flip inline-block text-neutral-500 hover:text-black">
+          <span class="flip-a block">{t("footer.privacy")}</span>
+          <span aria-hidden="true" class="flip-b block">{t("footer.privacy")}</span>
+        </a>
+        <span aria-hidden="true" class="text-neutral-300">·</span>
+        <span class="hover-flip inline-block text-neutral-500">
+          <span class="flip-a block">{t("footer.credits")}: {t("legal.pending")}</span>
+          <span aria-hidden="true" class="flip-b block text-black">{t("footer.credits")}: {t("legal.pending")}</span>
+        </span>
+      </div>
+      <span class="text-neutral-500">© {year} {SITE.brand}</span>
     </div>
   </div>
 </footer>

@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets";
+import { SITE } from "@/config";
+import logoRing from "@/assets/brand/logo-ring.png";
+import logoIcon from "@/assets/brand/logo-icon.png";
+
+interface Props {
+  class?: string;
+  /** Desactiva el giro del anillo (logo fijo, como marca de agua estática). */
+  spin?: boolean;
+}
+
+const { class: className = "size-14 sm:size-20", spin = true } = Astro.props;
+---
+
+<span class:list={["relative inline-block", className]}>
+  <Image
+    src={logoRing}
+    alt=""
+    aria-hidden="true"
+    width={160}
+    height={160}
+    class:list={["absolute inset-0 size-full", spin && "logo-spin"]}
+  />
+  <Image
+    src={logoIcon}
+    alt={SITE.brand}
+    width={160}
+    height={160}
+    class="absolute inset-0 size-full"
+  />
+</span>

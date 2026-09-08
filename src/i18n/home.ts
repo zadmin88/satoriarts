@@ -16,10 +16,10 @@ export interface Testimonial {
 
 export const WHY: Record<Locale, WhyPoint[]> = {
   es: [
-    { title: "Un dúo, dos miradas", text: "Foto y film a la vez, coordinados. No os perdéis nada porque siempre hay dos ojos en la escena." },
-    { title: "Estilo editorial, no postureo", text: "Documentamos lo que pasa de verdad. Poca pose, mucha emoción y una edición con carácter." },
-    { title: "Entrega cuidada y a tiempo", text: "Galería online privada, avance rápido y película final. Sabrás siempre cuándo y cómo recibes tu trabajo." },
-    { title: "Bilingües y viajados", text: "Trabajamos en español, inglés y catalán, en Barcelona, Madrid y donde nos necesites." },
+    { title: "Un equipo, dos disciplinas", text: "Foto y film se documentan a la vez, con un mismo criterio. Ninguna escena, ni ningún detalle del proyecto, queda sin contar." },
+    { title: "Mirada editorial, sin impostura", text: "Documentamos lo que ocurre de verdad. Pocas poses, mucha emoción contenida y una edición con carácter propio." },
+    { title: "Entrega cuidada, con tiempos claros", text: "Galería privada online, primer avance en días y entrega final en semanas. Sabrás siempre cuándo y cómo recibes tu trabajo." },
+    { title: "En tres idiomas, en cualquier destino", text: "Trabajamos en español, inglés y catalán, con sede en Barcelona y Madrid y disponibilidad para destino." },
   ],
   en: [
     { title: "One duo, two eyes", text: "Photo and film at once, in sync. Nothing gets missed because there are always two of us on the scene." },
@@ -37,19 +37,22 @@ export const WHY: Record<Locale, WhyPoint[]> = {
 
 export const TESTIMONIALS: Record<Locale, Testimonial[]> = {
   es: [
-    { quote: "Miramos las fotos y volvemos a llorar. Captaron cosas que ni vimos ese día.", author: "Laura & Jordi", context: "Boda · Empordà" },
-    { quote: "El vídeo del hotel disparó las reservas directas. Profesionales de principio a fin.", author: "Dirección", context: "Hotel boutique · Barcelona" },
-    { quote: "Discretos, rápidos y con un ojo increíble. Repetimos seguro.", author: "Marta R.", context: "Evento corporativo · Madrid" },
+    { quote: "Cada vez que abrimos la galería volvemos a emocionarnos. Captaron momentos que nosotros mismos no vimos ese día.", author: "Laura & Jordi", context: "Boda · Empordà" },
+    { quote: "Desde que usamos su material, las reservas directas han subido. Un equipo profesional de principio a fin.", author: "Dirección", context: "Hotel boutique · Barcelona" },
+    { quote: "Discreción, agilidad y un ojo excepcional para el detalle. Ya son nuestro proveedor de confianza.", author: "Marta R.", context: "Evento corporativo · Madrid" },
+    { quote: "Llegaron, se hicieron invisibles y el resultado fue el mejor recuerdo de la boda. Recomendados al cien por cien.", author: "Clara & Pol", context: "Boda · Costa Brava" },
   ],
   en: [
     { quote: "We look at the photos and cry again. They caught things we didn't even see that day.", author: "Laura & Jordi", context: "Wedding · Empordà" },
     { quote: "The hotel film boosted our direct bookings. Professional from start to finish.", author: "Management", context: "Boutique hotel · Barcelona" },
     { quote: "Discreet, fast and with an incredible eye. We'll definitely book again.", author: "Marta R.", context: "Corporate event · Madrid" },
+    { quote: "They showed up, blended in and delivered the best memory of the wedding. We'd recommend them to anyone.", author: "Clara & Pol", context: "Wedding · Costa Brava" },
   ],
   ca: [
     { quote: "Mirem les fotos i tornem a plorar. Van captar coses que ni vam veure aquell dia.", author: "Laura & Jordi", context: "Casament · Empordà" },
     { quote: "El vídeo de l'hotel va disparar les reserves directes. Professionals de cap a peus.", author: "Direcció", context: "Hotel boutique · Barcelona" },
     { quote: "Discrets, ràpids i amb un ull increïble. Repetim segur.", author: "Marta R.", context: "Esdeveniment corporatiu · Madrid" },
+    { quote: "Van arribar, es van fer invisibles i el resultat va ser el millor record del casament. Els recomanem al cent per cent.", author: "Clara & Pol", context: "Casament · Costa Brava" },
   ],
 };
 
@@ -57,7 +60,7 @@ export const HOME_SEO: Record<Locale, { title: string; description: string }> = 
   es: {
     title: "Satori Arts · Fotografía y Film de Bodas, Eventos y Hoteles",
     description:
-      "Dúo de fotografía y vídeo en Barcelona y Madrid. Bodas, eventos, hoteles y paisaje con mirada editorial. Escríbenos por WhatsApp.",
+      "Fotografía y film de autor para bodas, hoteles y marcas de hostelería. Barcelona, Madrid y a destino. Consulta disponibilidad por WhatsApp.",
   },
   en: {
     title: "Satori Arts · Wedding, Event & Hotel Photography and Film",

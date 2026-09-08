@@ -22,7 +22,7 @@ export type RouteKey =
 export const ROUTE_SLUGS: Record<RouteKey, Record<Locale, string>> = {
   home: { es: "", en: "", ca: "" },
   portfolio: { es: "portfolio", en: "portfolio", ca: "portfolio" },
-  about: { es: "nosotros", en: "about", ca: "nosaltres" },
+  about: { es: "conocenos", en: "about", ca: "coneix-nos" },
   contact: { es: "contacto", en: "contact", ca: "contacte" },
   journal: { es: "journal", en: "journal", ca: "journal" },
   legalNotice: { es: "aviso-legal", en: "legal-notice", ca: "avis-legal" },

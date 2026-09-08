@@ -32,6 +32,13 @@ export const LOCALE_LABEL: Record<Locale, string> = {
   ca: "CA",
 };
 
+/** Nombre completo del idioma, en su propio idioma (menú desplegable) */
+export const LOCALE_NAME: Record<Locale, string> = {
+  es: "Español",
+  en: "English",
+  ca: "Català",
+};
+
 /** Código de idioma para <html lang> y og:locale */
 export const LOCALE_LANG: Record<Locale, string> = {
   es: "es",
@@ -73,8 +80,8 @@ export const SITE = {
 
   /** Los dos autores del estudio (dúo) */
   team: [
-    { name: "Manu", role: "Photographer", instagram: "manu_fotografia" },
-    { name: "Tefi", role: "Filmmaker", instagram: "tefireyese" },
+    { name: "Manuel", role: "Fotografía", instagram: "manu_fotografia" },
+    { name: "Stephanie", role: "Vídeo", instagram: "tefireyese" },
   ],
 
   /**
@@ -95,11 +102,29 @@ export const SITE = {
     return `https://www.instagram.com/${this.instagram}/`;
   },
 
+  /** [PLACEHOLDER] Confirmar usuario/página reales antes de publicar. */
+  facebook: "satoriarts",
+  get facebookUrl() {
+    return `https://www.facebook.com/${this.facebook}/`;
+  },
+
+  /** [PLACEHOLDER] Confirmar canal real antes de publicar. */
+  youtube: "@satoriarts",
+  get youtubeUrl() {
+    return `https://www.youtube.com/${this.youtube}`;
+  },
+
   /**
    * [PLACEHOLDER] URL definitiva, SIN barra final.
    * Debe coincidir con `site` en astro.config.mjs.
    */
   url: "https://satoriarts.vercel.app",
+
+  /** [PLACEHOLDER] Nota media y nº de reseñas de la ficha de Google Business. */
+  googleRating: 5.0,
+  googleReviewCount: 103,
+  /** [PLACEHOLDER] Enlace directo a las reseñas de Google (ficha de empresa). */
+  googleReviewsUrl: "https://g.page/r/satoriarts/review",
 } as const;
 
 /** Enlace de WhatsApp con mensaje prellenado */
@@ -133,6 +158,22 @@ export interface City {
 export const CITIES: City[] = [
   { slug: "barcelona", name: "Barcelona", region: "Cataluña" },
   { slug: "madrid", name: "Madrid", region: "Comunidad de Madrid" },
+];
+
+/** [PLACEHOLDER] Marcas/hoteles/venues reales para la sección "Algunos de
+ *  nuestros clientes" de la home. `description` es el texto breve que se
+ *  despliega al pulsar el "+" de la tarjeta (como en videinfra.com).
+ *  Sustituir por los nombres y descripciones reales cuando se confirmen. */
+export interface Client {
+  name: string;
+  description: string;
+}
+export const CLIENTS: Client[] = [
+  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
+  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
+  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
+  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
+  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
 ];
 
 /* ---------------------------------------------------------- */
@@ -169,7 +210,7 @@ export const SERVICES: Service[] = [
         title: "Bodas",
         menuLabel: "Bodas",
         short:
-          "Fotografía y vídeo de boda con mirada editorial: los momentos reales, sin poses forzadas, contados como una historia.",
+          "El momento en que algo cambia para siempre. Sin poses, sin impostura.",
       },
       en: {
         slug: "weddings",
@@ -196,7 +237,7 @@ export const SERVICES: Service[] = [
         title: "Eventos",
         menuLabel: "Eventos",
         short:
-          "Corporativos, celebraciones y eventos de marca cubiertos con discreción y entregados rápido.",
+          "El instante en que una marca se vuelve experiencia. Cobertura discreta, cuidada.",
       },
       en: {
         slug: "events",
@@ -223,7 +264,7 @@ export const SERVICES: Service[] = [
         title: "Hoteles & Hostelería",
         menuLabel: "Hoteles",
         short:
-          "Imágenes que venden: habitaciones, restaurante, spa y lifestyle para hoteles, resorts y alojamientos.",
+          "El instante en que un espacio invita a quedarse. Pensado para la reserva directa.",
       },
       en: {
         slug: "hotels",
@@ -250,7 +291,7 @@ export const SERVICES: Service[] = [
         title: "Paisaje",
         menuLabel: "Paisaje",
         short:
-          "Fotografía de paisaje fine-art y copias de autor para coleccionar o vestir espacios.",
+          "El instante en que un lugar no necesita nada más. Fine-art en copias de autor, numeradas.",
       },
       en: {
         slug: "landscape",

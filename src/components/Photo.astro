@@ -11,10 +11,10 @@ interface Props {
   class?: string;
   sizes?: string;
   loading?: "lazy" | "eager";
-  /** aplicar tratamiento duotono con revelado al hover */
-  duo?: boolean;
   /** forma del recorte: rectángulo (por defecto) o círculo (motivo apertura) */
   shape?: "rect" | "circle";
+  /** blanco y negro por defecto, a color al pasar el ratón */
+  grayscale?: boolean;
 }
 
 const {
@@ -24,15 +24,15 @@ const {
   class: cls = "",
   sizes = "(max-width: 768px) 100vw, 33vw",
   loading = "lazy",
-  duo = true,
   shape = "rect",
+  grayscale = false,
 } = Astro.props;
 
 const radius = shape === "circle" ? "rounded-full" : "rounded-lg";
 const ratio = shape === "circle" ? "aspect-square" : aspect;
 ---
 
-<figure class={cn("relative", radius, duo && "duo", cls)}>
+<figure class={cn("relative", radius, cls)}>
   <div class={cn("overflow-hidden", radius, ratio)}>
     <Image
       src={image}
@@ -40,7 +40,7 @@ const ratio = shape === "circle" ? "aspect-square" : aspect;
       widths={[360, 640, 960]}
       sizes={sizes}
       loading={loading}
-      class="h-full w-full object-cover"
+      class={cn("h-full w-full object-cover", grayscale && "grayscale transition-[filter] duration-500 hover:grayscale-0")}
     />
   </div>
 </figure>

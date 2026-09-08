@@ -7,13 +7,13 @@ const { items } = Astro.props;
 const loop = [...items, ...items];
 ---
 
-<div class="marquee border-y border-border bg-card/30 py-5" aria-hidden="true">
+<div class="marquee bg-card/30 py-5" aria-hidden="true">
   <div class="marquee-track">
     {
       loop.map((t) => (
-        <span class="inline-flex items-center font-heading text-2xl font-medium italic text-foreground/80 sm:text-3xl">
+        <span class="inline-flex items-center font-heading text-2xl font-medium text-foreground/80 sm:text-3xl">
           {t}
-          <span class="mx-6 text-lg not-italic text-gold">✦</span>
+          <span class="mx-6 text-lg text-muted-foreground">✦</span>
         </span>
       ))
     }

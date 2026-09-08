@@ -1,12 +1,12 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import CtaSection from "@/components/CtaSection.astro";
 import Photo from "@/components/Photo.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import { SITE, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
 import { routeAlternates } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
-import { servicePhotos } from "@/lib/photos";
+import { teamPhotos } from "@/lib/photos";
 
 interface Props {
   locale: Locale;
@@ -14,77 +14,144 @@ interface Props {
 const { locale } = Astro.props;
 const t = useT(locale);
 
-const CONTENT: Record<Locale, { title: string; description: string; h1: string; lead: string; body: string }> = {
+interface Member {
+  tagline: string;
+  bio: string;
+}
+interface Pillar {
+  title: string;
+  text: string;
+}
+const CONTENT: Record<
+  Locale,
+  {
+    title: string;
+    description: string;
+    h1: string;
+    lead: string;
+    members: Member[];
+    together: string;
+    process: string;
+    pillars: Pillar[];
+    talkTitle: string;
+    talkText: string;
+  }
+> = {
   es: {
-    title: "Nosotros · El dúo detrás de Satori Arts",
-    description: "Somos Satori Arts, un dúo de fotografía y film. Manu a la foto, Tefi al vídeo. Bodas, eventos, hoteles y paisaje en Barcelona y Madrid.",
-    h1: "Dos personas, una misma mirada",
-    lead: "Somos Manu y Tefi. Foto y film. Nos conocimos por la fotografía y acabamos montando un estudio para contar historias que merecen mirarse mil veces.",
-    body: `
-      <h2>Cómo trabajamos</h2>
-      <p>Uno documenta con la cámara de fotos y el otro con la de vídeo. Esa es nuestra ventaja: dos miradas coordinadas, así no se escapa nada. Somos discretos, cercanos y obsesivos con la luz y la edición.</p>
-      <h2>Qué nos mueve</h2>
-      <p>Nos gusta lo real. Las risas de verdad, los nervios antes de la ceremonia, el detalle que nadie más ve. Ponemos el mismo cariño en una boda íntima que en el reportaje de un hotel.</p>
-      <h2>Dónde</h2>
-      <p>Barcelona y Madrid son nuestra base, pero viajamos a donde haga falta. Trabajamos en español, inglés y catalán.</p>
-    `,
+    title: "Conócenos · El dúo detrás de Satori Arts",
+    description: "Manuel y Stephanie, fotógrafos y realizadores de vídeo con más de 10 años de experiencia en bodas, eventos y marcas de hostelería en Barcelona y Madrid.",
+    h1: "Satori Arts nace con la misión de capturar lo irrepetible: el instante que ocurre una sola vez y no vuelve.",
+    lead: "Inspirados por la verdad, el cuidado y la exigencia, ofrecemos mucho más que un reportaje: creamos imágenes y vídeos pensados para durar.",
+    members: [
+      { tagline: "El ojo detrás de la cámara.", bio: "Manuel dirige la fotografía de cada proyecto, con una mirada que persigue el instante exacto, antes de que vuelva a ser pose. Su capacidad para leer la luz y el gesto en el momento justo es lo que da a cada imagen su carácter." },
+      { tagline: "La voz detrás del montaje.", bio: "Stephanie lidera el vídeo de cada proyecto, dando forma a cada pieza con un ritmo y una narrativa propios. Su manera de editar convierte lo que pasó en una historia que se puede volver a vivir, una y otra vez." },
+    ],
+    together: "Manuel y Stephanie comparten, desde hace más de una década, un criterio que es el pilar sobre el que se levanta cada proyecto de Satori Arts. Gracias a esa mirada conjunta, logramos imágenes y vídeos que combinan verdad y elegancia con una edición atemporal.",
+    process: "Cada encargo está pensado para que nuestros clientes no solo tengan un recuerdo, sino que lo sientan como una extensión de ese instante vivido. Además, la cercanía ocupa un lugar central en nuestra filosofía: acompañamos cada proyecto desde la primera conversación hasta la entrega final, asegurando que cada imagen sea tanto un recuerdo como un legado.",
+    pillars: [
+      { title: "Un mismo equipo", text: "Sin intermediarios: las mismas dos personas de principio a fin." },
+      { title: "Agilidad", text: "Entregas rápidas, sin comprometer el resultado." },
+      { title: "Trato cercano", text: "Comunicación directa con nosotros en cada etapa." },
+      { title: "Edición con carácter", text: "Un estilo propio, reconocible en cada plano." },
+    ],
+    talkTitle: "¿Hablamos?",
+    talkText: "Lo hacemos de manera cercana y flexible.",
   },
   en: {
     title: "About · The duo behind Satori Arts",
-    description: "We are Satori Arts, a photography and film duo. Manu on photo, Tefi on film. Weddings, events, hotels and landscape in Barcelona and Madrid.",
-    h1: "Two people, one same eye",
-    lead: "We are Manu and Tefi. Photo and film. We met through photography and ended up building a studio to tell stories worth looking at a thousand times.",
-    body: `
-      <h2>How we work</h2>
-      <p>One documents with the stills camera, the other with the film camera. That's our edge: two coordinated eyes, so nothing slips away. We're discreet, warm and obsessive about light and editing.</p>
-      <h2>What drives us</h2>
-      <p>We love the real. Genuine laughter, the nerves before the ceremony, the detail no one else sees. We put the same care into an intimate wedding as into a hotel shoot.</p>
-      <h2>Where</h2>
-      <p>Barcelona and Madrid are our base, but we travel wherever needed. We work in Spanish, English and Catalan.</p>
-    `,
+    description: "Manuel and Stephanie, photographer and filmmaker with over 10 years of experience in weddings, events and hospitality brands in Barcelona and Madrid.",
+    h1: "Hi, we're Manuel and Stephanie.",
+    lead: "Photographer and filmmaker with over 10 years working for weddings, events and hospitality brands.",
+    members: [],
+    together: "Together they've built a shared eye over more than a decade, so the photo and film of every project tell a single story.",
+    process: "From the first conversation to the final delivery, we work with couples getting married and hospitality brands that need content for their website and social media.",
+    pillars: [
+      { title: "One same team", text: "No middlemen: the same two people from start to finish." },
+      { title: "Speed", text: "Fast delivery, without compromising the result." },
+      { title: "Close relationship", text: "Direct communication with us at every stage." },
+      { title: "Editing with character", text: "A recognisable style in every frame." },
+    ],
+    talkTitle: "Shall we talk?",
+    talkText: "We keep it close and flexible.",
   },
   ca: {
-    title: "Nosaltres · El duo darrere de Satori Arts",
-    description: "Som Satori Arts, un duo de fotografia i film. Manu a la foto, Tefi al vídeo. Casaments, esdeveniments, hotels i paisatge a Barcelona i Madrid.",
-    h1: "Dues persones, una mateixa mirada",
-    lead: "Som en Manu i la Tefi. Foto i film. Ens vam conèixer per la fotografia i vam acabar muntant un estudi per explicar històries que mereixen mirar-se mil vegades.",
-    body: `
-      <h2>Com treballem</h2>
-      <p>Un documenta amb la càmera de fotos i l'altre amb la de vídeo. Aquest és el nostre avantatge: dues mirades coordinades, així no s'escapa res. Som discrets, propers i obsessius amb la llum i l'edició.</p>
-      <h2>Què ens mou</h2>
-      <p>Ens agrada el real. Els riures de veritat, els nervis abans de la cerimònia, el detall que ningú més veu. Posem la mateixa cura en un casament íntim que en el reportatge d'un hotel.</p>
-      <h2>On</h2>
-      <p>Barcelona i Madrid són la nostra base, però viatgem on calgui. Treballem en castellà, anglès i català.</p>
-    `,
+    title: "Coneix-nos · El duo darrere de Satori Arts",
+    description: "Manuel i Stephanie, fotògraf i realitzadora de vídeo amb més de 10 anys d'experiència en casaments, esdeveniments i marques d'hostaleria a Barcelona i Madrid.",
+    h1: "Hola, som Manuel i Stephanie.",
+    lead: "Fotògraf i realitzadora de vídeo amb més de 10 anys treballant per a casaments, esdeveniments i marques d'hostaleria.",
+    members: [],
+    together: "Junts han construït un criteri compartit durant més d'una dècada, perquè la fotografia i el vídeo de cada projecte expliquin una sola història.",
+    process: "Des de la primera conversa fins al lliurament final, acompanyem parelles que es casen i marques d'hostaleria que necessiten contingut per a la seva web i xarxes.",
+    pillars: [
+      { title: "Un mateix equip", text: "Sense intermediaris: les mateixes dues persones de principi a fi." },
+      { title: "Agilitat", text: "Lliuraments ràpids, sense comprometre el resultat." },
+      { title: "Tracte proper", text: "Comunicació directa amb nosaltres a cada etapa." },
+      { title: "Edició amb caràcter", text: "Un estil propi, reconeixible a cada pla." },
+    ],
+    talkTitle: "Parlem?",
+    talkText: "Ho fem de manera propera i flexible.",
   },
 };
 const c = CONTENT[locale];
+
+// Retratos reales del dúo (src/assets/photos/team/01.jpg = Manuel,
+// 02.jpg = Stephanie, mismo orden que SITE.team). En pantalla se
+// muestran en orden inverso (Stephanie primero), así que se recorre por
+// índice en vez de reordenar el array fuente.
+const memberPhotos = teamPhotos;
+const teamOrder = [1, 0];
+
 ---
 
 <BaseLayout locale={locale} title={c.title} description={c.description} alternates={routeAlternates("about")}>
-  <section class="container-tight py-16 md:py-20">
-    <p class="eyebrow mb-4">{t("nav.about")}</p>
-    <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{c.h1}</h1>
-    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{c.lead}</p>
+  <section class="section-space container-prose text-left sm:text-center">
+    <h1 class="reveal-scale font-heading text-3xl leading-tight font-medium text-balance text-foreground sm:mx-auto sm:max-w-3xl sm:text-5xl md:text-6xl">{c.h1}</h1>
+    <p class="reveal mt-3 max-w-xl text-lg leading-relaxed text-muted-foreground sm:mx-auto">{c.lead}</p>
   </section>
 
-  <section class="container-tight pb-2">
-    <Photo image={servicePhotos("bodas")[0]} alt="Satori Arts — fotografía de boda" aspect="aspect-[16/9]" sizes="100vw" class="reveal" />
-  </section>
-
-  <section class="container-tight grid gap-8 py-12 sm:grid-cols-2">
-    {SITE.team.map((member) => (
-      <div class="reveal flex items-baseline justify-between gap-4 border-t border-border pt-5">
-        <div>
-          <p class="font-heading text-3xl italic text-foreground">{member.name}</p>
-          <p class="font-label mt-1 text-sm uppercase tracking-wider text-muted-foreground">{member.role}</p>
-        </div>
-        <a href={`https://www.instagram.com/${member.instagram}/`} target="_blank" rel="noopener" class="font-label shrink-0 text-sm text-gold-deep underline-offset-4 hover:text-gold hover:underline">@{member.instagram}</a>
+  <!-- EQUIPO: Stephanie y Manu, apilados y alineados a la izquierda en
+       móvil; desde sm:, en fila de dos columnas. -->
+  <section class="section-space">
+    <div class="container-tight">
+      <div class="flex flex-col gap-12 text-left sm:grid sm:grid-cols-2 sm:gap-12">
+        {
+          teamOrder.map((i) => {
+            const member = SITE.team[i];
+            return (
+              <div class="reveal flex flex-col gap-6">
+                <Photo image={memberPhotos[i]} alt={member.name} aspect="aspect-[3/4]" sizes="(max-width:640px) 100vw, 50vw" grayscale />
+                <div>
+                  <h2 class="font-heading text-3xl font-medium text-foreground sm:text-4xl">{member.name}.</h2>
+                  <p class="mt-4 font-heading text-xl font-medium text-foreground/90">{c.members[i]?.tagline}</p>
+                  <p class="mt-3 max-w-md text-muted-foreground">{c.members[i]?.bio}</p>
+                  <a
+                    href={`https://www.instagram.com/${member.instagram}/`}
+                    target="_blank"
+                    rel="noopener"
+                    class="hover-flip font-label mt-4 inline-block text-sm text-muted-foreground underline underline-offset-4"
+                  >
+                    <span class="flip-a block">@{member.instagram}</span>
+                    <span aria-hidden="true" class="flip-b block">@{member.instagram}</span>
+                  </a>
+                </div>
+              </div>
+            );
+          })
+        }
       </div>
-    ))}
+    </div>
   </section>
 
-  <div class="prose-body dropcap-lead container-prose py-12" set:html={c.body}></div>
+  <!-- DECLARACIÓN: los dos párrafos que unen el criterio del dúo -->
+  <section class="bg-card/30">
+    <div class="section-space container-prose flex flex-col gap-6 text-left sm:text-center">
+      <p class="reveal font-heading text-2xl font-medium text-balance text-foreground sm:text-3xl">{c.together}</p>
+      <p class="reveal max-w-xl text-lg leading-relaxed text-muted-foreground sm:mx-auto">{c.process}</p>
+    </div>
+  </section>
 
-  <CtaSection locale={locale} message={waDefaultMessage(locale)} />
+  <section class="section-space reveal container-tight flex flex-col items-start gap-6 text-left sm:items-center sm:text-center">
+    <p class="font-heading text-2xl font-medium text-foreground sm:text-3xl">{t("cta.talkQuestion")}</p>
+    <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.writeUs")} />
+  </section>
 </BaseLayout>

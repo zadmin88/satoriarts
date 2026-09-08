@@ -1,18 +1,14 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Image } from "astro:assets";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
-import CtaSection from "@/components/CtaSection.astro";
-import Faq from "@/components/Faq.astro";
 import type { FaqItem } from "@/components/Faq.astro";
-import EditorialGallery from "@/components/EditorialGallery.astro";
-import Photo from "@/components/Photo.astro";
 import {
   SITE,
   SERVICES,
   CITIES,
   servicePath,
   waServiceMessage,
-  DISCIPLINE_LABEL,
 } from "@/config";
 import type { Locale, Service } from "@/config";
 import { serviceAlternates, routePath } from "@/i18n/routes";
@@ -28,18 +24,14 @@ interface Props {
   faqs: FaqItem[];
 }
 
-const { locale, service, seoTitle, seoDescription, heroIntro, faqs } = Astro.props;
+const { locale, service, seoTitle, seoDescription, heroIntro } = Astro.props;
 const t = useT(locale);
 const copy = service.i18n[locale];
 
 const pageUrl = new URL(servicePath(locale, service), SITE.url).href;
 const alternates = serviceAlternates(service.key);
-const related = SERVICES.filter((s) => s.key !== service.key);
 
 const photos = servicePhotos(service.key);
-const galleryItems = photos.map((image, i) => ({ image, alt: photoAlt(locale, copy.title, i) }));
-
-const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "");
 
 const jsonLd = [
   {
@@ -60,15 +52,6 @@ const jsonLd = [
     areaServed: CITIES.map((c) => ({ "@type": "City", name: c.name })),
     provider: { "@type": "ProfessionalService", name: SITE.brand, url: SITE.url },
   },
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: stripHtml(f.a) },
-    })),
-  },
 ];
 ---
 
@@ -80,75 +63,59 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <article>
-    <!-- Hero editorial con imagen -->
-    <header class="border-b border-border">
-      <div class="container-tight grid items-end gap-8 py-14 md:min-h-[70vh] md:grid-cols-12 md:py-16">
-        <div class="md:col-span-7">
-          <nav aria-label="breadcrumb" class="mb-6 text-sm text-muted-foreground">
-            <a href={routePath(locale, "home")} class="underline-offset-4 hover:text-foreground hover:underline">{t("nav.home")}</a>
-            <span aria-hidden="true" class="mx-2">/</span>
-            <span class="text-foreground">{copy.title}</span>
-          </nav>
-          <div class="mb-4 flex flex-wrap gap-2">
-            {service.disciplines.map((d) => (
-              <span class="rounded-full border border-gold/30 px-2.5 py-0.5 text-xs font-medium uppercase tracking-wide text-gold-deep">{DISCIPLINE_LABEL[d][locale]}</span>
-            ))}
-          </div>
-          <h1 class="max-w-2xl font-heading text-4xl font-semibold leading-[0.98] text-foreground sm:text-6xl md:text-7xl">
-            <slot name="h1">{copy.title}</slot>
-          </h1>
-          <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{heroIntro}</p>
-          <div class="mt-8">
-            <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
-          </div>
-        </div>
-        <div class="md:col-span-5">
-          <Photo image={photos[0]} alt={photoAlt(locale, copy.title, 0)} aspect="aspect-[4/5]" loading="eager" sizes="(max-width:768px) 100vw, 40vw" class="reveal" />
-        </div>
-      </div>
+    <!-- Cabecera: idéntica a /portfolio/ — título en mayúscula del mismo
+         tamaño, y debajo las mismas pestañas (con el servicio actual
+         activo). Sin párrafo, insignias ni CTA: la página queda con la
+         misma diagramación exacta que Proyectos. -->
+    <header class="container-tight py-16 md:py-20">
+      <h1 data-reveal-words class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
     </header>
 
-    <!-- Cuerpo -->
-    <div class="prose-body container-prose py-16 md:py-20">
-      <slot />
-    </div>
-
-    <!-- Galería editorial -->
+    <!-- Galería: mismas pestañas y cuadrícula de 2 columnas con icono "+"
+         y título + categoría bajo cada imagen, idénticas a la página
+         general de Proyectos, para mantener una sola diagramación en
+         todo el sitio. -->
     <section aria-label={copy.title} class="container-tight pb-16">
-      <EditorialGallery items={galleryItems} />
-    </section>
-
-    <!-- FAQ -->
-    <section aria-labelledby="faq-titulo" class="container-prose pb-16">
-      <h2 id="faq-titulo" class="font-heading text-2xl font-semibold text-foreground sm:text-3xl">
-        <span class="index-label mr-3">FAQ</span>{copy.title}
-      </h2>
-      <div class="mt-6">
-        <Faq items={faqs} />
+      <div class="reveal -mx-5 mb-10 flex flex-nowrap gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
+        <a href={routePath(locale, "portfolio")} class="filter-pill shrink-0">
+          <span class="hover-flip">
+            <span class="flip-a block">{t("portfolio.filterAll")}</span>
+            <span aria-hidden="true" class="flip-b block">{t("portfolio.filterAll")}</span>
+          </span>
+        </a>
+        {
+          SERVICES.map((s) => (
+            <a href={servicePath(locale, s)} class:list={["filter-pill shrink-0", s.key === service.key && "is-active"]}>
+              <span class="hover-flip">
+                <span class="flip-a block">{s.i18n[locale].title}</span>
+                <span aria-hidden="true" class="flip-b block">{s.i18n[locale].title}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2">
+        {
+          photos.map((image, i) => (
+            <div class="relative block overflow-hidden">
+              <Image
+                src={image}
+                alt={photoAlt(locale, copy.title, i)}
+                widths={[480, 768, 1024]}
+                sizes="(max-width: 640px) 100vw, 50vw"
+                loading="eager"
+                class="aspect-[16/9] w-full object-cover"
+              />
+            </div>
+          ))
+        }
       </div>
     </section>
 
-    <!-- Otros servicios -->
-    <section aria-labelledby="otros-titulo" class="border-t border-border bg-card/40">
-      <div class="container-tight py-12">
-        <h2 id="otros-titulo" class="font-heading text-2xl font-semibold text-foreground">{t("section.services")}</h2>
-        <ul class="mt-5 flex flex-wrap gap-3">
-          {
-            related.map((s) => (
-              <li>
-                <a
-                  href={servicePath(locale, s)}
-                  class="inline-block rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-gold/40 hover:text-gold"
-                >
-                  {s.i18n[locale].menuLabel}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
+    <!-- CTA de cierre, centrado, como en Proyectos -->
+    <section class="reveal container-tight flex flex-col items-start gap-6 py-14 text-left sm:items-center sm:py-24 md:py-32 sm:text-center">
+      <p class="font-heading text-2xl font-medium text-foreground sm:text-3xl">{t("cta.dateQuestion")}</p>
+      <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
     </section>
   </article>
-
-  <CtaSection locale={locale} message={waServiceMessage(locale, service)} />
 </BaseLayout>

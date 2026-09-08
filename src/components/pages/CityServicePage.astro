@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import CtaSection from "@/components/CtaSection.astro";
-import EditorialGallery from "@/components/EditorialGallery.astro";
+import { Image } from "astro:assets";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import { SITE, CITIES, getService, servicePath, waServiceMessage } from "@/config";
 import type { Locale, ServiceKey } from "@/config";
@@ -43,25 +42,43 @@ const jsonLd = [
   alternates={cityServiceAlternates(serviceKey, city)}
   jsonLd={jsonLd}
 >
-  <header class="border-b border-border bg-card/40">
+  <header class="bg-card/40">
     <div class="container-tight py-14 md:py-20">
       <p class="eyebrow mb-3">{city.name} · {service.i18n[locale].title}</p>
-      <h1 class="max-w-3xl font-heading text-4xl font-semibold text-foreground sm:text-5xl md:text-6xl">{copy.h1}</h1>
+      <h1 class="max-w-3xl font-heading text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">{copy.h1}</h1>
       <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{copy.intro}</p>
       <div class="mt-8 flex flex-wrap items-center gap-4">
         <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
-        <a href={servicePath(locale, service)} class="text-sm font-semibold text-gold-deep underline-offset-4 hover:text-gold hover:underline">
-          {service.i18n[locale].title} →
+        <a href={servicePath(locale, service)} class="hover-flip text-sm font-semibold text-foreground underline underline-offset-4">
+          <span class="flip-a block">{service.i18n[locale].title} →</span>
+          <span aria-hidden="true" class="flip-b block">{service.i18n[locale].title} →</span>
         </a>
       </div>
     </div>
   </header>
 
-  <div class="prose-body container-prose py-14" set:html={copy.bodyHtml}></div>
+  <div class="reveal prose-body container-prose py-14" set:html={copy.bodyHtml}></div>
 
   <section class="container-tight pb-14">
-    <EditorialGallery items={galleryItems} />
+    <div class="mb-10 border-b border-border" />
+    <div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2">
+      {
+        galleryItems.map((item) => (
+          <div class="group relative block">
+            <Image
+              src={item.image}
+              alt={item.alt}
+              widths={[480, 768, 1024]}
+              sizes="(max-width: 640px) 100vw, 50vw"
+              loading="eager"
+              class="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            />
+            <div class="mt-4">
+              <span class="font-heading text-lg font-medium text-foreground">{service.i18n[locale].title}</span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
   </section>
-
-  <CtaSection locale={locale} message={waServiceMessage(locale, service)} />
 </BaseLayout>

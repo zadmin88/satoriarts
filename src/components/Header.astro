@@ -1,102 +1,206 @@
 ---
-import { SITE, SERVICES, servicePath, waDefaultMessage } from "@/config";
+import { SITE, SERVICES, servicePath, waLink, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
 import { routePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
-import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
+import Logo from "@/components/Logo.astro";
 
 interface Props {
   locale: Locale;
   alternates: Record<Locale, string>;
+  /** La página ya muestra la marca grande y centrada en su propio hero
+   *  (home): el logo del header nace oculto ahí y aparece con una
+   *  transición sutil en cuanto se empieza a hacer scroll; a la vez,
+   *  detrás del header entero aparece una barra sutil en cuanto el
+   *  hero termina de salir, para que el menú quede siempre legible. */
+  logoRevealsOnScroll?: boolean;
 }
 
-const { locale, alternates } = Astro.props;
+const { locale, alternates, logoRevealsOnScroll = false } = Astro.props;
 const t = useT(locale);
 
+// Submenú "Proyectos": las 4 verticales de servicio.
 const services = SERVICES.map((s) => ({
   href: servicePath(locale, s),
-  label: s.i18n[locale].menuLabel,
+  label: s.i18n[locale].title,
 }));
 
-const mainLinks = [
-  { href: routePath(locale, "portfolio"), label: t("nav.portfolio") },
-  { href: routePath(locale, "journal"), label: t("nav.journal") },
-  { href: routePath(locale, "about"), label: t("nav.about") },
-  { href: routePath(locale, "contact"), label: t("nav.contact") },
+// Menú de pantalla completa, simplificado: Inicio, Conócenos, Proyectos
+// (con submenú), Journal y Contacto.
+// Las etiquetas se pasan ya en mayúsculas (en vez de con text-transform
+// en CSS): con acentos, aplicar "uppercase" en vivo a texto en vivo
+// duplica visualmente la tilde en algunos navegadores (p. ej. "Conócenos").
+const primaryNav = [
+  { href: routePath(locale, "home"), label: t("nav.home").toLocaleUpperCase(locale) },
+  { href: routePath(locale, "about"), label: t("nav.aboutMenu").toLocaleUpperCase(locale) },
 ];
+const secondaryNav = [
+  { href: routePath(locale, "journal"), label: t("nav.journal").toLocaleUpperCase(locale) },
+];
+const projectsLabel = t("nav.projects").toLocaleUpperCase(locale);
+
+// Índice global para escalonar el revelado palabra a palabra.
+let wordIndex = 0;
+const wordsOf = (label: string) => label.split(" ").map((w) => ({ w, idx: wordIndex++ }));
 ---
 
-<header
-  class="sticky top-0 z-30 border-b border-border/70 bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60"
->
-  <div class="container-tight flex h-16 items-center justify-between gap-3">
+<header class:list={["fixed top-0 inset-x-0 z-50", logoRevealsOnScroll ? "header-bar-reveal" : "bg-black"]}>
+  <div class="container-tight grid h-24 grid-cols-3 items-center md:h-28">
+    <!-- Izquierda: botón "Menú" (pastilla de cristal, como verostudio.com) -->
+    <details class="menu group relative min-w-0 justify-self-start">
+      <summary
+        class="header-pill font-nav relative z-50 flex h-10 w-auto cursor-pointer list-none items-center justify-start rounded-sm uppercase leading-none text-white transition-colors select-none md:h-12 md:justify-start md:text-sm md:font-medium md:tracking-[0.06em] [&::-webkit-details-marker]:hidden"
+        aria-label={t("a11y.menu")}
+      >
+        <!-- Móvil: icono hamburguesa (como el referente) -->
+        <span class="hamburger md:hidden" aria-hidden="true">
+          <span></span><span></span>
+        </span>
+        <!-- Escritorio: texto "MENÚ" / "CERRAR" -->
+        <span class="hidden md:grid md:place-items-center">
+          <span class="hover-flip pointer-events-auto col-start-1 row-start-1 transition-opacity duration-200 group-open:pointer-events-none group-open:opacity-0">
+            <span class="flip-a block">{t("a11y.menu")}</span>
+            <span aria-hidden="true" class="flip-b block">{t("a11y.menu")}</span>
+          </span>
+          <span class="hover-flip pointer-events-none col-start-1 row-start-1 opacity-0 transition-opacity duration-200 group-open:pointer-events-auto group-open:opacity-100">
+            <span class="flip-a block">{t("a11y.close")}</span>
+            <span aria-hidden="true" class="flip-b block">{t("a11y.close")}</span>
+          </span>
+        </span>
+      </summary>
+
+      <div class="menu-panel flex min-h-dvh flex-col">
+        <nav aria-label="Principal" class="container-tight flex w-full flex-1 flex-col justify-center pt-24 pb-10 md:pt-28">
+          <ol class="menu-list flex flex-col gap-1">
+            {
+              primaryNav.map((item) => (
+                <li>
+                  <a href={item.href} class="menu-link block py-1.5 font-heading text-4xl font-medium text-foreground uppercase sm:text-5xl lg:text-6xl">
+                    {wordsOf(item.label).map(({ w, idx }, wi) => (
+                      <>
+                        {wi > 0 && " "}
+                        <span class="word-reveal">
+                          <span class="word-roll" style={`--wi:${idx}`}>
+                            <span class="word-roll-a" style={`--i:${idx}`}>{w}</span>
+                            <span aria-hidden="true" class="word-roll-b" style={`--i:${idx}`}>{w}</span>
+                          </span>
+                        </span>
+                      </>
+                    ))}
+                  </a>
+                </li>
+              ))
+            }
+
+            <!-- Proyectos: con submenú de las 4 verticales -->
+            <li>
+              <details class="group/proj">
+                <summary class="menu-link flex cursor-pointer list-none items-center gap-4 py-1.5 select-none [&::-webkit-details-marker]:hidden">
+                  <span class="font-heading text-4xl font-medium text-foreground uppercase sm:text-5xl lg:text-6xl">
+                    {wordsOf(projectsLabel).map(({ w, idx }, wi) => (
+                      <>
+                        {wi > 0 && " "}
+                        <span class="word-reveal">
+                          <span class="word-roll" style={`--wi:${idx}`}>
+                            <span class="word-roll-a" style={`--i:${idx}`}>{w}</span>
+                            <span aria-hidden="true" class="word-roll-b" style={`--i:${idx}`}>{w}</span>
+                          </span>
+                        </span>
+                      </>
+                    ))}
+                  </span>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-4 shrink-0 rotate-90 text-muted-foreground transition-transform group-open/proj:-rotate-90 group-hover/proj:translate-x-1">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </summary>
+                <ol class="mt-2 mb-3 flex flex-col gap-1 pl-6 sm:pl-8">
+                  {
+                    services.map((s) => (
+                      <li>
+                        <a href={s.href} class="hover-flip font-heading inline-block py-1 text-xl font-medium text-muted-foreground uppercase sm:text-2xl">
+                          <span class="flip-a block">{s.label}</span>
+                          <span aria-hidden="true" class="flip-b block text-foreground">{s.label}</span>
+                        </a>
+                      </li>
+                    ))
+                  }
+                </ol>
+              </details>
+            </li>
+
+            {
+              secondaryNav.map((item) => (
+                <li>
+                  <a href={item.href} class="menu-link block py-1.5 font-heading text-4xl font-medium text-foreground uppercase sm:text-5xl lg:text-6xl">
+                    {wordsOf(item.label).map(({ w, idx }, wi) => (
+                      <>
+                        {wi > 0 && " "}
+                        <span class="word-reveal">
+                          <span class="word-roll" style={`--wi:${idx}`}>
+                            <span class="word-roll-a" style={`--i:${idx}`}>{w}</span>
+                            <span aria-hidden="true" class="word-roll-b" style={`--i:${idx}`}>{w}</span>
+                          </span>
+                        </span>
+                      </>
+                    ))}
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+
+        <div class="menu-footer container-tight flex w-full flex-col items-start gap-3 pb-10">
+          <span class="font-label text-xs uppercase tracking-widest text-muted-foreground">{t("footer.follow")}</span>
+          <div class="flex flex-wrap gap-x-8 gap-y-2">
+            <a href={SITE.instagramUrl} target="_blank" rel="noopener" class="hover-flip font-heading text-lg font-medium text-foreground uppercase">
+              <span class="flip-a block">Instagram</span>
+              <span aria-hidden="true" class="flip-b block text-gold">Instagram</span>
+            </a>
+            <a href={SITE.facebookUrl} target="_blank" rel="noopener" class="hover-flip font-heading text-lg font-medium text-foreground uppercase">
+              <span class="flip-a block">Facebook</span>
+              <span aria-hidden="true" class="flip-b block text-gold">Facebook</span>
+            </a>
+            <a href={SITE.youtubeUrl} target="_blank" rel="noopener" class="hover-flip font-heading text-lg font-medium text-foreground uppercase">
+              <span class="flip-a block">YouTube</span>
+              <span aria-hidden="true" class="flip-b block text-gold">YouTube</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- Centro: logo (insignia circular animada). Se desvanece al hacer
+         scroll para no competir visualmente con el contenido. -->
     <a
       href={routePath(locale, "home")}
-      class="flex items-baseline"
+      class:list={["relative z-50 col-start-2 justify-self-center", logoRevealsOnScroll && "header-logo-reveal-on-scroll"]}
       aria-label={`${SITE.brand} — ${t("nav.home")}`}
     >
-      <span class="font-heading text-2xl font-medium tracking-tight text-foreground">
-        Satori <span class="italic text-gold">Arts</span>
-      </span>
+      <Logo class="size-14 md:size-20" />
     </a>
 
-    <!-- Navegación de escritorio -->
-    <nav aria-label="Principal" class="hidden items-center gap-1 lg:flex">
-      <details class="group relative">
-        <summary
-          class="flex cursor-pointer list-none items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground [&::-webkit-details-marker]:hidden"
-        >
-          {t("nav.services")}
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="size-3.5 transition-transform group-open:rotate-180"><path d="m6 9 6 6 6-6"/></svg>
-        </summary>
-        <div class="absolute left-0 top-full z-40 mt-2 flex w-60 flex-col gap-0.5 rounded-xl border border-border bg-popover p-2 shadow-xl shadow-black/30">
-          {services.map((s) => (
-            <a href={s.href} class="rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted">{s.label}</a>
-          ))}
-          <a href={routePath(locale, "portfolio")} class="mt-1 rounded-lg border-t border-border px-3 pt-2.5 pb-1 text-sm font-medium text-gold-deep hover:text-gold">{t("nav.portfolio")} →</a>
-        </div>
-      </details>
-      {
-        mainLinks.map((link) => (
-          <a
-            href={link.href}
-            class="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            {link.label}
-          </a>
-        ))
-      }
-      <div class="mx-2"><LanguageSwitcher locale={locale} alternates={alternates} /></div>
-      <WhatsAppButton message={waDefaultMessage(locale)} label={t("cta.whatsapp")} />
-    </nav>
-
-    <!-- Móvil: WhatsApp + menú <details> sin JavaScript -->
-    <div class="flex items-center gap-1 lg:hidden">
-      <WhatsAppButton message={waDefaultMessage(locale)} label={t("cta.whatsapp")} />
-      <details class="group relative">
-        <summary
-          class="flex size-10 cursor-pointer list-none items-center justify-center rounded-lg text-foreground hover:bg-muted [&::-webkit-details-marker]:hidden"
-          aria-label={t("a11y.menu")}
-        >
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-5 group-open:hidden"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden size-5 group-open:block"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </summary>
-        <nav
-          aria-label="Menú móvil"
-          class="absolute top-full right-0 z-40 mt-2 flex w-64 flex-col gap-0.5 rounded-xl border border-border bg-popover p-2 shadow-xl shadow-black/30"
-        >
-          <p class="px-3 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t("nav.services")}</p>
-          {services.map((s) => (
-            <a href={s.href} class="rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted">{s.label}</a>
-          ))}
-          <div class="my-1 border-t border-border"></div>
-          {mainLinks.map((link) => (
-            <a href={link.href} class="rounded-lg px-3 py-2 font-medium text-foreground hover:bg-muted">{link.label}</a>
-          ))}
-          <div class="mt-1 border-t border-border px-3 pt-2.5"><LanguageSwitcher locale={locale} alternates={alternates} /></div>
-        </nav>
-      </details>
+    <!-- Derecha: idioma + Contacto (en móvil, solo icono; texto completo desde sm:).
+         Las pastillas ganan opacidad de fondo al hacer scroll, para no
+         perderse sobre el contenido. -->
+    <div class="relative z-50 flex min-w-0 items-center justify-self-end gap-2 md:gap-3">
+      <LanguageSwitcher locale={locale} alternates={alternates} variant="dropdown" />
+      <a
+        href={waLink(waDefaultMessage(locale))}
+        target="_blank"
+        rel="noopener"
+        aria-label={t("cta.whatsapp.long")}
+        class="header-pill font-nav flex size-10 shrink-0 items-center justify-center rounded-sm uppercase leading-none text-white transition-colors md:h-12 md:w-auto md:justify-end"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="size-4.5 md:hidden">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" />
+        </svg>
+        <span class="hover-flip hidden text-sm font-medium tracking-[0.06em] md:inline-block">
+          <span class="flip-a block">{t("nav.contact")}</span>
+          <span aria-hidden="true" class="flip-b block">{t("nav.contact")}</span>
+        </span>
+      </a>
     </div>
   </div>
 </header>

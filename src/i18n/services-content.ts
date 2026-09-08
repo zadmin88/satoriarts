@@ -26,28 +26,28 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
     es: {
       seoTitle: "Fotógrafo y Vídeo de Bodas en Barcelona y Madrid · Satori Arts",
       seoDescription:
-        "Fotografía y film de boda con estilo editorial en Barcelona, Madrid y destino. Momentos reales, edición con carácter y entrega cuidada.",
-      h1: "Vuestra boda, contada como merece",
+        "Fotografía y film de boda con mirada de autor en Barcelona, Madrid y destino. Documentamos la emoción real y entregamos un archivo a la altura del día.",
+      h1: "Vuestra boda, con el peso que merece",
       heroIntro:
-        "Somos un dúo de foto y vídeo. Mientras uno documenta la emoción, el otro rueda la película. Sin poses eternas: lo que vivís, tal cual pasa.",
+        "Somos un fotógrafo y una cineasta documentando a la vez: mientras una cámara capta la emoción, la otra rueda la película. Sin poses eternas — lo que vivís, tal y como sucede.",
       bodyHtml: `
-        <h2>Foto y film, el mismo día y el mismo equipo</h2>
-        <p>Trabajar con un solo estudio para foto y vídeo tiene una ventaja enorme: nos coordinamos, no competimos por el momento. Podéis contratar solo fotografía, solo film o ambos.</p>
+        <h2>Un mismo estudio, dos disciplinas coordinadas</h2>
+        <p>Contratar un solo estudio para foto y film elimina la fricción de coordinar dos equipos: no competimos por el mismo instante, lo documentamos desde ángulos complementarios. Podéis contratar solo fotografía, solo film o ambas disciplinas.</p>
         <ul>
-          <li>Cobertura de preparativos, ceremonia, sesión de pareja y fiesta.</li>
-          <li>Galería online privada con las mejores imágenes editadas.</li>
-          <li>Tráiler corto para compartir y película larga para guardar.</li>
+          <li>Cobertura de preparativos, ceremonia, sesión de pareja y celebración.</li>
+          <li>Galería privada online con la selección editada.</li>
+          <li>Un adelanto para compartir y una película completa para conservar.</li>
         </ul>
-        <h2>Nuestro estilo</h2>
-        <p>Documental con alma editorial. Buscamos la luz buena, los gestos de verdad y esos detalles que en unos años os harán volver a emocionaros. Dirigimos lo justo para que estéis cómodos.</p>
+        <h2>Un estilo documental, con criterio editorial</h2>
+        <p>Buscamos la luz honesta y los gestos que no se repiten. Dirigimos lo justo para que os sintáis cómodos, sin forzar nada: el resultado es un archivo que se sostiene con los años, no una colección de postales.</p>
         <h2>Bodas de destino</h2>
-        <p>Nos movemos por toda España y fuera. Costa Brava, Empordà, sierra de Madrid, masías, fincas y hoteles con encanto: si el sitio os enamora, allí estaremos.</p>
+        <p>Trabajamos en toda España y fuera de ella. Costa Brava, Empordà, la sierra de Madrid, masías, fincas y hoteles con carácter: si el lugar tiene alma, allí estaremos.</p>
       `,
       faqs: [
-        { q: "¿Hacéis foto y vídeo a la vez?", a: "Sí. Somos dos personas; una a la foto y otra al vídeo, coordinadas. También podéis contratar solo una disciplina." },
-        { q: "¿Viajáis fuera de Barcelona o Madrid?", a: "Sí, cubrimos bodas de destino en toda España y en el extranjero. Escríbenos con la fecha y el lugar." },
-        { q: "¿Cuándo recibimos las fotos y el vídeo?", a: "Un avance en pocos días y la entrega completa en unas semanas, según temporada. Lo concretamos antes de reservar." },
-        { q: "¿Cómo reservamos la fecha?", a: "Escríbenos por WhatsApp. Vemos disponibilidad, te contamos las opciones y bloqueamos la fecha con un anticipo." },
+        { q: "¿Hacéis foto y vídeo a la vez?", a: "Sí. Trabajamos como equipo coordinado — una persona en la cámara de foto, otra en la de vídeo — para no perder ningún momento. También podéis contratar una sola disciplina." },
+        { q: "¿Viajáis fuera de Barcelona o Madrid?", a: "Sí, cubrimos bodas de destino en toda España y en el extranjero. Escríbenos con la fecha y el lugar y te confirmamos disponibilidad." },
+        { q: "¿Cuándo recibimos las fotos y el vídeo?", a: "Un primer avance en pocos días y la entrega completa en unas semanas, según temporada. Lo concretamos antes de confirmar la reserva." },
+        { q: "¿Cómo reservamos la fecha?", a: "Escríbenos por WhatsApp. Revisamos disponibilidad, resolvemos dudas y bloqueamos la fecha con un anticipo." },
       ],
       gallery: g(
         ["Ceremonia", "portrait", 1], ["Detalles", "square", 4], ["Pareja", "landscape", 2],
@@ -123,28 +123,28 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
     es: {
       seoTitle: "Fotógrafo de Eventos en Barcelona y Madrid · Foto y Vídeo · Satori Arts",
       seoDescription:
-        "Cobertura de eventos corporativos, presentaciones y celebraciones en Barcelona y Madrid. Foto y vídeo con discreción y entrega rápida.",
-      h1: "Eventos que se recuerdan y se comparten",
+        "Cobertura fotográfica y audiovisual de eventos corporativos y celebraciones en Barcelona y Madrid. Discreción, agilidad y un resultado a la altura de la marca.",
+      h1: "Eventos, con el mismo rigor que una campaña de marca",
       heroIntro:
-        "Congresos, presentaciones de marca, galas y celebraciones. Cubrimos tu evento con discreción y te entregamos material listo para redes en tiempo récord.",
+        "Congresos, presentaciones de marca, galas y celebraciones privadas. Cubrimos el evento con discreción y entregamos material listo para publicar en tiempo récord.",
       bodyHtml: `
-        <h2>Cobertura completa, sin estorbar</h2>
-        <p>Nos movemos como parte del equipo, no como un obstáculo. Documentamos ponencias, networking, ambiente y esos momentos clave que cuentan cómo fue.</p>
+        <h2>Cobertura completa, sin interferir</h2>
+        <p>Nos movemos como una extensión del equipo organizador, no como un elemento más a gestionar. Documentamos ponencias, networking, ambiente y los momentos que después cuentan cómo fue el evento.</p>
         <ul>
-          <li>Reportaje fotográfico editado y con tu marca cuidada.</li>
+          <li>Reportaje fotográfico editado, con la identidad de marca cuidada.</li>
           <li>Vídeo resumen (aftermovie) para redes y patrocinadores.</li>
-          <li>Entrega exprés opcional para publicar el mismo día o al siguiente.</li>
+          <li>Entrega exprés opcional para publicar el mismo día.</li>
         </ul>
-        <h2>Para empresas y agencias</h2>
-        <p>Trabajamos con departamentos de marketing y agencias. Nos adaptamos a guion, tiempos y necesidades de comunicación: sabemos qué imágenes necesitas para tu memoria y para vender el próximo evento.</p>
+        <h2>Para departamentos de marketing y agencias</h2>
+        <p>Trabajamos con equipos de comunicación y agencias, adaptándonos a guion, tiempos y necesidades de reporting. Sabemos qué imágenes necesita la memoria del evento — y cuáles necesita para vender el próximo.</p>
         <h2>Celebraciones privadas</h2>
-        <p>Cumpleaños, aniversarios, bautizos y comuniones con el mismo mimo que una boda, en formato más ágil.</p>
+        <p>Aniversarios, bautizos y celebraciones familiares, con el mismo nivel de cuidado que una boda, en un formato más ágil.</p>
       `,
       faqs: [
-        { q: "¿Con cuánta antelación hay que reservar?", a: "Cuanto antes mejor, pero también cubrimos eventos con poco margen. Escríbenos y vemos disponibilidad." },
-        { q: "¿Entregáis material el mismo día?", a: "Sí, ofrecemos entrega exprés de una selección para redes. El reportaje completo llega después, editado." },
-        { q: "¿Facturáis a empresa?", a: "Por supuesto. Emitimos factura y podemos trabajar con pedidos y condiciones de agencia." },
-        { q: "¿Foto, vídeo o ambos?", a: "Como quieras. Puedes contratar solo una disciplina o el pack completo con el dúo." },
+        { q: "¿Con cuánta antelación hay que reservar?", a: "Cuanto antes, mejor — aunque también cubrimos eventos con poco margen. Escríbenos y confirmamos disponibilidad." },
+        { q: "¿Entregáis material el mismo día?", a: "Sí. Ofrecemos una entrega exprés de una selección para redes; el reportaje completo llega después, ya editado." },
+        { q: "¿Facturáis a empresa?", a: "Por supuesto. Emitimos factura y trabajamos con pedidos y condiciones de agencia." },
+        { q: "¿Foto, vídeo o ambos?", a: "Como convenga al proyecto: una sola disciplina o el servicio completo con el equipo al completo." },
       ],
       gallery: g(
         ["Ponencia", "landscape", 2], ["Ambiente", "portrait", 1], ["Detalle", "square", 4],
@@ -220,29 +220,29 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
     es: {
       seoTitle: "Fotografía de Hoteles y Hostelería en Barcelona y Madrid · Satori Arts",
       seoDescription:
-        "Fotografía y vídeo para hoteles, resorts y restaurantes. Imágenes que venden habitaciones y experiencias y suben las reservas directas.",
+        "Fotografía y film para hoteles, resorts y restaurantes. Un archivo visual pensado para vender la experiencia y elevar la reserva directa.",
       h1: "Imágenes que llenan habitaciones",
       heroIntro:
-        "Fotografía y film para hoteles, resorts, restaurantes y alojamientos. Contenido que transmite la experiencia y empuja la reserva directa.",
+        "Fotografía y film para hoteles, resorts y restaurantes de carácter. Contenido que transmite la experiencia real y reduce la dependencia de las OTAs.",
       bodyHtml: `
         <h2>Qué cubrimos</h2>
-        <p>Producimos el catálogo visual completo de tu establecimiento, listo para web, OTAs, redes y campañas.</p>
+        <p>Producimos el catálogo visual completo del establecimiento, listo para web, OTAs, redes sociales y campañas de temporada.</p>
         <ul>
-          <li>Habitaciones y suites, con luz y estilismo cuidados.</li>
+          <li>Habitaciones y suites, con luz y estilismo cuidados al detalle.</li>
           <li>Restaurante, gastronomía, spa y zonas comunes.</li>
-          <li>Exteriores, arquitectura y lifestyle con modelos.</li>
-          <li>Vídeo para web y reels verticales para redes.</li>
+          <li>Arquitectura, exteriores y lifestyle con modelos.</li>
+          <li>Film para web y formatos verticales para redes.</li>
         </ul>
-        <h2>Pensado para vender</h2>
-        <p>No hacemos fotos bonitas sin más: pensamos en conversión. Imágenes coherentes con tu marca que reducen la fricción y aumentan la reserva directa, la que no paga comisión.</p>
-        <h2>Producción sin complicaciones</h2>
-        <p>Nos coordinamos con dirección y recepción para trabajar sin molestar a los huéspedes. Planificamos horas de luz y ocupación para sacar el máximo partido.</p>
+        <h2>Producción pensada para vender</h2>
+        <p>No entregamos fotografías bonitas sin más: pensamos en conversión. Imágenes coherentes con la identidad de marca que reducen la fricción de reserva y refuerzan el canal directo — el único sin comisión.</p>
+        <h2>Una producción que no interrumpe la operativa</h2>
+        <p>Coordinamos la sesión con dirección y recepción para trabajar sin afectar a los huéspedes. Planificamos horas de luz y ocupación para sacar el máximo partido a cada jornada.</p>
       `,
       faqs: [
-        { q: "¿Trabajáis con cadenas y grupos?", a: "Sí, con hoteles independientes, boutique, resorts y grupos. Nos adaptamos a manuales de marca." },
-        { q: "¿Incluís vídeo y reels?", a: "Sí. Ofrecemos foto, vídeo para web y reels verticales optimizados para redes." },
-        { q: "¿Cómo se factura?", a: "Presupuesto cerrado por proyecto según entregables y jornadas. Emitimos factura." },
-        { q: "¿Necesitáis cerrar el hotel?", a: "No. Planificamos por zonas y horarios para no afectar la operativa ni a los huéspedes." },
+        { q: "¿Trabajáis con cadenas y grupos?", a: "Sí, con hoteles independientes, boutique, resorts y grupos hoteleros. Nos adaptamos al manual de marca de cada uno." },
+        { q: "¿Incluís vídeo y reels?", a: "Sí. El servicio incluye fotografía, film para web y formatos verticales optimizados para redes." },
+        { q: "¿Cómo se factura?", a: "Con un presupuesto cerrado por proyecto, según entregables y jornadas de producción. Emitimos factura." },
+        { q: "¿Necesitáis cerrar el hotel?", a: "No. Planificamos por zonas y horarios para no afectar la operativa ni la experiencia de los huéspedes." },
       ],
       gallery: g(
         ["Suite", "landscape", 1], ["Gastronomía", "square", 4], ["Spa", "portrait", 3],
@@ -320,25 +320,25 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
     es: {
       seoTitle: "Fotografía de Paisaje Fine-Art y Copias de Autor · Satori Arts",
       seoDescription:
-        "Fotografía de paisaje fine-art de Satori Arts. Copias de autor numeradas para coleccionar o vestir espacios con carácter.",
+        "Fotografía de paisaje fine-art de Satori Arts. Copias de autor, numeradas y de tirada limitada, para coleccionar o vestir espacios con carácter.",
       h1: "Paisaje para mirar cada día",
       heroIntro:
-        "Nuestro lado más personal: paisaje fine-art. Copias de autor, numeradas y cuidadas al detalle, para coleccionar o dar alma a un espacio.",
+        "Nuestro trabajo más personal: paisaje fine-art. Copias de autor, numeradas y de tirada limitada, para coleccionar o para dar carácter a un espacio.",
       bodyHtml: `
         <h2>Copias de autor</h2>
-        <p>Cada imagen se edita e imprime con mimo en papeles de calidad museo. Tiradas limitadas y numeradas, listas para enmarcar.</p>
+        <p>Cada imagen se revela e imprime con exigencia de estudio, en papeles de calidad museo. Tiradas limitadas y numeradas, listas para enmarcar.</p>
         <ul>
           <li>Varios tamaños y acabados a elegir.</li>
-          <li>Impresión giclée en papel fine-art.</li>
-          <li>Encargos y proyectos a medida para interiorismo y hostelería.</li>
+          <li>Impresión giclée sobre papel fine-art.</li>
+          <li>Proyectos a medida para interiorismo y hostelería.</li>
         </ul>
         <h2>Para espacios con carácter</h2>
-        <p>Trabajamos con estudios de interiorismo, hoteles y particulares que quieren piezas únicas, no pósters de catálogo. Cuéntanos el espacio y buscamos la imagen.</p>
+        <p>Trabajamos con estudios de interiorismo, hoteles y coleccionistas privados que buscan una pieza única, no un póster de catálogo. Cuéntanos el espacio y encontramos la imagen adecuada.</p>
       `,
       faqs: [
-        { q: "¿Vendéis copias?", a: "Sí, copias de autor numeradas en varios tamaños. Escríbenos y te pasamos opciones y precios." },
-        { q: "¿Hacéis encargos a medida?", a: "Sí, para interiorismo, hostelería y particulares. Podemos crear una serie para un espacio concreto." },
-        { q: "¿Cómo se envía?", a: "Embalaje protegido y envío asegurado. Concretamos plazos según tamaño y acabado." },
+        { q: "¿Vendéis copias?", a: "Sí, copias de autor numeradas, en varios tamaños. Escríbenos y te enviamos opciones y precios." },
+        { q: "¿Hacéis encargos a medida?", a: "Sí, para interiorismo, hostelería y coleccionistas privados. Podemos desarrollar una serie pensada para un espacio concreto." },
+        { q: "¿Cómo se envía?", a: "Con embalaje protegido y envío asegurado. Confirmamos los plazos según tamaño y acabado." },
       ],
       gallery: g(
         ["Montaña", "landscape", 3], ["Costa", "portrait", 2], ["Bruma", "square", 1],
