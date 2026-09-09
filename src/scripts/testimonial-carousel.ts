@@ -5,6 +5,8 @@
 // (en vez de flechas) que refleja cuánto se ha desplazado. Se
 // reengancha en cada navegación de las View Transitions de Astro
 // (astro:page-load).
+import { runOnPageLoad } from "@/scripts/on-page-load";
+
 function setupCarousel(root: HTMLElement) {
   const track = root.querySelector<HTMLElement>("[data-carousel-track]");
   const progress = root.querySelector<HTMLElement>("[data-carousel-progress]");
@@ -45,15 +47,33 @@ function setupCarousel(root: HTMLElement) {
   // bucle. Se detiene si el usuario interactúa (hover o arrastre) o si
   // prefiere menos movimiento, y no vuelve a arrancar sola tras esa
   // pausa —evita pelearse con un usuario que está navegando manualmente.
+  //
+  // El intervalo NO arranca en cuanto carga la página: "Testimonios"
+  // está lejos, al final del home, y un "setInterval" empezando ya
+  // desde astro:page-load avanzaba el carrusel varias veces (cada
+  // 4.5s) mientras el usuario aún ni había llegado a verlo con el
+  // scroll — por eso, al llegar, ya se veía descentrado en la segunda
+  // o tercera reseña en vez de la primera. Con un IntersectionObserver
+  // sobre la sección entera, el autoplay solo empieza la primera vez
+  // que "Testimonios" es realmente visible, así el punto de partida
+  // que ve el usuario es siempre la reseña 1.
   let autoplay: ReturnType<typeof setInterval> | undefined;
   const stopAutoplay = () => {
     if (autoplay) clearInterval(autoplay);
     autoplay = undefined;
   };
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    autoplay = setInterval(goNext, 4500);
-    root.addEventListener("pointerenter", stopAutoplay, { once: true });
-    root.addEventListener("touchstart", stopAutoplay, { once: true, passive: true });
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        visibilityObserver.disconnect();
+        autoplay = setInterval(goNext, 4500);
+        root.addEventListener("pointerenter", stopAutoplay, { once: true });
+        root.addEventListener("touchstart", stopAutoplay, { once: true, passive: true });
+      },
+      { threshold: 0.5 },
+    );
+    visibilityObserver.observe(root);
   }
 
   // La tarjeta más visible dentro de la pista (la que queda en primer
@@ -76,4 +96,4 @@ function setup() {
   document.querySelectorAll<HTMLElement>("[data-carousel]").forEach(setupCarousel);
 }
 
-document.addEventListener("astro:page-load", setup);
+runOnPageLoad(setup);

@@ -1,7 +1,8 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { Image } from "astro:assets";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import ProjectsGallery, { type ServiceBlock } from "@/components/ProjectsGallery.astro";
+import type { GridItem } from "@/components/GridMediaItem.astro";
 import type { FaqItem } from "@/components/Faq.astro";
 import {
   SITE,
@@ -14,6 +15,7 @@ import type { Locale, Service } from "@/config";
 import { serviceAlternates, routePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
+import { CATEGORY_VIDEO } from "@/lib/category-video";
 
 interface Props {
   locale: Locale;
@@ -31,7 +33,24 @@ const copy = service.i18n[locale];
 const pageUrl = new URL(servicePath(locale, service), SITE.url).href;
 const alternates = serviceAlternates(service.key);
 
-const photos = servicePhotos(service.key);
+// MISMA construcción de "blocks" que PortfolioPage.astro (un único
+// elemento aquí, en vez de uno por servicio) — al pasar por el mismo
+// componente ProjectsGallery, esta página de servicio individual
+// renderiza EXACTAMENTE la misma estructura que su categoría dentro de
+// /proyectos/, sin poder divergir.
+const photos: GridItem[] = servicePhotos(service.key).map((image, i) => ({
+  type: "photo" as const,
+  image,
+  alt: photoAlt(locale, copy.title, i),
+  key: service.key,
+  href: servicePath(locale, service),
+  title: copy.title,
+}));
+const photoColumns: [GridItem[], GridItem[]] = [[], []];
+photos.forEach((p, i) => photoColumns[i % 2].push(p));
+
+const video: GridItem = { type: "video", src: CATEGORY_VIDEO[service.key], key: service.key, href: servicePath(locale, service), title: copy.title };
+const blocks: ServiceBlock[] = [{ key: service.key, video, photos, photoColumns }];
 
 const jsonLd = [
   {
@@ -63,21 +82,17 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <article>
-    <!-- Cabecera: idéntica a /portfolio/ — título en mayúscula del mismo
-         tamaño, y debajo las mismas pestañas (con el servicio actual
-         activo). Sin párrafo, insignias ni CTA: la página queda con la
-         misma diagramación exacta que Proyectos. -->
-    <header class="container-tight py-16 md:py-20">
-      <h1 data-reveal-words class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
-    </header>
-
-    <!-- Galería: mismas pestañas y cuadrícula de 2 columnas con icono "+"
-         y título + categoría bajo cada imagen, idénticas a la página
-         general de Proyectos, para mantener una sola diagramación en
-         todo el sitio. -->
-    <section aria-label={copy.title} class="container-tight pb-16">
-      <div class="reveal -mx-5 mb-10 flex flex-nowrap gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
-        <a href={routePath(locale, "portfolio")} class="filter-pill shrink-0">
+    <!-- ProjectsGallery: MISMO componente que usa /proyectos/
+         (PortfolioPage.astro) — sigue mostrando "Proyectos" a
+         propósito (no el nombre del servicio), para que no "salte"
+         visualmente al cambiar de pestaña entre servicios. Solo las
+         pestañas difieren (enlaces reales, no radios: cada servicio es
+         su propia URL indexable para el SEO local) — ver
+         ProjectsGallery.astro para la explicación completa de por qué
+         ese es el único punto que no se puede unificar. -->
+    <ProjectsGallery locale={locale} blocks={blocks}>
+      <Fragment slot="filters">
+        <a href={routePath(locale, "portfolio")} class="btn filter-pill shrink-0">
           <span class="hover-flip">
             <span class="flip-a block">{t("portfolio.filterAll")}</span>
             <span aria-hidden="true" class="flip-b block">{t("portfolio.filterAll")}</span>
@@ -85,7 +100,7 @@ const jsonLd = [
         </a>
         {
           SERVICES.map((s) => (
-            <a href={servicePath(locale, s)} class:list={["filter-pill shrink-0", s.key === service.key && "is-active"]}>
+            <a href={servicePath(locale, s)} class:list={["btn filter-pill shrink-0", s.key === service.key && "is-active"]}>
               <span class="hover-flip">
                 <span class="flip-a block">{s.i18n[locale].title}</span>
                 <span aria-hidden="true" class="flip-b block">{s.i18n[locale].title}</span>
@@ -93,29 +108,21 @@ const jsonLd = [
             </a>
           ))
         }
-      </div>
-      <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2">
-        {
-          photos.map((image, i) => (
-            <div class="relative block overflow-hidden">
-              <Image
-                src={image}
-                alt={photoAlt(locale, copy.title, i)}
-                widths={[480, 768, 1024]}
-                sizes="(max-width: 640px) 100vw, 50vw"
-                loading="eager"
-                class="aspect-[16/9] w-full object-cover"
-              />
-            </div>
-          ))
-        }
-      </div>
-    </section>
+      </Fragment>
+    </ProjectsGallery>
 
-    <!-- CTA de cierre, centrado, como en Proyectos -->
-    <section class="reveal container-tight flex flex-col items-start gap-6 py-14 text-left sm:items-center sm:py-24 md:py-32 sm:text-center">
-      <p class="font-heading text-2xl font-medium text-foreground sm:text-3xl">{t("cta.dateQuestion")}</p>
+    <!-- CTA de cierre, alineado a la izquierda (mismo eje que
+         "PROYECTOS", la barra de categorías y el grid) — ver
+         PortfolioPage.astro para la explicación completa de por qué ya
+         no se centra en desktop como el resto de las páginas del
+         sitio. -->
+    <section class="reveal container-tight flex flex-col items-start gap-8 py-14 text-left sm:gap-6 sm:py-24 md:py-32">
+      <p class="text-balance font-heading text-4xl font-medium text-foreground sm:text-3xl">{t("cta.dateQuestion")}</p>
       <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
     </section>
   </article>
+
+  <script>
+    import "@/scripts/filter-scroll";
+  </script>
 </BaseLayout>

@@ -8,6 +8,7 @@
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { runOnPageLoad } from "@/scripts/on-page-load";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,9 +40,19 @@ function stop() {
   lenis = undefined;
 }
 
-document.addEventListener("astro:page-load", () => {
+runOnPageLoad(() => {
   stop();
   start();
-});
+}, stop);
 
-document.addEventListener("astro:before-swap", stop);
+/**
+ * Otros scripts (p. ej. filter-scroll.ts) necesitan desplazar la página
+ * verticalmente por JS. Usar el "scrollIntoView" nativo del navegador
+ * ahí generaría un salto/parpadeo: Lenis lleva su propio estado interno
+ * de scroll animado y desconoce ese scroll nativo, así que se
+ * desincroniza hasta el siguiente evento de rueda/touch. Exponemos la
+ * instancia para que puedan pedirle el scroll a Lenis mismo.
+ */
+export function getLenis(): Lenis | undefined {
+  return lenis;
+}

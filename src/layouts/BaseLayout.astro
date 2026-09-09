@@ -55,6 +55,16 @@ const allSchema = [businessSchema(locale), ...pageSchema];
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <!-- Precarga de las 4 variantes autoalojadas de General Sans: sin
+         esto, "font-display: swap" deja una ventana breve donde el
+         texto (títulos, botones, filtros) se pinta con la fuente de
+         reemplazo del sistema antes de cambiar a la real — y como cada
+         elemento puede terminar ese cambio en un instante distinto, se
+         percibe como pesos de fuente inconsistentes entre botones. -->
+    <link rel="preload" href="/fonts/general-sans/GeneralSans-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/general-sans/GeneralSans-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/general-sans/GeneralSans-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/general-sans/GeneralSans-700.woff2" as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
@@ -63,9 +73,17 @@ const allSchema = [businessSchema(locale), ...pageSchema];
     {hreflangs.map((h) => <link rel="alternate" hreflang={h.lang} href={h.href} />)}
     <link rel="alternate" hreflang="x-default" href={new URL(alternates.es, SITE.url).href} />
 
+    <!-- favicon.ico/favicon.png/apple-touch-icon.png: el isotipo real
+         (Satoriarts_Isotipo.png) es blanco sobre fondo transparente —
+         invisible en la pestaña del navegador (fondo claro) o como
+         ícono de iOS (no admite transparencia). Se generaron con fondo
+         negro compuesto (script con "sharp"). Se añade también un
+         .ico real (16/32/48px) porque algunos navegadores/Windows dan
+         prioridad al .ico sobre un <link> de PNG, o directamente piden
+         "/favicon.ico" por convención aunque no esté declarado. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/Satoriarts_Isotipo.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#0a0a09" />
 
@@ -90,9 +108,18 @@ const allSchema = [businessSchema(locale), ...pageSchema];
     <script>
       import "@/scripts/smooth-scroll";
       import "@/scripts/scroll-reveal";
+      import "@/scripts/close-on-scroll";
+      import "@/scripts/grayscale-tap";
     </script>
   </head>
-  <body id="top" class="flex min-h-dvh flex-col">
+  <!-- min-h-svh (no dvh): dvh se recalcula cuando la barra de
+       direcciones/UI del navegador móvil se oculta o aparece; si el
+       layout se midió con la barra oculta (dvh más alto) y luego
+       reaparece al hacer scroll, queda un hueco en blanco real debajo
+       del footer antes del final del documento. svh usa siempre el
+       viewport más pequeño posible, así el footer queda siempre pegado
+       al final real, sin hueco. -->
+  <body id="top" class="flex min-h-svh flex-col">
     <a
       href="#contenido"
       class="sr-only rounded-lg bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50"

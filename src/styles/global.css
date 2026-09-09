@@ -135,7 +135,25 @@
     }
   html {
     @apply font-sans scroll-smooth;
+    /* Salvaguarda: ningún elemento (barras con "sangrado" -mx negativo,
+       full-bleed, etc.) debe poder generar scroll horizontal a nivel
+       de página completa por error de redondeo en algún dispositivo. */
+    overflow-x: hidden;
     color-scheme: dark;
+    /* scrollbar-gutter:stable reserva SIEMPRE el ancho de la barra de
+       scroll vertical, exista o no en ese momento. Sin esto, todo
+       contenido centrado con "mx-auto" (".container-tight",
+       ".container-prose"...) se centra según el ancho VISIBLE del
+       viewport, que varía unos px según si el navegador dibuja o no
+       esa barra — al colapsar "PROYECTOS" (sticky) la altura total del
+       documento cambia, y en páginas cortas (p. ej. Paisaje, con pocas
+       fotos) eso podía bastar para que la barra de scroll apareciera o
+       desapareciera, desplazando lateralmente TODO lo centrado con
+       "container-tight" por igual (el header incluido) aunque su CSS
+       nunca cambiara. Con el hueco siempre reservado, el ancho
+       disponible es constante pase lo que pase con el alto de la
+       página. */
+    scrollbar-gutter: stable;
     }
   h1, h2, h3 {
     @apply font-heading;
@@ -183,6 +201,17 @@
   /* Contenedor estándar */
   .container-tight { @apply mx-auto max-w-6xl px-5 sm:px-6; }
   .container-prose { @apply mx-auto max-w-3xl px-5 sm:px-6; }
+  /* Igual que ".container-prose" (mismo max-width de lectura, mismo
+     padding) pero SIN "mx-auto": para texto/columnas alineadas a la
+     izquierda (no bloques centrados) que deben compartir el mismo
+     margen izquierdo que ".container-tight" en cualquier ancho de
+     pantalla. "mx-auto" en un contenedor más angosto que
+     ".container-tight" desplaza su borde izquierdo hacia dentro en
+     desktop (centrado independiente) — eso es lo correcto para un
+     bloque deliberadamente centrado, pero es justo la causa de que
+     texto corrido/galerías angostas parecieran "no alineadas" con el
+     resto del sitio (título, MENÚ, footer...). */
+  .container-prose-left { @apply max-w-3xl px-5 sm:px-6; }
   /* Espaciado vertical estándar entre secciones: 40px en móvil, 64px en
      tablet, 80px en desktop. Reutilizable en vez de márgenes/paddings
      sueltos por bloque, para que el ritmo vertical del sitio sea
@@ -214,6 +243,25 @@
     height: 0.5rem;
     border-radius: 9999px;
     background-color: var(--foreground);
+  }
+  /* Pull-quote: frase destacada dentro del cuerpo de un artículo */
+  .prose-body blockquote {
+    @apply font-heading text-foreground my-10 border-l-2 border-foreground pl-6 text-2xl font-medium leading-snug sm:text-3xl;
+  }
+  /* Misma cita destacada, para usar suelta fuera de .prose-body (Journal,
+     formato de bloques intercalados texto/imagen/cita). */
+  .pull-quote {
+    @apply font-heading text-foreground border-l-2 border-foreground pl-6 text-2xl font-medium leading-snug sm:text-3xl;
+  }
+
+  /* Journal, formato editorial minimalista (fondo blanco): enlaces
+     dentro del cuerpo del artículo, subrayados e integrados en la
+     redacción, sin aspecto de botón. */
+  .journal-body p a {
+    @apply text-neutral-900 underline underline-offset-2;
+  }
+  .journal-body p a:hover {
+    @apply text-black;
   }
 
   /* Galería tipo mosaico sin JavaScript (CSS columns) */
@@ -315,6 +363,18 @@ body::after {
   transform: scale(1);
 }
 .carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Oculta la barra de scroll nativa en contenedores con scroll horizontal
+   que NO son un carrusel de tarjetas (p. ej. las pestañas de filtro en
+   móvil): sin esto, el navegador dibuja una línea de scrollbar visible
+   justo debajo, que se puede confundir con un loader. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
@@ -508,11 +568,28 @@ details.menu[open] > .menu-panel {
 .word-reveal {
   display: inline-block;
   overflow: hidden;
+  /* line-height igual al de ".hover-flip .flip-a/.flip-b" (1.3): el
+     símbolo bajo la tilde NO era un problema de line-height/recorte
+     (subirlo a 1.6 no lo arregló, y encima infló el espaciado vertical
+     entre "INICIO"/"CONÓCENOS"/"PROYECTOS"/"JOURNAL"). La causa real
+     era la falta de "backface-visibility: hidden" en el span animado
+     (ver más abajo) — con eso ya resuelto, este valor vuelve a 1.3
+     para que el espaciado entre ítems del menú sea el normal. */
+  line-height: 1.3;
   vertical-align: top;
 }
 .word-reveal > span {
   display: inline-block;
   transform: translateY(115%);
+  /* backface-visibility:hidden fuerza a que el navegador rasterice el
+     glifo completo (letra + tilde) como una sola unidad ANTES de
+     aplicar el transform, en su propia capa — es el mismo fix ya usado
+     en .hover-flip. Sin esto, en Chrome/Edge un "transform" sobre un
+     span de texto con vocal acentuada puede separar la tilde del
+     carácter base en dos elementos gráficos independientes, dejando
+     un trazo suelto (justo el símbolo bajo la "Ó" de "CONÓCENOS" — la
+     única palabra del menú con acento, por eso solo se veía ahí). */
+  backface-visibility: hidden;
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: calc(var(--wi, 0) * 45ms);
 }
@@ -523,45 +600,6 @@ details.menu[open] .word-reveal > span {
   details.menu[open] .word-reveal > span {
     transform: translateY(115%);
   }
-}
-
-/* Hover del menú de pantalla completa (como verostudio.com): a
-   diferencia del hover-flip normal (que mueve todo el bloque de texto
-   como una sola pieza), aquí cada PALABRA es su propia cápsula con dos
-   capas —label/copy—, y se anima con un pequeño retraso creciente por
-   palabra (--i), dando una sensación de cascada en vez de un bloque
-   rígido. Vive dentro de .word-reveal (que controla la entrada al abrir
-   el menú); .word-roll controla el roll del hover, independiente. */
-.word-roll {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-}
-.word-roll-a,
-.word-roll-b {
-  display: inline-block;
-  /* line-height propio (mismo motivo que .hover-flip .flip-a/.flip-b):
-     sin él, la caja hereda una línea demasiado ajustada y el
-     overflow:hidden del .word-roll recorta la tilde de capitales como
-     "Ó" (visible como una marca/línea suelta bajo la letra). */
-  line-height: 1.3;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: calc(var(--i, 0) * 50ms);
-}
-.word-roll-b {
-  position: absolute;
-  inset: 0;
-  transform: translateY(100%);
-}
-.menu-link:hover .word-roll-a,
-.menu-link:focus-visible .word-roll-a,
-details[open] > .menu-link .word-roll-a {
-  transform: translateY(-100%);
-}
-.menu-link:hover .word-roll-b,
-.menu-link:focus-visible .word-roll-b,
-details[open] > .menu-link .word-roll-b {
-  transform: translateY(0);
 }
 
 /* Efecto "flip" al pasar el ratón por un enlace: el texto sube y
@@ -598,7 +636,17 @@ details[open] > .menu-link .word-roll-b {
   .hover-flip .flip-b {
     position: absolute;
     inset: 0;
-    transform: translateY(100%);
+    /* 115%, no 100%: exactamente el mismo ajuste ya aplicado en
+       ".word-reveal > span" (ver más arriba) y por la misma razón. Un
+       desplazamiento de justo el 100% de la caja de línea no basta
+       para sacar de la vista una vocal con tilde (Ó, É, Í...): su
+       glifo real es más alto que la caja de texto que usamos para
+       calcular el porcentaje, así que queda un hilo del carácter
+       visible bajo la tilde — solo se nota con ":hover"/":focus-visible"
+       activo (ratón o trackpad), nunca con un toque en pantalla táctil
+       sin puntero real, por eso el bug se reportaba solo en desktop y
+       tablet (iPad con Magic Keyboard/trackpad), nunca en mobile. */
+    transform: translateY(115%);
   }
   /* Solo el propio elemento (nunca un ".group" ancestro): "group" es un
      nombre de clase genérico reutilizado por completo con otro sentido
@@ -613,7 +661,9 @@ details[open] > .menu-link .word-roll-b {
   .hover-flip:hover .flip-a,
   .hover-flip:focus-visible .flip-a,
   .hover-flip:active .flip-a {
-    transform: translateY(-100%);
+    /* -115%, simétrico al 115% de .flip-b de arriba: mismo motivo —
+       -100% dejaba un resto visible de la tilde de flip-a al subir. */
+    transform: translateY(-115%);
   }
   .hover-flip:hover .flip-b,
   .hover-flip:focus-visible .flip-b,
@@ -625,9 +675,7 @@ details[open] > .menu-link .word-roll-b {
 @media (prefers-reduced-motion: reduce) {
   .word-reveal > span,
   .hover-flip .flip-a,
-  .hover-flip .flip-b,
-  .word-roll-a,
-  .word-roll-b {
+  .hover-flip .flip-b {
     transition: none;
   }
 }
@@ -698,28 +746,53 @@ details[open] > .menu-link .word-roll-b {
 }
 
 /* ---------------------------------------------------------- */
-/*  Filtro de la galería de Proyectos (como videinfra.com/work): */
-/*  pestañas horizontales con pastillas de radio + :has(),       */
-/*  cero JavaScript.                                              */
+/*  Botón base reutilizable: mismo alto, padding, radio y        */
+/*  tipografía para TODOS los botones del sitio (CTAs, filtros,  */
+/*  formularios, menú...), sin importar la longitud del texto ni */
+/*  la sección. Las variantes (sólido, outline, pastilla activa) */
+/*  solo cambian color/fondo/borde, nunca el tamaño.              */
 /* ---------------------------------------------------------- */
 
-.filter-pill {
+.btn {
   display: inline-flex;
   height: 3rem;
-  cursor: pointer;
+  min-height: 3rem;
   align-items: center;
-  border-radius: 0;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
   border: none;
-  background: var(--card);
   padding: 0 1.75rem;
   font-family: var(--font-label);
   font-size: 0.875rem;
-  font-weight: 600;
+  line-height: 1;
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--foreground);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   user-select: none;
+}
+
+/* ---------------------------------------------------------- */
+/*  Filtro de la galería de Proyectos (como videinfra.com/work): */
+/*  pestañas horizontales con pastillas de radio + :has(),       */
+/*  cero JavaScript. Mismo tamaño que .btn (altura, padding,      */
+/*  tipografía); solo cambia el color de fondo por defecto.       */
+/* ---------------------------------------------------------- */
+
+.filter-pill {
+  background: var(--card);
+  color: var(--foreground);
+  /* Más compacta que ".btn" (3rem / 1.75rem de padding, pensado para
+     CTAs sueltos): estas pestañas van en fila, muchas juntas, dentro
+     de una barra angosta — solo se ajusta tamaño (alto/ancho), nunca
+     border-radius, tipografía ni los estados hover/active de arriba,
+     que siguen viniendo de ".btn" y de las reglas de color de aquí. */
+  height: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0 1.25rem;
 }
 .filter-pill:hover {
   background: var(--secondary);
@@ -730,23 +803,96 @@ details[open] > .menu-link .word-roll-b {
   color: var(--background);
 }
 
+/* Cambiar de categoría no es un re-render de React/JS: es CSS puro
+   (:has()) alternando display:none/block sobre las mismas fotos que ya
+   están en el DOM — nunca se desmonta ni se vuelve a montar nada, así
+   que no hay flash en blanco/negro ni cambio de scroll forzado. El
+   único salto real era que display:none→block es instantáneo (una
+   fotografía "aparece" de golpe, a opacidad completa, y el masonry
+   recalcula su altura en el mismo frame). "transition: ..., display
+   0.25s allow-discrete" + "@starting-style" (mismo patrón ya usado en
+   el menú de pantalla completa, .menu-panel) permite animar incluso el
+   propio salto de display:none a block, con un fade suave en vez de
+   un corte brusco — el cambio de altura del contenedor sigue siendo
+   instantáneo (columns-* no admite animar su altura), pero al no haber
+   ya un "pop" visual de opacidad, deja de sentirse como un salto. */
 .filter-gallery [data-service] {
   display: none;
+  opacity: 0;
+  transition: opacity 0.25s ease, display 0.25s allow-discrete;
 }
 .filter-gallery:has(#pf-all:checked) [data-service] {
   display: block;
+  opacity: 1;
 }
 .filter-gallery:has(#pf-filter-bodas:checked) [data-service="bodas"] {
   display: block;
+  opacity: 1;
 }
 .filter-gallery:has(#pf-filter-eventos:checked) [data-service="eventos"] {
   display: block;
+  opacity: 1;
 }
 .filter-gallery:has(#pf-filter-hoteles:checked) [data-service="hoteles"] {
   display: block;
+  opacity: 1;
 }
 .filter-gallery:has(#pf-filter-paisaje:checked) [data-service="paisaje"] {
   display: block;
+  opacity: 1;
+}
+@starting-style {
+  .filter-gallery:has(#pf-all:checked) [data-service],
+  .filter-gallery:has(#pf-filter-bodas:checked) [data-service="bodas"],
+  .filter-gallery:has(#pf-filter-eventos:checked) [data-service="eventos"],
+  .filter-gallery:has(#pf-filter-hoteles:checked) [data-service="hoteles"],
+  .filter-gallery:has(#pf-filter-paisaje:checked) [data-service="paisaje"] {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .filter-gallery [data-service] {
+    transition: none;
+  }
+}
+
+/* Título "PROYECTOS" dentro del bloque sticky: al quedar pegado (bug ya
+   corregido de ScrollTrigger + position:fixed con "data-reveal-words"),
+   se OCULTA y colapsa su espacio por completo, dejando solo la barra
+   de categorías pegada arriba, sin hueco vacío encima.
+   ".is-stuck" la pone filter-scroll.ts vía IntersectionObserver sobre
+   "[data-sticky-sentinel]" (CSS no tiene un ":stuck" estándar).
+   "max-height" (con un tope generoso, mayor que el alto real del
+   título en cualquier breakpoint) es lo que permite animar el
+   colapso con "transition" — "height:auto" no se puede animar
+   directamente, y con "overflow:hidden" el contenido queda oculto
+   mientras se colapsa. Los paddings propios (pt/pb) también se llevan
+   a 0 para que no quede un margen residual. Esta regla vive fuera de
+   cualquier @layer a propósito: en Tailwind v4 las utilidades (px-*
+   del propio contenedor) viven en la capa "utilities", que SIEMPRE
+   gana sobre cualquier @layer aunque tenga menor especificidad — una
+   regla sin capa alguna, en cambio, gana sobre ambas capas sin
+   importar el orden. */
+[data-fixed-header] [data-portfolio-title-wrap] {
+  overflow: hidden;
+  max-height: 8rem;
+  opacity: 1;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.25s ease,
+    padding-top 0.3s ease,
+    padding-bottom 0.3s ease;
+}
+[data-fixed-header].is-stuck [data-portfolio-title-wrap] {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-fixed-header] [data-portfolio-title-wrap] {
+    transition: none;
+  }
 }
 
 /* Los CTAs (WhatsApp, "Solicitar información"...) son solo texto, sin
@@ -867,9 +1013,3 @@ header {
 /*  (ver src/scripts/scroll-reveal.ts).                         */
 /* ---------------------------------------------------------- */
 
-/* Panel del selector de idioma: sin fondo (a propósito), pero con una
-   sombra de texto marcada para que "ENGLISH"/"CATALÀ" se lean sobre
-   fotos claras del hero detrás. */
-.lang-dropdown a {
-  text-shadow: 0 1px 3px rgb(0 0 0 / 90%), 0 2px 10px rgb(0 0 0 / 70%);
-}

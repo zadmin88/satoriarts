@@ -40,6 +40,7 @@ const ratio = shape === "circle" ? "aspect-square" : aspect;
       widths={[360, 640, 960]}
       sizes={sizes}
       loading={loading}
+      data-grayscale-tap={grayscale ? true : undefined}
       class={cn("h-full w-full object-cover", grayscale && "grayscale transition-[filter] duration-500 hover:grayscale-0")}
     />
   </div>

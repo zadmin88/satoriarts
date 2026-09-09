@@ -1,0 +1,12 @@
+---
+import JournalArticlePage from "@/components/pages/JournalArticlePage.astro";
+import { JOURNAL_POSTS } from "@/i18n/journal-content";
+
+export function getStaticPaths() {
+  return JOURNAL_POSTS.ca.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+---
+
+<JournalArticlePage locale="ca" slug={slug} />

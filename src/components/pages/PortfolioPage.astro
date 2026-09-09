@@ -1,12 +1,14 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { Image } from "astro:assets";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import ProjectsGallery, { type ServiceBlock } from "@/components/ProjectsGallery.astro";
+import type { GridItem } from "@/components/GridMediaItem.astro";
 import { SERVICES, servicePath, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
 import { routeAlternates } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
+import { CATEGORY_VIDEO } from "@/lib/category-video";
 
 interface Props {
   locale: Locale;
@@ -33,47 +35,65 @@ const SEO: Record<Locale, { title: string; description: string; intro: string }>
 };
 const seo = SEO[locale];
 
-// Todas las fotos de todos los servicios, como cuadrícula de tarjetas
-// (título bajo cada imagen), filtrable por servicio con radio + :has()
-// — cero JavaScript.
-const allPhotos = SERVICES.flatMap((s) => {
+// Cuadrícula de cada servicio: el vídeo de la categoría es un elemento
+// APARTE y a todo el ancho (protagonista, no comparte columna con una
+// foto — a diferencia de antes, ya no se reparte junto con las fotos),
+// y debajo sus fotos en 2 columnas. Todo sigue siendo filtrable por
+// servicio con radio + :has() (cero JavaScript): tanto el vídeo como
+// cada foto llevan su propio "data-service", y también se marca el
+// contenedor que los envuelve — así, al filtrar, el bloque entero de
+// una categoría oculta (vídeo + sus columnas de fotos) desaparece como
+// una unidad, sin dejar huecos de margen vacíos de las categorías no
+// visibles.
+//
+// Fotos en 2 columnas EXPLÍCITAS (no CSS "columns-2"): con
+// "columns-*", el navegador decide en qué columna cae cada elemento
+// según un algoritmo de equilibrio de alturas totales, no en el orden
+// "1→col A, 2→col B" — por eso ni siquiera la primera fila garantizaba
+// arrancar a la misma altura. Repartiendo nosotros mismos las fotos
+// (alternando por índice), la primera foto de cada columna siempre
+// arranca en el mismo punto superior — sin recortar ni forzar el
+// tamaño de ninguna, cada fila siguiente se sigue escalonando de forma
+// natural según el alto real de lo anterior en su propia columna.
+const serviceBlocks: ServiceBlock[] = SERVICES.map((s) => {
   const copy = s.i18n[locale];
-  return servicePhotos(s.key).map((image, i) => ({
+  const video: GridItem = { type: "video", src: CATEGORY_VIDEO[s.key], key: s.key, href: servicePath(locale, s), title: copy.title };
+  const photos: GridItem[] = servicePhotos(s.key).map((image, i) => ({
+    type: "photo" as const,
     image,
     alt: photoAlt(locale, copy.title, i),
     key: s.key,
     href: servicePath(locale, s),
     title: copy.title,
   }));
+  const photoColumns: [GridItem[], GridItem[]] = [[], []];
+  photos.forEach((p, i) => photoColumns[i % 2].push(p));
+  return { key: s.key, video, photos, photoColumns };
 });
 ---
 
 <BaseLayout locale={locale} title={seo.title} description={seo.description} alternates={routeAlternates("portfolio")}>
-  <!-- Cabecera: título (mismo tamaño que las secciones de la home) y
-       debajo la fila de filtros como pestañas horizontales, igual que
-       videinfra.com/work ("All Works" + categorías). -->
-  <section class="container-tight py-16 md:py-20">
-    <h1 data-reveal-words class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
-  </section>
-
-  <!-- FILTRO + CUADRÍCULA: pestañas horizontales por servicio (radio +
-       :has(), cero JavaScript) y una cuadrícula de tarjetas —imagen,
-       título del proyecto y categoría debajo—, como videinfra.com/work. -->
-  <div class="filter-gallery container-tight pb-24">
-    <div class="reveal -mx-5 mb-10 flex flex-nowrap gap-2 overflow-x-auto px-5 sm:mx-0 sm:flex-wrap sm:px-0">
+  <!-- ProjectsGallery: MISMO componente que usa cada página de
+       servicio (vía ServiceLayout.astro) — cualquier cambio de
+       spacing/sticky/grid se hace una sola vez ahí y se refleja en las
+       5 categorías. Solo las pestañas (radio+label aquí, filtrado 100%
+       CSS con :has() para no recargar página) llegan por el slot
+       "filters" — es la única pieza que de verdad no se puede unificar
+       (ver ProjectsGallery.astro para la explicación completa). -->
+  <ProjectsGallery locale={locale} blocks={serviceBlocks} withGridId>
+    <Fragment slot="filters">
       <input type="radio" name="pf-filter" id="pf-all" class="sr-only" checked />
-      <label for="pf-all" class="filter-pill shrink-0">
+      <label for="pf-all" class="btn filter-pill shrink-0">
         <span class="hover-flip">
           <span class="flip-a block">{t("portfolio.filterAll")}</span>
           <span aria-hidden="true" class="flip-b block">{t("portfolio.filterAll")}</span>
         </span>
       </label>
-
       {
         SERVICES.map((s) => (
           <>
             <input type="radio" name="pf-filter" id={`pf-filter-${s.key}`} class="sr-only" />
-            <label for={`pf-filter-${s.key}`} class="filter-pill shrink-0">
+            <label for={`pf-filter-${s.key}`} class="btn filter-pill shrink-0">
               <span class="hover-flip">
                 <span class="flip-a block">{s.i18n[locale].title}</span>
                 <span aria-hidden="true" class="flip-b block">{s.i18n[locale].title}</span>
@@ -82,28 +102,22 @@ const allPhotos = SERVICES.flatMap((s) => {
           </>
         ))
       }
-    </div>
+    </Fragment>
+  </ProjectsGallery>
 
-    <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2">
-      {
-        allPhotos.map((p) => (
-          <a href={p.href} data-service={p.key} class="relative block overflow-hidden">
-            <Image
-              src={p.image}
-              alt={p.alt}
-              widths={[480, 768, 1024]}
-              sizes="(max-width: 640px) 100vw, 50vw"
-              loading="eager"
-              class="aspect-[16/9] w-full object-cover"
-            />
-          </a>
-        ))
-      }
-    </div>
-  </div>
-
-  <section class="reveal container-tight flex flex-col items-start gap-6 py-14 text-left sm:items-center sm:py-24 md:py-32 sm:text-center">
-    <p class="font-heading text-2xl font-medium text-foreground sm:text-3xl">{t("cta.talkQuestion")}</p>
+  <!-- Alineada SIEMPRE a la izquierda (no centrada en desktop, a
+       diferencia del mismo patrón de CTA en otras páginas): el título,
+       la barra de categorías y el grid de arriba son todos left-
+       aligned contra el mismo margen de "container-tight" — centrar
+       esta sección en desktop la hacía "arrancar" en un punto
+       horizontal distinto al resto de "Proyectos", dando la sensación
+       de bloques descuadrados entre sí dentro de la misma página. -->
+  <section class="reveal container-tight flex flex-col items-start gap-8 py-14 text-left sm:gap-6 sm:py-24 md:py-32">
+    <p class="text-balance font-heading text-4xl font-medium text-foreground sm:text-3xl">{t("cta.dateQuestion")}</p>
     <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
   </section>
+
+  <script>
+    import "@/scripts/filter-scroll";
+  </script>
 </BaseLayout>

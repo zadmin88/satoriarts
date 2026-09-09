@@ -2,13 +2,16 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 import type { Locale } from "@/config";
-import { routeAlternates } from "@/i18n/routes";
-import { servicePhotos } from "@/lib/photos";
+import { routeAlternates, journalArticlePath } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+import { servicePhotos, photoAlt } from "@/lib/photos";
+import { JOURNAL_POSTS } from "@/i18n/journal-content";
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
+const t = useT(locale);
 
 const SEO: Record<Locale, { title: string; description: string; h1: string; lead: string }> = {
   es: {
@@ -32,27 +35,15 @@ const SEO: Record<Locale, { title: string; description: string; h1: string; lead
 };
 const seo = SEO[locale];
 
-// [PLACEHOLDER] Cuando haya artículos reales, sustituir por una content
-// collection. Fecha y texto son de ejemplo, como el journal de
-// makemepulse.com/news.
-const drafts: Record<Locale, { title: string; date: string; tag: string; image: ImageMetadata }[]> = {
-  es: [
-    { title: "Boda en el Empordà", date: "12 sept 2026", tag: "Bodas", image: servicePhotos("bodas")[1] },
-    { title: "Dentro de un hotel boutique en Barcelona", date: "28 ago 2026", tag: "Hoteles, Proceso", image: servicePhotos("hoteles")[1] },
-    { title: "Guía de fincas para bodas en Madrid", date: "3 jul 2026", tag: "Bodas, Venues", image: servicePhotos("bodas")[5] },
-  ],
-  en: [
-    { title: "A wedding in the Empordà", date: "12 Sep 2026", tag: "Weddings", image: servicePhotos("bodas")[1] },
-    { title: "Inside a boutique hotel in Barcelona", date: "28 Aug 2026", tag: "Hotels, Process", image: servicePhotos("hoteles")[1] },
-    { title: "A guide to wedding venues in Madrid", date: "3 Jul 2026", tag: "Weddings, Venues", image: servicePhotos("bodas")[5] },
-  ],
-  ca: [
-    { title: "Un casament a l'Empordà", date: "12 set 2026", tag: "Casaments", image: servicePhotos("bodas")[1] },
-    { title: "Dins d'un hotel boutique a Barcelona", date: "28 ago 2026", tag: "Hotels, Procés", image: servicePhotos("hoteles")[1] },
-    { title: "Guia de masies per a casaments a Madrid", date: "3 jul 2026", tag: "Casaments, Venues", image: servicePhotos("bodas")[5] },
-  ],
-};
-const posts = drafts[locale];
+// Artículos del Journal (src/i18n/journal-content.ts). Cuando haya
+// muchos más, esto es lo que habría que migrar a una content
+// collection — de momento el mismo patrón que services-content.ts es
+// suficiente y consistente con el resto del sitio. Siempre hay 3
+// entradas: las que aún no tienen reportaje definitivo usan contenido
+// temporal (marcado "[Contenido temporal]" en el cuerpo), nunca un
+// estado vacío tipo "Próximamente" — se reemplazan editando el array,
+// sin tocar el diseño de esta página.
+const posts = JOURNAL_POSTS[locale];
 ---
 
 <BaseLayout locale={locale} title={seo.title} description={seo.description} alternates={routeAlternates("journal")}>
@@ -62,16 +53,17 @@ const posts = drafts[locale];
   </section>
 
   <!-- Tarjetas con imagen: foto arriba y título debajo, en tres
-       columnas, como el journal de referencia. -->
+       columnas, como el journal de referencia. Siempre 3 artículos con
+       contenido completo (real o temporal) — nunca huecos vacíos. -->
   <section class="container-tight pb-24">
     <div class="stagger-grid grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-3">
       {
         posts.map((d) => (
-          <article class="reveal group block">
+          <a href={journalArticlePath(locale, d.slug)} class="reveal group block">
             <div class="aspect-[16/9] overflow-hidden bg-card">
               <Image
-                src={d.image}
-                alt={d.title}
+                src={servicePhotos(d.cover.service)[d.cover.index]}
+                alt={photoAlt(locale, d.title, d.cover.index)}
                 widths={[480, 768]}
                 sizes="(max-width: 640px) 100vw, 33vw"
                 loading="eager"
@@ -79,9 +71,9 @@ const posts = drafts[locale];
               />
             </div>
             <span class="font-heading mt-5 block text-lg font-medium text-foreground">{d.title}</span>
-            <p class="font-label mt-2 text-sm font-medium text-foreground">{d.tag}</p>
+            <p class="font-label mt-2 text-sm font-medium text-foreground">{d.category}</p>
             <p class="font-label text-xs text-muted-foreground">{d.date}</p>
-          </article>
+          </a>
         ))
       }
     </div>

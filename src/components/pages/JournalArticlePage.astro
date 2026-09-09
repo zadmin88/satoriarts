@@ -1,0 +1,145 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import WhatsAppButton from "@/components/WhatsAppButton.astro";
+import { Image } from "astro:assets";
+import type { Locale } from "@/config";
+import { waDefaultMessage } from "@/config";
+import { journalArticlePath, journalArticleAlternates } from "@/i18n/routes";
+import { useT } from "@/i18n/ui";
+import { getJournalPost, relatedJournalPosts, type JournalPost } from "@/i18n/journal-content";
+import { servicePhotos, photoAlt } from "@/lib/photos";
+
+interface Props {
+  locale: Locale;
+  slug: string;
+}
+
+const { locale, slug } = Astro.props;
+const t = useT(locale);
+const post = getJournalPost(locale, slug) as JournalPost;
+
+const related = relatedJournalPosts(locale, post.groupId, 3);
+
+// Formato editorial minimalista (fondo blanco, columna angosta): tras
+// el titular, una galería de scroll horizontal (hasta 8 fotos del
+// mismo servicio) y un único párrafo de texto corrido — no la lista de
+// bloques intercalados de antes. Todas las fotos del servicio se unen
+// aquí como texto seguido (sin las etiquetas <p>/<em> de los bloques)
+// para formar ese párrafo único. [Nota] El sitio no tiene un peso de
+// fuente "light/thin" real autoalojado (solo 400/500/600/700) — el
+// titular usa 400, el más liviano disponible, igual que el resto de
+// títulos del sitio.
+const galleryPhotos = servicePhotos(post.cover.service)
+  .slice(0, 8)
+  .map((image, i) => ({ image, alt: photoAlt(locale, post.title, i) }));
+
+const bodyText = post.blocks
+  .filter((b) => b.type === "text" || b.type === "quote")
+  .map((b) => (b.type === "quote" ? b.text : b.html.replace(/<[^>]+>/g, "")))
+  .join(" ");
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${post.title} · Journal · Satori Arts`}
+  description={post.excerpt}
+  alternates={journalArticleAlternates(post.groupId)}
+>
+  <div class="journal-article bg-white text-neutral-600">
+    <!-- HEADER: sin foto de cabecera — titular grande, centrado, en
+         varias líneas si hace falta, peso 400 (el más ligero
+         autoalojado en el sitio). -->
+    <header class="container-prose pt-16 text-center md:pt-24">
+      <h1 data-reveal-words class="font-heading text-4xl leading-tight font-normal text-neutral-900 sm:text-5xl">{post.title}</h1>
+    </header>
+
+    <!-- GALERÍA: masonry real con columnas CSS, misma técnica que
+         /proyectos/ y las páginas de servicio — cada foto conserva su
+         proporción y orientación original (sin aspect-ratio fijo ni
+         object-cover que la recorte). "container-prose-left" (no
+         "container-prose"): esta galería está alineada a la izquierda,
+         no centrada, así que necesita el mismo margen izquierdo que el
+         resto del sitio (MENÚ, footer, Proyectos...) en vez de quedar
+         centrada de forma independiente en pantallas anchas. El título
+         de arriba sigue en "container-prose" a propósito: es un
+         titular centrado, no alineado a la izquierda, así que no le
+         aplica esta misma regla de margen. -->
+    <div class="container-prose-left reveal mt-10 columns-1 gap-x-6 sm:columns-2 md:mt-14">
+      {
+        galleryPhotos.map(({ image, alt }) => (
+          <div class="mb-6 block break-inside-avoid overflow-hidden">
+            <Image src={image} alt={alt} widths={[480, 768]} sizes="(max-width: 640px) 100vw, 50vw" loading="eager" class="h-auto w-full" />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- CUERPO: columna de lectura angosta (container-prose-left,
+         max-w-3xl, alineada a la izquierda, no centrada — mismo motivo
+         que la galería de arriba), un único párrafo corrido, gris
+         oscuro sobre blanco. Los enlaces dentro del texto (si los hay)
+         salen subrayados de forma natural — ver ".journal-body p a" en
+         global.css. -->
+    <div class="journal-body container-prose-left relative pt-14 pb-24 md:pb-28">
+      <p class="reveal text-left text-sm leading-relaxed sm:text-base">{bodyText}</p>
+
+      <!-- CTA final: mismo botón de WhatsApp (WhatsAppButton) que en el
+           resto del sitio, no un link de texto aparte — consistencia
+           con Home/Proyectos/Nosotros/Contacto. -->
+      <div class="reveal mt-10">
+        <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.talkQuestion")} class="bg-neutral-900 text-white" />
+      </div>
+
+      <!-- Fecha de publicación, discreta, como una marca de agua en la
+           esquina inferior izquierda del contenedor del artículo. -->
+      <p class="absolute bottom-6 left-5 font-label text-xs text-neutral-400 sm:left-6">{post.date}</p>
+    </div>
+  </div>
+
+  <!-- ARTÍCULOS SIMILARES: mismo formato de tarjeta compacta que la
+       cuadrícula del Journal (imagen + título + categoría + fecha,
+       todo dentro de la misma tarjeta), pero en un carrusel horizontal
+       en vez de un grid fijo — mismo patrón data-carousel que el
+       carrusel de testimonios de la home (arrastre/scroll táctil +
+       barra de progreso), sin la clase ".carousel-track" (ese efecto
+       de opacidad/escala es propio de las citas grandes, no encaja con
+       tarjetas de imagen pequeñas). -->
+  {
+    related.length > 0 && (
+      <section aria-label={t("journal.related")} data-carousel class="bg-white pb-24">
+        <div class="container-tight">
+          <p class="reveal font-heading mb-8 text-2xl font-normal text-neutral-900 sm:text-3xl">{t("journal.related")}</p>
+          <div data-carousel-track class="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2">
+            {related.map((r) => (
+              <a href={journalArticlePath(locale, r.slug)} class="reveal group block w-[68%] shrink-0 snap-start sm:w-[42%] lg:w-[28%]">
+                <div class="aspect-[4/3] overflow-hidden bg-card">
+                  <Image
+                    src={servicePhotos(r.cover.service)[r.cover.index]}
+                    alt={photoAlt(locale, r.title, r.cover.index)}
+                    widths={[320, 480]}
+                    sizes="(max-width: 640px) 68vw, 28vw"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+                <span class="font-heading mt-4 block text-base font-medium text-neutral-900">{r.title}</span>
+                <p class="font-label mt-1 text-xs font-medium text-neutral-900">{r.category}</p>
+                <p class="font-label text-xs text-neutral-400">{r.date}</p>
+              </a>
+            ))}
+          </div>
+          {
+            related.length > 1 && (
+              <div class="mt-6 h-px w-full overflow-hidden bg-border">
+                <div data-carousel-progress class="h-full w-1/4 bg-neutral-900 transition-transform duration-300 ease-out" />
+              </div>
+            )
+          }
+        </div>
+      </section>
+    )
+  }
+
+  <script>
+    import "@/scripts/testimonial-carousel";
+  </script>
+</BaseLayout>

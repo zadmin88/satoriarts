@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { ServiceKey } from "@/config";
+
+export type GridItem =
+  | { type: "video"; src: string; key: ServiceKey; href: string; title: string }
+  | { type: "photo"; image: ImageMetadata; alt: string; key: ServiceKey; href: string; title: string };
+
+interface Props {
+  item: GridItem;
+}
+const { item } = Astro.props;
+---
+
+{
+  item.type === "video" ? (
+    <a href={item.href} data-service={item.key} class="mb-6 block break-inside-avoid overflow-hidden">
+      <!-- aspect-video: un <video> sin width/height declarados no
+           tiene tamaño conocido hasta que carga sus metadatos
+           (preload="metadata"), así que el navegador le da una caja
+           por defecto (~2:1) mientras tanto — eso descuadraba su
+           columna respecto a la foto de al lado (que sí tiene tamaño
+           conocido desde el primer render, vía astro:assets). Reservar
+           un 16:9 estable desde ya evita ese salto/desalineación.
+           object-cover: solo aplica mientras el vídeo placeholder no
+           coincida exactamente en proporción — al llegar los vídeos
+           reales por categoría, conviene revisar si sigue haciendo
+           falta o si ya se ajustan a esta relación. -->
+      <video
+        src={item.src}
+        preload="metadata"
+        autoplay
+        muted
+        loop
+        playsinline
+        aria-label={item.title}
+        class="aspect-video w-full object-cover"
+      />
+    </a>
+  ) : (
+    <a href={item.href} data-service={item.key} class="mb-6 block break-inside-avoid overflow-hidden">
+      <Image
+        src={item.image}
+        alt={item.alt}
+        widths={[480, 768, 1024]}
+        sizes="(max-width: 640px) 100vw, 50vw"
+        loading="lazy"
+        class="h-auto w-full"
+      />
+    </a>
+  )
+}
