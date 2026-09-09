@@ -4,7 +4,7 @@ import type { ImageMetadata } from "astro";
 import type { ServiceKey } from "@/config";
 
 export type GridItem =
-  | { type: "video"; src: string; key: ServiceKey; href: string; title: string }
+  | { type: "video"; src: string; poster?: string; key: ServiceKey; href: string; title: string }
   | { type: "photo"; image: ImageMetadata; alt: string; key: ServiceKey; href: string; title: string };
 
 interface Props {
@@ -26,9 +26,18 @@ const { item } = Astro.props;
            object-cover: solo aplica mientras el vídeo placeholder no
            coincida exactamente en proporción — al llegar los vídeos
            reales por categoría, conviene revisar si sigue haciendo
-           falta o si ya se ajustan a esta relación. -->
+           falta o si ya se ajustan a esta relación.
+           poster: sin esto, un <video> se pinta NEGRO SÓLIDO hasta que
+           el navegador descarga suficiente datos para decodificar el
+           primer fotograma — en wifi de escritorio apenas se nota, pero
+           en datos móviles (más lentos, a veces con el autoplay más
+           restringido) esa espera podía ser de varios segundos, dando
+           la sensación de que "Proyectos" no cargaba en mobile. Con
+           una foto real de la categoría como poster, se ve contenido
+           de inmediato mientras el vídeo termina de cargar detrás. -->
       <video
         src={item.src}
+        poster={item.poster}
         preload="metadata"
         autoplay
         muted

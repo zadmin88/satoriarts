@@ -42,7 +42,7 @@ const c = CONTENT[locale];
 ---
 
 <BaseLayout locale={locale} title={c.title} description={c.description} alternates={routeAlternates("contact")}>
-  <section class="container-tight py-16 md:py-20">
+  <section class="section-space container-tight">
     <p class="eyebrow mb-4">{t("nav.contact")}</p>
     <h1 class="max-w-3xl font-heading text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">{c.h1}</h1>
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{c.lead}</p>
@@ -62,7 +62,7 @@ const c = CONTENT[locale];
     </div>
   </section>
 
-  <section class="container-tight py-12">
+  <section class="section-space container-tight">
     <p class="reveal mb-5 font-medium text-foreground">{c.quick}</p>
     <div class="stagger-grid flex flex-wrap gap-3">
       {SERVICES.map((s) => (
@@ -73,7 +73,7 @@ const c = CONTENT[locale];
     </div>
   </section>
 
-  <section class="container-tight py-12">
+  <section class="section-space container-tight">
     <p class="reveal eyebrow mb-3">{c.cities}</p>
     <div class="stagger-grid flex flex-wrap gap-3">
       {CITIES.map((city) => (

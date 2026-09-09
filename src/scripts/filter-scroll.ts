@@ -36,16 +36,17 @@ let stuckObserver: IntersectionObserver | undefined;
 // "moviéndose" de sitio. Esta función solo toca el contenedor
 // horizontal de la barra (su propio "scrollLeft"), nunca el documento,
 // así es imposible que afecte al scroll vertical ni a Lenis.
+// Siempre alinea la pestaña al borde IZQUIERDO del área visible de la
+// barra (no solo "la mete en el encuadre más cercano"): al elegir una
+// categoría, esa pestaña debe quedar al inicio del recorte visible, no
+// centrada ni a medio camino — así el usuario ve de un vistazo cuáles
+// vienen después sin tener que arrastrar la barra primero.
 function scrollPillIntoView(pill: HTMLElement, behavior: ScrollBehavior) {
   const container = pill.closest<HTMLElement>(".no-scrollbar");
   if (!container) return;
   const pillRect = pill.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
-  if (pillRect.left < containerRect.left) {
-    container.scrollBy({ left: pillRect.left - containerRect.left, behavior });
-  } else if (pillRect.right > containerRect.right) {
-    container.scrollBy({ left: pillRect.right - containerRect.right, behavior });
-  }
+  container.scrollBy({ left: pillRect.left - containerRect.left, behavior });
 }
 
 function watchStuckState(header: HTMLElement) {

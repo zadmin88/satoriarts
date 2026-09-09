@@ -129,8 +129,23 @@ const preview = [
        las más bajas. -->
   <section aria-labelledby="pf-titulo">
     <div class="section-space container-tight">
+      <!-- items-end (no items-baseline): el CTA usa ".hover-flip"
+           (overflow:hidden, necesario para el efecto de recorte del
+           texto al pasar el cursor) — por especificación CSS, un
+           elemento inline-block con overflow distinto de "visible" no
+           expone su línea base real a un ancestro flex: en su lugar
+           aporta el borde INFERIOR de su caja como "línea base"
+           sintética. Con "items-baseline" eso alineaba la línea base
+           real del título contra el borde inferior (no la línea base)
+           del CTA — dos puntos de referencia distintos, mucho más
+           descuadrados que antes. "items-end" alinea ambos por el
+           borde inferior de su caja (mismo tipo de referencia en los
+           dos) y "leading-none" en el título quita el aire de línea
+           extra que su tamaño de fuente añade por defecto, así su
+           borde inferior queda pegado al propio texto — visualmente
+           es lo que se percibe como "misma altura". -->
       <div class="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
-        <h2 id="pf-titulo" data-reveal-words class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h2>
+        <h2 id="pf-titulo" data-reveal-words class="font-heading text-3xl leading-none font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h2>
         <a href={routePath(locale, "portfolio")} class="hover-flip font-label text-sm font-medium uppercase tracking-wider text-white">
           <span class="flip-a block">{t("cta.seeMore")}</span>
           <span aria-hidden="true" class="flip-b block">{t("cta.seeMore")}</span>

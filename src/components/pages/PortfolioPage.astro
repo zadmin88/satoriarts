@@ -8,7 +8,6 @@ import type { Locale } from "@/config";
 import { routeAlternates } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
-import { CATEGORY_VIDEO } from "@/lib/category-video";
 
 interface Props {
   locale: Locale;
@@ -35,29 +34,22 @@ const SEO: Record<Locale, { title: string; description: string; intro: string }>
 };
 const seo = SEO[locale];
 
-// Cuadrícula de cada servicio: el vídeo de la categoría es un elemento
-// APARTE y a todo el ancho (protagonista, no comparte columna con una
-// foto — a diferencia de antes, ya no se reparte junto con las fotos),
-// y debajo sus fotos en 2 columnas. Todo sigue siendo filtrable por
-// servicio con radio + :has() (cero JavaScript): tanto el vídeo como
-// cada foto llevan su propio "data-service", y también se marca el
-// contenedor que los envuelve — así, al filtrar, el bloque entero de
-// una categoría oculta (vídeo + sus columnas de fotos) desaparece como
-// una unidad, sin dejar huecos de margen vacíos de las categorías no
-// visibles.
-//
-// Fotos en 2 columnas EXPLÍCITAS (no CSS "columns-2"): con
-// "columns-*", el navegador decide en qué columna cae cada elemento
-// según un algoritmo de equilibrio de alturas totales, no en el orden
-// "1→col A, 2→col B" — por eso ni siquiera la primera fila garantizaba
-// arrancar a la misma altura. Repartiendo nosotros mismos las fotos
-// (alternando por índice), la primera foto de cada columna siempre
-// arranca en el mismo punto superior — sin recortar ni forzar el
-// tamaño de ninguna, cada fila siguiente se sigue escalonando de forma
-// natural según el alto real de lo anterior en su propia columna.
+// Cuadrícula de cada servicio: solo fotos (sin vídeo, quitado a
+// propósito de las secciones internas de Proyectos), repartidas en 2
+// columnas EXPLÍCITAS (no CSS "columns-2"): con "columns-*", el
+// navegador decide en qué columna cae cada elemento según un algoritmo
+// de equilibrio de alturas totales, no en el orden "1→col A, 2→col B"
+// — por eso ni siquiera la primera fila garantizaba arrancar a la
+// misma altura. Repartiendo nosotros mismos las fotos (alternando por
+// índice), la primera foto de cada columna siempre arranca en el
+// mismo punto superior — sin recortar ni forzar el tamaño de ninguna,
+// cada fila siguiente se sigue escalonando de forma natural según el
+// alto real de lo anterior en su propia columna. Todo sigue siendo
+// filtrable por servicio con radio + :has() (cero JavaScript): cada
+// foto lleva su propio "data-service", y también el contenedor que las
+// envuelve.
 const serviceBlocks: ServiceBlock[] = SERVICES.map((s) => {
   const copy = s.i18n[locale];
-  const video: GridItem = { type: "video", src: CATEGORY_VIDEO[s.key], key: s.key, href: servicePath(locale, s), title: copy.title };
   const photos: GridItem[] = servicePhotos(s.key).map((image, i) => ({
     type: "photo" as const,
     image,
@@ -68,7 +60,7 @@ const serviceBlocks: ServiceBlock[] = SERVICES.map((s) => {
   }));
   const photoColumns: [GridItem[], GridItem[]] = [[], []];
   photos.forEach((p, i) => photoColumns[i % 2].push(p));
-  return { key: s.key, video, photos, photoColumns };
+  return { key: s.key, photos, photoColumns };
 });
 ---
 
@@ -112,7 +104,7 @@ const serviceBlocks: ServiceBlock[] = SERVICES.map((s) => {
        esta sección en desktop la hacía "arrancar" en un punto
        horizontal distinto al resto de "Proyectos", dando la sensación
        de bloques descuadrados entre sí dentro de la misma página. -->
-  <section class="reveal container-tight flex flex-col items-start gap-8 py-14 text-left sm:gap-6 sm:py-24 md:py-32">
+  <section class="section-space reveal container-tight flex flex-col items-start gap-8 text-left sm:gap-6">
     <p class="text-balance font-heading text-4xl font-medium text-foreground sm:text-3xl">{t("cta.dateQuestion")}</p>
     <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
   </section>
