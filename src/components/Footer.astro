@@ -84,7 +84,21 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
       </div>
     </div>
 
-    <div class="reveal mt-12 flex flex-col items-start gap-3 pt-6 text-xs uppercase tracking-wide sm:flex-row-reverse sm:items-center sm:justify-between">
+    <!-- flex-col-reverse (no flex-col) en mobile: en el DOM, el bloque
+         de links legales va primero y el copyright después (así
+         "sm:flex-row-reverse" en desktop pone el copyright a la
+         izquierda, como en el resto del sitio) — pero en mobile
+         "flex-col" simplemente apila en orden de DOM, mostrando legal
+         ARRIBA y copyright ABAJO, al revés de desktop, sin ningún
+         criterio (era un efecto secundario no intencionado de
+         reutilizar el mismo truco de "row-reverse" solo pensado para
+         fila, no para columna). Con "flex-col-reverse" el último
+         elemento del DOM (el copyright) sube arriba también en mobile,
+         quedando siempre primero en los dos casos.
+         mt-10 (no mt-12 pt-6): mismo "gap-10" que ya separa
+         Navegación/Social/Volver arriba entre sí, en vez de un
+         espacio mayor y distinto solo para este bloque. -->
+    <div class="reveal mt-10 flex flex-col-reverse items-start gap-3 text-xs uppercase tracking-wide sm:flex-row-reverse sm:items-center sm:justify-between">
       <div class="flex flex-col items-start gap-2 text-left sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
         <a href={routePath(locale, "legalNotice")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
           <span class="flip-a block">{legalNotice}</span>

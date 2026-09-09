@@ -32,7 +32,6 @@ import type { Locale } from "@/config";
 
 export interface ServiceBlock {
   key: ServiceKey;
-  video: GridItem;
   photos: GridItem[];
   photoColumns: [GridItem[], GridItem[]];
 }
@@ -120,21 +119,17 @@ const t = useT(locale);
   </div>
 
   <!-- CUADRÍCULA: masonry con 2 columnas EXPLÍCITAS (no CSS
-       "columns-2"). Mobile: una sola lista secuencial (vídeo, foto 1,
-       foto 2...); desde "sm:", dos columnas repartidas por índice
-       dentro de cada categoría — el primer elemento de cada columna
-       siempre arranca a la misma altura, sin recortar ni forzar el
-       tamaño de ninguna foto o vídeo. -->
+       "columns-2"). Mobile: una sola lista secuencial; desde "sm:", dos
+       columnas repartidas por índice dentro de cada categoría — el
+       primer elemento de cada columna siempre arranca a la misma
+       altura, sin recortar ni forzar el tamaño de ninguna foto. Sin
+       vídeo a propósito: se quitó de las secciones internas de
+       Proyectos (antes había uno por categoría, GridMediaItem sigue
+       soportando "type: video" por si se retoma más adelante). -->
   <div data-portfolio-grid={withGridId ? true : undefined} class="container-tight pb-24">
     {
       blocks.map((block) => (
         <div data-service={block.key}>
-          {/* Vídeo: a todo el ancho del grid (ambas columnas en
-              desktop), más protagonista que una foto suelta — mismo
-              tratamiento en mobile y desktop. */}
-          <div class="mb-6 sm:mb-10">
-            <GridMediaItem item={block.video} />
-          </div>
           {/* Fotos: 1 columna en mobile, 2 en desktop */}
           <div class="mb-6 flex flex-col gap-6 sm:mb-10 sm:hidden">
             {block.photos.map((item) => (

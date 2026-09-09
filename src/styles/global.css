@@ -816,7 +816,21 @@ details.menu[open] .word-reveal > span {
    un corte brusco — el cambio de altura del contenedor sigue siendo
    instantáneo (columns-* no admite animar su altura), pero al no haber
    ya un "pop" visual de opacidad, deja de sentirse como un salto. */
-.filter-gallery [data-service] {
+/* [Fix] Esta regla asumía que los radios de filtro ("#pf-all",
+   "#pf-filter-*") SIEMPRE existen como hermanos — cierto solo en
+   /proyectos/. En cada página de servicio (/bodas/, /eventos/...) no
+   hay ningún radio (las pestañas son enlaces reales, no filtro CSS en
+   la misma página), así que ninguna de las reglas ":has(...:checked)"
+   de abajo llegaba nunca a cumplirse, y el grid de fotos se quedaba en
+   "display:none" PARA SIEMPRE — el contenido existía en el HTML (por
+   eso el build y el grep siempre lo daban por bueno) pero el CSS lo
+   ocultaba en todas las páginas de servicio, en mobile y desktop. El
+   "display:none" ahora solo se aplica ":has(#pf-all)" (el radio EXISTE
+   como hermano, sin importar si está marcado) — eso solo es cierto en
+   /proyectos/; en páginas de servicio, sin radios, esta condición
+   nunca se cumple y el contenido queda visible por defecto, tal cual
+   está en el HTML. */
+.filter-gallery:has(#pf-all) [data-service] {
   display: none;
   opacity: 0;
   transition: opacity 0.25s ease, display 0.25s allow-discrete;
@@ -851,7 +865,7 @@ details.menu[open] .word-reveal > span {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .filter-gallery [data-service] {
+  .filter-gallery:has(#pf-all) [data-service] {
     transition: none;
   }
 }

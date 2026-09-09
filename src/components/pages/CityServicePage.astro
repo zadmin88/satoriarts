@@ -43,7 +43,7 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <header class="bg-card/40">
-    <div class="container-tight py-14 md:py-20">
+    <div class="section-space container-tight">
       <p class="eyebrow mb-3">{city.name} · {service.i18n[locale].title}</p>
       <h1 class="max-w-3xl font-heading text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">{copy.h1}</h1>
       <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{copy.intro}</p>
@@ -62,9 +62,9 @@ const jsonLd = [
        margen izquierdo que el header/CTA de esta misma página (ambos
        en container-tight) en vez de quedar centrado de forma
        independiente en pantallas anchas. -->
-  <div class="reveal prose-body container-prose-left py-14" set:html={copy.bodyHtml}></div>
+  <div class="reveal prose-body section-space container-prose-left" set:html={copy.bodyHtml}></div>
 
-  <section class="container-tight pb-14">
+  <section class="section-space container-tight">
     <div class="mb-10 border-b border-border" />
     <div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2">
       {

@@ -21,6 +21,19 @@ function tick(time: number) {
 function start() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+  // Sin Lenis en pantallas táctiles: el scroll "falseado" por JS que
+  // usa Lenis para suavizar la inercia entra en conflicto con
+  // "position: sticky" en el scroll táctil real (el navegador recalcula
+  // el sticky en su propio hilo de composición mientras Lenis intenta
+  // sincronizarlo por rAF a la vez) — se notaba como un brinco/
+  // parpadeo justo al activarse el sticky de la barra de categorías de
+  // Proyectos, solo en mobile/tablet. El scroll nativo por inercia de
+  // iOS/Android ya es fluido de por sí y no tiene ese problema, así
+  // que en pantallas táctiles se deja el scroll 100% nativo; el
+  // suavizado de Lenis se reserva para scroll de rueda de ratón
+  // (desktop/trackpad), donde no hay ese conflicto.
+  if (window.matchMedia("(pointer: coarse)").matches) return;
+
   lenis = new Lenis({
     duration: 1.4,
     easing: (t) => 1 - Math.pow(1 - t, 3),

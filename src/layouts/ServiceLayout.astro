@@ -15,7 +15,6 @@ import type { Locale, Service } from "@/config";
 import { serviceAlternates, routePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
-import { CATEGORY_VIDEO } from "@/lib/category-video";
 
 interface Props {
   locale: Locale;
@@ -49,8 +48,7 @@ const photos: GridItem[] = servicePhotos(service.key).map((image, i) => ({
 const photoColumns: [GridItem[], GridItem[]] = [[], []];
 photos.forEach((p, i) => photoColumns[i % 2].push(p));
 
-const video: GridItem = { type: "video", src: CATEGORY_VIDEO[service.key], key: service.key, href: servicePath(locale, service), title: copy.title };
-const blocks: ServiceBlock[] = [{ key: service.key, video, photos, photoColumns }];
+const blocks: ServiceBlock[] = [{ key: service.key, photos, photoColumns }];
 
 const jsonLd = [
   {
@@ -116,7 +114,7 @@ const jsonLd = [
          PortfolioPage.astro para la explicación completa de por qué ya
          no se centra en desktop como el resto de las páginas del
          sitio. -->
-    <section class="reveal container-tight flex flex-col items-start gap-8 py-14 text-left sm:gap-6 sm:py-24 md:py-32">
+    <section class="section-space reveal container-tight flex flex-col items-start gap-8 text-left sm:gap-6">
       <p class="text-balance font-heading text-4xl font-medium text-foreground sm:text-3xl">{t("cta.dateQuestion")}</p>
       <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
     </section>
