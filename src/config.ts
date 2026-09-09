@@ -108,7 +108,6 @@ export const SITE = {
     return `https://www.facebook.com/${this.facebook}/`;
   },
 
-  /** [PLACEHOLDER] Confirmar canal real antes de publicar. */
   youtube: "@satoriarts",
   get youtubeUrl() {
     return `https://www.youtube.com/${this.youtube}`;
@@ -122,9 +121,18 @@ export const SITE = {
 
   /** [PLACEHOLDER] Nota media y nº de reseñas de la ficha de Google Business. */
   googleRating: 5.0,
-  googleReviewCount: 103,
-  /** [PLACEHOLDER] Enlace directo a las reseñas de Google (ficha de empresa). */
-  googleReviewsUrl: "https://g.page/r/satoriarts/review",
+  googleReviewCount: 8,
+  /**
+   * Nombre exacto de la ficha de Google Business ("Satori Arts Visual Love
+   * Feeling- Fotografia y video"). Sin Place ID confirmado, se enlaza a una
+   * búsqueda de Google Maps por nombre: abre directamente la ficha con sus
+   * reseñas. Sustituir por el enlace corto (g.page/r/.../review) cuando se
+   * confirme el Place ID exacto, para ir directo al formulario de reseña.
+   */
+  googleBusinessName: "Satori Arts Visual Love Feeling- Fotografia y video",
+  get googleReviewsUrl() {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(this.googleBusinessName)}`;
+  },
 } as const;
 
 /** Enlace de WhatsApp con mensaje prellenado */

@@ -9,6 +9,7 @@
  */
 import { LOCALES, localizePath, servicePath, SERVICES } from "@/config";
 import type { Locale } from "@/config";
+import { JOURNAL_POSTS } from "@/i18n/journal-content";
 
 export type RouteKey =
   | "home"
@@ -21,7 +22,7 @@ export type RouteKey =
 
 export const ROUTE_SLUGS: Record<RouteKey, Record<Locale, string>> = {
   home: { es: "", en: "", ca: "" },
-  portfolio: { es: "portfolio", en: "portfolio", ca: "portfolio" },
+  portfolio: { es: "proyectos", en: "projects", ca: "projectes" },
   about: { es: "conocenos", en: "about", ca: "coneix-nos" },
   contact: { es: "contacto", en: "contact", ca: "contacte" },
   journal: { es: "journal", en: "journal", ca: "journal" },
@@ -47,5 +48,20 @@ export function serviceAlternates(serviceKey: string): Record<Locale, string> {
   if (!service) return {} as Record<Locale, string>;
   return Object.fromEntries(
     LOCALES.map((l) => [l, servicePath(l, service)]),
+  ) as Record<Locale, string>;
+}
+
+/** Ruta de un artículo del Journal en un idioma, con barra final */
+export function journalArticlePath(locale: Locale, slug: string): string {
+  return localizePath(locale, `/journal/${slug}`);
+}
+
+/** Alternates hreflang para un artículo del Journal (mismo groupId en los 3 idiomas) */
+export function journalArticleAlternates(groupId: string): Record<Locale, string> {
+  return Object.fromEntries(
+    LOCALES.map((l) => {
+      const post = JOURNAL_POSTS[l].find((p) => p.groupId === groupId);
+      return [l, post ? journalArticlePath(l, post.slug) : routePath(l, "journal")];
+    }),
   ) as Record<Locale, string>;
 }

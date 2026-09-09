@@ -12,22 +12,41 @@ const { locale } = Astro.props;
 const t = useT(locale);
 const year = new Date().getFullYear();
 
+// Etiquetas ya en mayúsculas (JS), no con "text-transform: uppercase"
+// en CSS: aplicar "uppercase" en vivo a texto con acentos (Conócenos,
+// Navegación, Créditos...) duplica visualmente la tilde en algunos
+// navegadores — mismo bug ya corregido en el menú principal (Header.astro).
 const nav = [
-  { href: routePath(locale, "home"), label: t("nav.home") },
-  { href: routePath(locale, "about"), label: t("nav.aboutMenu") },
-  { href: routePath(locale, "portfolio"), label: t("nav.portfolio") },
-  { href: routePath(locale, "journal"), label: t("nav.journal") },
+  { href: routePath(locale, "home"), label: t("nav.home").toLocaleUpperCase(locale) },
+  { href: routePath(locale, "about"), label: t("nav.aboutMenu").toLocaleUpperCase(locale) },
+  { href: routePath(locale, "portfolio"), label: t("nav.portfolio").toLocaleUpperCase(locale) },
+  { href: routePath(locale, "journal"), label: t("nav.journal").toLocaleUpperCase(locale) },
 ];
+const navLabel = t("footer.navLabel").toLocaleUpperCase(locale);
+const followLabel = t("footer.follow").toLocaleUpperCase(locale);
+const legalNotice = t("footer.legalNotice").toLocaleUpperCase(locale);
+const privacy = t("footer.privacy").toLocaleUpperCase(locale);
+const credits = t("footer.credits").toLocaleUpperCase(locale);
 ---
 
-<footer class="bg-white text-black">
-  <div class="stagger-grid container-tight py-14">
+<!-- mt-* reserva "aire" consistente entre el final de cualquier página
+     y el footer (fondo blanco): así el contenido oscuro anterior nunca
+     queda pegado a ese cambio de fondo, en ninguna página del sitio,
+     sin tener que tocar el padding-bottom de cada sección por separado. -->
+<footer class="mt-16 bg-white text-black sm:mt-20 md:mt-28">
+  <!-- pt-14 arriba (aire consistente tras el bloque de navegación/
+       redes) pero pb-4 abajo, NO py-14 simétrico: el mismo padding
+       arriba y abajo (y luego pb-8) seguía dejando un espacio en
+       blanco de sobra debajo de la fila de copyright/legal, reportado
+       repetidamente — el footer debe terminar prácticamente pegado a
+       esa línea, sin aire simétrico con el de arriba. -->
+  <div class="stagger-grid container-tight pt-14 pb-4">
     <div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
       <nav aria-label={t("footer.navLabel")} class="reveal flex flex-col gap-3">
-        <p class="font-heading text-sm font-medium uppercase text-black">{t("footer.navLabel")}</p>
+        <p class="font-heading text-sm font-medium text-black">{navLabel}</p>
         {
           nav.map((link) => (
-            <a href={link.href} class="hover-flip inline-block text-xs font-medium uppercase tracking-wide text-neutral-500 hover:text-black">
+            <a href={link.href} class="hover-flip inline-block text-xs font-medium tracking-wide text-neutral-500 hover:text-black">
               <span class="flip-a block">{link.label}</span>
               <span aria-hidden="true" class="flip-b block">{link.label}</span>
             </a>
@@ -36,7 +55,7 @@ const nav = [
       </nav>
 
       <nav aria-label={t("footer.follow")} class="reveal flex flex-col gap-3">
-        <p class="font-heading text-sm font-medium uppercase text-black">{t("footer.follow")}</p>
+        <p class="font-heading text-sm font-medium text-black">{followLabel}</p>
         <a href={SITE.instagramUrl} target="_blank" rel="noopener" class="hover-flip inline-block text-xs font-medium uppercase tracking-wide text-neutral-500 hover:text-black">
           <span class="flip-a block">Instagram</span>
           <span aria-hidden="true" class="flip-b block">Instagram</span>
@@ -66,20 +85,20 @@ const nav = [
     </div>
 
     <div class="reveal mt-12 flex flex-col items-start gap-3 pt-6 text-xs uppercase tracking-wide sm:flex-row-reverse sm:items-center sm:justify-between">
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-left">
-        <a href={routePath(locale, "legalNotice")} class="hover-flip inline-block text-neutral-500 hover:text-black">
-          <span class="flip-a block">{t("footer.legalNotice")}</span>
-          <span aria-hidden="true" class="flip-b block">{t("footer.legalNotice")}</span>
+      <div class="flex flex-col items-start gap-2 text-left sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
+        <a href={routePath(locale, "legalNotice")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
+          <span class="flip-a block">{legalNotice}</span>
+          <span aria-hidden="true" class="flip-b block">{legalNotice}</span>
         </a>
-        <span aria-hidden="true" class="text-neutral-300">·</span>
-        <a href={routePath(locale, "privacy")} class="hover-flip inline-block text-neutral-500 hover:text-black">
-          <span class="flip-a block">{t("footer.privacy")}</span>
-          <span aria-hidden="true" class="flip-b block">{t("footer.privacy")}</span>
+        <span aria-hidden="true" class="hidden text-neutral-300 sm:inline">·</span>
+        <a href={routePath(locale, "privacy")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
+          <span class="flip-a block">{privacy}</span>
+          <span aria-hidden="true" class="flip-b block">{privacy}</span>
         </a>
-        <span aria-hidden="true" class="text-neutral-300">·</span>
-        <span class="hover-flip inline-block text-neutral-500">
-          <span class="flip-a block">{t("footer.credits")}: {t("legal.pending")}</span>
-          <span aria-hidden="true" class="flip-b block text-black">{t("footer.credits")}: {t("legal.pending")}</span>
+        <span aria-hidden="true" class="hidden text-neutral-300 sm:inline">·</span>
+        <span class="hover-flip normal-case inline-block text-neutral-500">
+          <span class="flip-a block">{credits}: {t("legal.pending")}</span>
+          <span aria-hidden="true" class="flip-b block text-black">{credits}: {t("legal.pending")}</span>
         </span>
       </div>
       <span class="text-neutral-500">© {year} {SITE.brand}</span>

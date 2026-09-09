@@ -19,17 +19,17 @@ const t = useT(locale);
       <h2 id="cta-titulo" class="font-heading text-4xl font-medium text-foreground sm:text-5xl">
         {t("cta.blockTitle")}
       </h2>
-      <p class="text-lg leading-relaxed text-muted-foreground sm:mx-auto sm:max-w-xl">{t("cta.blockText")}</p>
+      <p class="text-pretty text-lg leading-relaxed text-muted-foreground sm:mx-auto sm:max-w-xl">{t("cta.blockText")}</p>
     </div>
     <a
       href={waLink(message)}
       target="_blank"
       rel="noopener"
-      class="reveal inline-flex h-12 items-center justify-center rounded-sm bg-white px-7 text-black transition-colors hover:bg-white/90"
+      class="btn reveal bg-white text-black hover:bg-white/90"
     >
       <span class="hover-flip inline-block">
-        <span class="flip-a block text-sm font-semibold uppercase tracking-[0.06em]">{t("cta.requestInfo")}</span>
-        <span aria-hidden="true" class="flip-b block text-sm font-semibold uppercase tracking-[0.06em]">{t("cta.requestInfo")}</span>
+        <span class="flip-a block">{t("cta.requestInfo")}</span>
+        <span aria-hidden="true" class="flip-b block">{t("cta.requestInfo")}</span>
       </span>
     </a>
   </div>

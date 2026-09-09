@@ -3,7 +3,6 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import CtaSection from "@/components/CtaSection.astro";
-import Photo from "@/components/Photo.astro";
 import Logo from "@/components/Logo.astro";
 import { SITE, SERVICES, CLIENTS, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
@@ -29,12 +28,6 @@ const preview = [
   { image: servicePhotos("bodas")[2], alt: photoAlt(locale, SERVICES[0].i18n[locale].title, 2) },
   { image: servicePhotos("hoteles")[3], alt: photoAlt(locale, SERVICES[2].i18n[locale].title, 3) },
 ];
-
-// Retícula asimétrica (broken grid) para la vista previa: cada foto con
-// su propio ancho, proporción y desplazamiento vertical, sobre una base
-// de 6 columnas en escritorio.
-const previewSpan = ["col-span-2 sm:col-span-4", "col-span-1 sm:col-span-2", "col-span-1 sm:col-span-2", "col-span-1 sm:col-span-2", "col-span-1 sm:col-span-2", "col-span-2 sm:col-span-2"];
-const previewAspect = ["aspect-[16/9]", "aspect-[3/4]", "aspect-[1/1]", "aspect-[4/5]", "aspect-[3/2]", "aspect-[4/5]"];
 ---
 
 <BaseLayout
@@ -50,7 +43,7 @@ const previewAspect = ["aspect-[16/9]", "aspect-[3/4]", "aspect-[1/1]", "aspect-
        vive aquí, centrada a pantalla completa —igual que el "VERO" del
        referente—; el titular y el CTA tienen su propia sección justo
        debajo. -->
-  <section class="relative -mt-24 flex h-[92svh] min-h-[560px] w-full flex-col items-center justify-center overflow-hidden bg-background px-6 text-center md:-mt-28 md:h-[92dvh]">
+  <section class="relative -mt-24 flex h-[92svh] min-h-[560px] w-full flex-col items-center justify-center overflow-hidden bg-background px-5 text-center sm:px-6 md:-mt-28 md:h-[92dvh]">
     <div data-parallax="0.1" class="absolute inset-0">
       <video
         src="/video_hero.mp4"
@@ -64,7 +57,23 @@ const previewAspect = ["aspect-[16/9]", "aspect-[3/4]", "aspect-[1/1]", "aspect-
         class="ken-burns h-full w-full object-cover"
       ></video>
     </div>
-    <div class="absolute inset-0 bg-[linear-gradient(to_top,var(--background)_0%,var(--background)_22%,color-mix(in_oklch,var(--background)_25%,transparent)_65%,transparent_100%)]"></div>
+    <!-- Degradado con solo el canal alpha (sin color-mix, que en Safari/
+         WebView móviles sin soporte cae a un fallback que lo vuelve
+         sólido opaco casi hasta el 90% de la sección — justo el bloque
+         negro grande que se veía). Opaco solo en una franja mínima
+         (0–3%) pegada al borde inferior, para que la costura con la
+         siguiente sección siga siendo invisible; a partir de ahí el
+         oscurecimiento máximo es 65%, no negro puro, y se desvanece de
+         forma gradual y continua hasta transparente. -->
+    <!-- Viñeta simple de 2 puntos, sin capas intermedias: negro al 85%
+         (nunca 100% opaco) en el borde inferior, transparente ya al 55%
+         de la altura — la mitad superior de la imagen queda nítida sin
+         ningún oscurecimiento, y la transición entre ambos puntos es
+         una única rampa lineal continua (sin escalones ni "cortes"). La
+         costura con la sección siguiente no depende de que esto llegue
+         a opacidad total: esa sección ya se solapa 1px con el mismo
+         fondo (ver "-mt-px" más abajo), así que aquí no hace falta. -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/85 to-transparent to-55%"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-transparent"></div>
 
     <!-- Marca centrada, como el "VERO" del referente -->
@@ -109,56 +118,38 @@ const previewAspect = ["aspect-[16/9]", "aspect-[3/4]", "aspect-[1/1]", "aspect-
     </div>
   </section>
 
-  <!-- PROYECTOS: vista previa en retícula asimétrica (broken grid), como
-       una pared de referencias editoriales: fotos de distinto tamaño y
-       proporción, no una cuadrícula uniforme. -->
+  <!-- PROYECTOS: vista previa en masonry de 2 columnas EXPLÍCITAS
+       (reparto por índice, no CSS "columns-*"), misma técnica que
+       /proyectos/ (PortfolioPage.astro): cada foto conserva su
+       proporción natural (sin aspect-ratio fijo ni object-cover que la
+       recorte) y cada columna fluye de forma independiente, así fotos
+       de distinta orientación (vertical/horizontal) no dejan huecos
+       entre sí — a diferencia de un grid por filas con aspect-ratio
+       uniforme, donde la foto más alta de la fila dejaba un hueco bajo
+       las más bajas. -->
   <section aria-labelledby="pf-titulo">
     <div class="section-space container-tight">
       <div class="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
         <h2 id="pf-titulo" data-reveal-words class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h2>
-        <a href={routePath(locale, "portfolio")} class="hover-flip font-label text-sm uppercase tracking-wider text-white">
+        <a href={routePath(locale, "portfolio")} class="hover-flip font-label text-sm font-medium uppercase tracking-wider text-white">
           <span class="flip-a block">{t("cta.seeMore")}</span>
           <span aria-hidden="true" class="flip-b block">{t("cta.seeMore")}</span>
         </a>
       </div>
-      <!-- La primera foto siempre a todo lo ancho (protagonista). El
-           resto: en móvil, columnas tipo masonry (cada columna encaja sus
-           fotos sin huecos). En escritorio: retícula de altura de fila
-           fija (auto-rows) — el ancho varía por foto (col-span), pero la
-           altura es siempre la misma dentro de cada fila, así el `gap`
-           queda idéntico en todas partes y no se generan huecos negros. -->
-      <Photo
-        image={preview[0].image}
-        alt={preview[0].alt}
-        aspect={previewAspect[0]}
-        class="reveal-img mb-3 sm:hidden [&_img]:transition-transform [&_img]:duration-500 hover:[&_img]:scale-[1.05]"
-        sizes="100vw"
-      />
-      <div class="columns-2 gap-3 sm:hidden">
+      <div class="grid grid-cols-2 gap-x-3 sm:gap-x-4">
         {
-          preview.slice(1).map((p, i) => (
-            <Photo
-              image={p.image}
-              alt={p.alt}
-              aspect={previewAspect[(i + 1) % previewAspect.length]}
-              class="reveal-img mb-3 break-inside-avoid [&_img]:transition-transform [&_img]:duration-500 hover:[&_img]:scale-[1.05]"
-              sizes="50vw"
-            />
-          ))
-        }
-      </div>
-      <div class="hidden sm:grid sm:grid-cols-6 sm:gap-5" style="grid-auto-rows: 16rem;">
-        {
-          preview.map((p, i) => (
-            <div class:list={["reveal-img group relative overflow-hidden", previewSpan[i % previewSpan.length]]} style={i === 0 ? "grid-row: span 2;" : ""}>
-              <Image
-                src={p.image}
-                alt={p.alt}
-                widths={[480, 768, 1024]}
-                sizes="(max-width: 1024px) 50vw, 33vw"
-                loading={i === 0 ? "eager" : "lazy"}
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
-              />
+          [preview.filter((_, i) => i % 2 === 0), preview.filter((_, i) => i % 2 === 1)].map((col) => (
+            <div class="flex flex-col gap-3 sm:gap-4">
+              {col.map((p) => (
+                <Image
+                  src={p.image}
+                  alt={p.alt}
+                  widths={[320, 480, 768]}
+                  sizes="50vw"
+                  loading="lazy"
+                  class="reveal-img h-auto w-full"
+                />
+              ))}
             </div>
           ))
         }
@@ -178,7 +169,7 @@ const previewAspect = ["aspect-[16/9]", "aspect-[3/4]", "aspect-[1/1]", "aspect-
         {
           CLIENTS.map((c) => (
             <div class="flex aspect-[4/3] items-center justify-center">
-              <Logo class="size-16 opacity-80" spin={false} />
+              <Logo class="size-20 opacity-80" spin={false} />
             </div>
           ))
         }
@@ -193,7 +184,7 @@ const previewAspect = ["aspect-[16/9]", "aspect-[3/4]", "aspect-[1/1]", "aspect-
     <div class="section-space container-tight">
       <div class="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
         <h2 id="test-titulo" data-reveal-words class="font-heading text-3xl font-normal uppercase leading-tight text-foreground sm:text-5xl">{t("section.testimonials")}</h2>
-        <a href={SITE.googleReviewsUrl} target="_blank" rel="noopener" class="hover-flip inline-flex items-center gap-2 font-label text-sm uppercase tracking-wider">
+        <a href={SITE.googleReviewsUrl} target="_blank" rel="noopener" class="hover-flip inline-flex items-center gap-2 font-label text-sm font-medium uppercase tracking-wider">
           <span class="flip-a flex items-center gap-2">
             <span>{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-2.5 shrink-0"><path d="M8 5v14l11-7z" /></svg>

@@ -43,6 +43,17 @@ const projectsLabel = t("nav.projects").toLocaleUpperCase(locale);
 // Índice global para escalonar el revelado palabra a palabra.
 let wordIndex = 0;
 const wordsOf = (label: string) => label.split(" ").map((w) => ({ w, idx: wordIndex++ }));
+
+// [Fix] "CONÓCENOS" (y cualquier palabra con vocal acentuada) mostraba
+// un pequeño trazo/símbolo suelto bajo la tilde, reportado varias
+// veces y no resuelto con ajustes de line-height ni de
+// backface-visibility. Tras confirmar que el HTML compilado está
+// limpio (sin caracteres ocultos) y que el resto de palabras del menú
+// —ninguna con acento— nunca mostraba el problema, se elimina la causa
+// por completo: las palabras con acento se muestran de forma estática
+// (sin el "transform" del deslizamiento .word-reveal), evitando la
+// combinación exacta (transform + vocal acentuada) sospechosa del bug.
+const HAS_ACCENT = /[áéíóúàèìòùäëïöüñçÁÉÍÓÚÀÈÌÒÙÄËÏÖÜÑÇ]/;
 ---
 
 <header class:list={["fixed top-0 inset-x-0 z-50", logoRevealsOnScroll ? "header-bar-reveal" : "bg-black"]}>
@@ -50,15 +61,24 @@ const wordsOf = (label: string) => label.split(" ").map((w) => ({ w, idx: wordIn
     <!-- Izquierda: botón "Menú" (pastilla de cristal, como verostudio.com) -->
     <details class="menu group relative min-w-0 justify-self-start">
       <summary
-        class="header-pill font-nav relative z-50 flex h-10 w-auto cursor-pointer list-none items-center justify-start rounded-sm uppercase leading-none text-white transition-colors select-none md:h-12 md:justify-start md:text-sm md:font-medium md:tracking-[0.06em] [&::-webkit-details-marker]:hidden"
+        class="header-pill font-nav relative z-50 flex h-12 w-auto cursor-pointer list-none items-center justify-start rounded-sm uppercase leading-none text-white transition-colors select-none md:h-12 md:justify-start md:text-sm md:font-medium md:tracking-[0.06em] [&::-webkit-details-marker]:hidden"
         aria-label={t("a11y.menu")}
       >
         <!-- Móvil: icono hamburguesa (como el referente) -->
         <span class="hamburger md:hidden" aria-hidden="true">
           <span></span><span></span>
         </span>
-        <!-- Escritorio: texto "MENÚ" / "CERRAR" -->
-        <span class="hidden md:grid md:place-items-center">
+        <!-- Escritorio: texto "MENÚ" / "CERRAR". "MENÚ" y "CERRAR"
+             comparten la misma celda de grid (col-start-1 row-start-1)
+             para cruzarse en fundido sin desplazar el resto del header;
+             esa celda se dimensiona para la palabra más ancha
+             ("CERRAR"). "place-items-center" centraba también en el
+             eje horizontal, así que "MENÚ" (más corta) quedaba metida
+             hacia la derecha, desalineada del resto del contenido del
+             sitio — con "justify-items-start" solo se centra en
+             vertical (items-center) y ambas palabras arrancan siempre
+             en el mismo borde izquierdo. -->
+        <span class="hidden md:grid md:items-center md:justify-items-start">
           <span class="hover-flip pointer-events-auto col-start-1 row-start-1 transition-opacity duration-200 group-open:pointer-events-none group-open:opacity-0">
             <span class="flip-a block">{t("a11y.menu")}</span>
             <span aria-hidden="true" class="flip-b block">{t("a11y.menu")}</span>
@@ -76,18 +96,24 @@ const wordsOf = (label: string) => label.split(" ").map((w) => ({ w, idx: wordIn
             {
               primaryNav.map((item) => (
                 <li>
-                  <a href={item.href} class="menu-link block py-1.5 font-heading text-4xl font-medium text-foreground uppercase sm:text-5xl lg:text-6xl">
-                    {wordsOf(item.label).map(({ w, idx }, wi) => (
-                      <>
-                        {wi > 0 && " "}
-                        <span class="word-reveal">
-                          <span class="word-roll" style={`--wi:${idx}`}>
-                            <span class="word-roll-a" style={`--i:${idx}`}>{w}</span>
-                            <span aria-hidden="true" class="word-roll-b" style={`--i:${idx}`}>{w}</span>
-                          </span>
-                        </span>
-                      </>
-                    ))}
+                  <a href={item.href} class="hover-flip block py-1.5">
+                    <span class="flip-a font-heading block text-4xl font-medium text-foreground sm:text-5xl lg:text-6xl">
+                      {wordsOf(item.label).map(({ w, idx }, wi) => (
+                        <>
+                          {wi > 0 && " "}
+                          {HAS_ACCENT.test(w) ? (
+                            w
+                          ) : (
+                            <span class="word-reveal">
+                              <span style={`--wi:${idx}`}>{w}</span>
+                            </span>
+                          )}
+                        </>
+                      ))}
+                    </span>
+                    <span aria-hidden="true" class="flip-b font-heading block text-4xl font-medium sm:text-5xl lg:text-6xl">
+                      {item.label}
+                    </span>
                   </a>
                 </li>
               ))
@@ -96,21 +122,27 @@ const wordsOf = (label: string) => label.split(" ").map((w) => ({ w, idx: wordIn
             <!-- Proyectos: con submenú de las 4 verticales -->
             <li>
               <details class="group/proj">
-                <summary class="menu-link flex cursor-pointer list-none items-center gap-4 py-1.5 select-none [&::-webkit-details-marker]:hidden">
-                  <span class="font-heading text-4xl font-medium text-foreground uppercase sm:text-5xl lg:text-6xl">
-                    {wordsOf(projectsLabel).map(({ w, idx }, wi) => (
-                      <>
-                        {wi > 0 && " "}
-                        <span class="word-reveal">
-                          <span class="word-roll" style={`--wi:${idx}`}>
-                            <span class="word-roll-a" style={`--i:${idx}`}>{w}</span>
-                            <span aria-hidden="true" class="word-roll-b" style={`--i:${idx}`}>{w}</span>
-                          </span>
-                        </span>
-                      </>
-                    ))}
+                <summary class="flex cursor-pointer list-none items-center gap-4 py-1.5 select-none [&::-webkit-details-marker]:hidden">
+                  <span class="hover-flip inline-block">
+                    <span class="flip-a font-heading block text-4xl font-medium text-foreground sm:text-5xl lg:text-6xl">
+                      {wordsOf(projectsLabel).map(({ w, idx }, wi) => (
+                        <>
+                          {wi > 0 && " "}
+                          {HAS_ACCENT.test(w) ? (
+                            w
+                          ) : (
+                            <span class="word-reveal">
+                              <span style={`--wi:${idx}`}>{w}</span>
+                            </span>
+                          )}
+                        </>
+                      ))}
+                    </span>
+                    <span aria-hidden="true" class="flip-b font-heading block text-4xl font-medium sm:text-5xl lg:text-6xl">
+                      {projectsLabel}
+                    </span>
                   </span>
-                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-4 shrink-0 rotate-90 text-muted-foreground transition-transform group-open/proj:-rotate-90 group-hover/proj:translate-x-1">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-4 shrink-0 rotate-90 text-muted-foreground transition-transform group-open/proj:-rotate-90">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </summary>
@@ -132,18 +164,24 @@ const wordsOf = (label: string) => label.split(" ").map((w) => ({ w, idx: wordIn
             {
               secondaryNav.map((item) => (
                 <li>
-                  <a href={item.href} class="menu-link block py-1.5 font-heading text-4xl font-medium text-foreground uppercase sm:text-5xl lg:text-6xl">
-                    {wordsOf(item.label).map(({ w, idx }, wi) => (
-                      <>
-                        {wi > 0 && " "}
-                        <span class="word-reveal">
-                          <span class="word-roll" style={`--wi:${idx}`}>
-                            <span class="word-roll-a" style={`--i:${idx}`}>{w}</span>
-                            <span aria-hidden="true" class="word-roll-b" style={`--i:${idx}`}>{w}</span>
-                          </span>
-                        </span>
-                      </>
-                    ))}
+                  <a href={item.href} class="hover-flip block py-1.5">
+                    <span class="flip-a font-heading block text-4xl font-medium text-foreground sm:text-5xl lg:text-6xl">
+                      {wordsOf(item.label).map(({ w, idx }, wi) => (
+                        <>
+                          {wi > 0 && " "}
+                          {HAS_ACCENT.test(w) ? (
+                            w
+                          ) : (
+                            <span class="word-reveal">
+                              <span style={`--wi:${idx}`}>{w}</span>
+                            </span>
+                          )}
+                        </>
+                      ))}
+                    </span>
+                    <span aria-hidden="true" class="flip-b font-heading block text-4xl font-medium sm:text-5xl lg:text-6xl">
+                      {item.label}
+                    </span>
                   </a>
                 </li>
               ))
@@ -191,7 +229,7 @@ const wordsOf = (label: string) => label.split(" ").map((w) => ({ w, idx: wordIn
         target="_blank"
         rel="noopener"
         aria-label={t("cta.whatsapp.long")}
-        class="header-pill font-nav flex size-10 shrink-0 items-center justify-center rounded-sm uppercase leading-none text-white transition-colors md:h-12 md:w-auto md:justify-end"
+        class="header-pill font-nav flex size-12 shrink-0 items-center justify-end rounded-sm uppercase leading-none text-white transition-colors md:h-12 md:w-auto"
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="size-4.5 md:hidden">
           <path stroke-linecap="round" stroke-linejoin="round" d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" />
