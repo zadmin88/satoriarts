@@ -61,7 +61,7 @@ const t = useT(locale);
        pasa por debajo del header. bg-black: cubre las fotos que pasan por
        debajo al hacer scroll. Sticky (no fixed): se libera solo al
        terminar la cuadrícula (fin de .filter-gallery), sin spacer. -->
-  <div data-fixed-header class="sticky top-[calc(6rem-1px)] z-40 bg-black md:top-[calc(7rem-1px)]">
+  <div data-fixed-header class="projects-sticky-bar sticky z-40 bg-black">
     <!-- Bug de WebKit/Safari (iOS): si el propio elemento con
          "overflow-x: auto" tiene padding-inline, Safari lo ignora al
          calcular el reposo del scroll y el contenido queda pegado al

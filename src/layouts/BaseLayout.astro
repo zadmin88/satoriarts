@@ -53,7 +53,11 @@ const allSchema = [businessSchema(locale), ...pageSchema];
 <html lang={LOCALE_LANG[locale]}>
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- viewport-fit=cover: activa env(safe-area-inset-*) para que el
+         header (fixed) reserve el alto de la barra de estado/notch en
+         móvil. Sin esto, al ocultarse la barra del navegador el header
+         se desliza bajo la barra de estado y el logo queda cortado. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
     <!-- Precarga de las 4 variantes autoalojadas de General Sans: sin
          esto, "font-display: swap" deja una ventana breve donde el
@@ -127,7 +131,7 @@ const allSchema = [businessSchema(locale), ...pageSchema];
       {t("a11y.skip")}
     </a>
     <Header locale={locale} alternates={alternates} logoRevealsOnScroll={logoRevealsOnScroll} />
-    <main id="contenido" class="flex-1 pt-24 md:pt-28" transition:animate="fade">
+    <main id="contenido" class="main-offset flex-1" transition:animate="fade">
       <slot />
     </main>
     <Footer locale={locale} />

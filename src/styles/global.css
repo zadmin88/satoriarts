@@ -991,6 +991,34 @@ header {
 }
 
 /* ---------------------------------------------------------- */
+/*  Safe-area (barra de estado / notch) + alto del header      */
+/* ---------------------------------------------------------- */
+/* Fix del "header cortado al ocultarse la barra del navegador" en móvil:
+   el header (fixed, top:0) reserva el inset superior de la barra de
+   estado, y la barra de categorías sticky (top) y el padding superior
+   del <main> se calculan del mismo alto de header + inset, para que
+   nada se solape ni deje hueco. En escritorio y móviles sin notch,
+   env(...) = 0px, así que estas reglas equivalen EXACTAMENTE al layout
+   anterior (6rem móvil / 7rem desktop): cero cambios donde no hay inset.
+   Fuera de @layer a propósito: gana sobre las utilidades de Tailwind. */
+:root {
+  --header-h: 6rem;
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+@media (min-width: 768px) {
+  :root { --header-h: 7rem; }
+}
+.site-header {
+  padding-top: var(--safe-top);
+}
+.main-offset {
+  padding-top: calc(var(--header-h) + var(--safe-top));
+}
+.projects-sticky-bar {
+  top: calc(var(--header-h) + var(--safe-top) - 1px);
+}
+
+/* ---------------------------------------------------------- */
 /*  Revelado direccional al scroll (filas de servicios) y      */
 /*  stagger de cuadrículas: gestionado por GSAP + ScrollTrigger */
 /*  (ver src/scripts/scroll-reveal.ts).                         */
