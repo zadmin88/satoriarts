@@ -991,16 +991,25 @@ header {
 }
 
 /* ---------------------------------------------------------- */
-/*  Safe-area (barra de estado / notch) + alto del header      */
+/*  Sin scroll horizontal + alto de header / safe-area          */
 /* ---------------------------------------------------------- */
-/* Fix del "header cortado al ocultarse la barra del navegador" en móvil:
-   el header (fixed, top:0) reserva el inset superior de la barra de
-   estado, y la barra de categorías sticky (top) y el padding superior
-   del <main> se calculan del mismo alto de header + inset, para que
-   nada se solape ni deje hueco. En escritorio y móviles sin notch,
-   env(...) = 0px, así que estas reglas equivalen EXACTAMENTE al layout
-   anterior (6rem móvil / 7rem desktop): cero cambios donde no hay inset.
-   Fuera de @layer a propósito: gana sobre las utilidades de Tailwind. */
+/* (1) overflow-x: clip en el body evita que CUALQUIER elemento que se
+   pase de ancho (p. ej. una barra con -mx que sobresale del viewport)
+   genere scroll horizontal en móvil, y de paso el descuadre del header
+   fixed al ocultarse la barra del navegador (el overflow horizontal es
+   una causa conocida de ese glitch). "clip" (no "hidden") NO crea un
+   contenedor de scroll, así que NO rompe "position: sticky": la barra
+   de categorías sigue anclada al viewport. El scroll vertical intacto. */
+body {
+  overflow-x: clip;
+}
+
+/* (2) Alto de header como variable única: el sticky de la barra de
+   categorías y el padding superior del <main> derivan del mismo valor y
+   nunca se descuadran. --safe-top = 0px salvo que se active
+   viewport-fit=cover (hoy desactivado, ver BaseLayout). Con env()=0px
+   estas reglas equivalen EXACTAMENTE al layout anterior (6rem móvil /
+   7rem desktop). Fuera de @layer: gana sobre las utilidades de Tailwind. */
 :root {
   --header-h: 6rem;
   --safe-top: env(safe-area-inset-top, 0px);

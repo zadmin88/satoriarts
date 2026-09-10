@@ -53,11 +53,14 @@ const allSchema = [businessSchema(locale), ...pageSchema];
 <html lang={LOCALE_LANG[locale]}>
   <head>
     <meta charset="UTF-8" />
-    <!-- viewport-fit=cover: activa env(safe-area-inset-*) para que el
-         header (fixed) reserve el alto de la barra de estado/notch en
-         móvil. Sin esto, al ocultarse la barra del navegador el header
-         se desliza bajo la barra de estado y el logo queda cortado. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!-- SIN viewport-fit=cover a propósito: en móviles sin notch, el
+         navegador ya reserva la barra de estado (el contenido queda por
+         debajo). Activar "cover" haría que el contenido se dibujara por
+         DEBAJO de la barra de estado, y como env(safe-area-inset-top)=0
+         sin notch, el header quedaría cortado. El header sigue con
+         .site-header (padding-top:env(...)) por si algún día hay notch:
+         hoy equivale a 0px, sin efecto. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <!-- Precarga de las 4 variantes autoalojadas de General Sans: sin
          esto, "font-display: swap" deja una ventana breve donde el

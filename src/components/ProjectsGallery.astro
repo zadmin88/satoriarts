@@ -68,7 +68,16 @@ const t = useT(locale);
          borde. Fix: el que scrollea (outer) sangra (-mx) y NO tiene
          padding; el padding lo pone el inner (.container-tight, misma
          clase que el título y el grid). -->
-    <div class="no-scrollbar -mx-5 overflow-x-auto sm:-mx-6">
+    <!-- El scroller ocupa el ancho completo de la barra (= viewport),
+         SIN margen negativo: antes usaba "-mx-5 sm:-mx-6" para sangrar a
+         los bordes, pero como su padre ya es de ancho completo, ese -mx
+         se pasaba ~1.25rem de cada borde y hacía que el documento fuera
+         más ancho que la pantalla (scroll horizontal + el header fixed
+         se descuadraba al ocultarse la barra del navegador). El track de
+         scroll ya llega a los bordes por ser ancho completo; el padding
+         (px) lo pone el .container-tight interior, que además evita el
+         bug de Safari de ignorar el padding-inline del propio scroller. -->
+    <div class="no-scrollbar overflow-x-auto">
       <div class="container-tight flex flex-nowrap gap-2 py-4 sm:flex-wrap md:py-5">
         <slot name="filters" />
       </div>
