@@ -7,27 +7,15 @@ import type { Locale } from "@/config";
 /**
  * Bloque "PROYECTOS + barra de categorías + cuadrícula", ÚNICO
  * componente compartido por /proyectos/ (PortfolioPage.astro, las 4
- * categorías a la vez con filtro CSS) y cada página de servicio
- * (ServiceLayout.astro, /bodas/, /eventos/...). Antes cada página tenía
- * su propia copia de este bloque — con dos copias, cualquier ajuste de
- * spacing/sticky/grid debía repetirse a mano en ambas, y era fácil que
- * divergieran (como pasó varias veces). Con un único componente, ese
- * tipo de divergencia deja de ser posible: cualquier cambio futuro se
- * hace aquí una sola vez y se refleja en las 5 categorías a la vez.
+ * categorías a la vez con filtro CSS :has()) y cada página de servicio
+ * (ServiceLayout.astro, /bodas/, /eventos/...). Con un único componente,
+ * cualquier ajuste de spacing/sticky/grid se hace aquí una sola vez.
  *
- * La ÚNICA pieza que de verdad no se puede unificar dentro de este
- * componente son las propias pestañas: en /proyectos/ son
- * radios+<label> (filtrado 100% CSS con :has(), sin recargar página,
- * necesario para mostrar/ocultar las 4 categorías en una sola URL); en
- * cada página de servicio son <a> reales (cada servicio es su propia
- * URL indexable, con su propio <title>/meta/schema — necesario para el
- * SEO local de "fotógrafo de bodas en Barcelona", etc., que no podría
- * vivir todo bajo una sola URL /proyectos/ sin perder ese
- * posicionamiento por servicio). Por eso las pestañas llegan por un
- * slot ("filters"): la envoltura (bleed+repad, padding, gap) es
- * exactamente la misma para las 5 categorías; solo el tipo de elemento
- * de cada pestaña (radio+label vs. enlace) cambia, y ESE es el límite
- * técnico real que no se puede eliminar sin sacrificar SEO o cero-JS.
+ * La ÚNICA pieza que no se unifica son las propias pestañas: en
+ * /proyectos/ son radios+<label> (filtrado 100% CSS con :has(), sin
+ * recargar); en cada página de servicio son <a> reales (cada servicio es
+ * su propia URL indexable para el SEO local). Por eso llegan por el slot
+ * "filters": la envoltura (bleed, padding, gap) es idéntica en las 5.
  */
 
 export interface ServiceBlock {
@@ -39,9 +27,8 @@ export interface ServiceBlock {
 interface Props {
   locale: Locale;
   blocks: ServiceBlock[];
-  /** Solo /proyectos/ necesita este id: filter-scroll.ts hace scroll
-   *  hasta aquí al cambiar de filtro por radio. Las páginas de servicio
-   *  no lo necesitan (no hay filtro en la misma página). */
+  /** Solo /proyectos/ lo necesita: filter-scroll.ts hace scroll hasta
+   *  aquí al cambiar de filtro por radio. */
   withGridId?: boolean;
 }
 
@@ -49,84 +36,49 @@ const { locale, blocks, withGridId = false } = Astro.props;
 const t = useT(locale);
 ---
 
-<!-- "filter-gallery" envuelve la barra + la cuadrícula: el filtrado
-     por CSS puro (:has() en global.css) necesita que los radios de la
-     barra y las fotos [data-service] compartan este mismo ancestro —
-     al separarlos en dos bloques distintos, :has() dejaba de ver los
-     radios y ocultaba todas las fotos. En las páginas de servicio no
-     hay radios, pero se mantiene el mismo ancestro por consistencia
-     estructural (es literalmente el mismo componente). -->
+<!-- "filter-gallery" envuelve título + barra + cuadrícula: el filtrado
+     CSS (:has() en global.css) necesita que los radios de la barra y las
+     fotos [data-service] compartan este mismo ancestro. -->
 <div class="filter-gallery">
-  <!-- Centinela para detectar el estado "stuck" del sticky: un
-       IntersectionObserver en filter-scroll.ts lo observa; cuando sale
-       del viewport (scroll ya pasó su posición) añade ".is-stuck" a
-       data-fixed-header, y el título "PROYECTOS" se oculta y colapsa
-       su espacio (ver global.css), dejando solo la barra de
-       categorías pegada arriba. -->
-  <div data-sticky-sentinel aria-hidden="true"></div>
-  <!-- "PROYECTOS" y la barra de categorías van DENTRO del mismo bloque
-       sticky, título primero: si el título vive fuera (en flujo
-       normal) se pierde de vista al hacer scroll mientras la barra se
-       queda fija sola, dando la sensación de "orden invertido" (justo
-       el bug reportado). Con ambos en el mismo bloque sticky,
-       "PROYECTOS" está SIEMPRE arriba y la barra SIEMPRE debajo, en
-       cualquier punto del scroll. Sticky (no fixed): se libera antes
-       del CTA/footer, sin necesitar un spacer de compensación al final
-       de la página. top-[...-1px]: se superpone 1px con el borde
-       inferior del header para evitar una línea de costura por
-       redondeo de subpíxeles. -->
-  <div data-fixed-header class="sticky top-[calc(6rem-1px)] z-40 bg-black md:top-[calc(7rem-1px)]">
-    <!-- Bloque normal (NO flex): un contenedor "flex flex-col" aquí
-         obligaba a sus hijos directos a comportarse como flex items, y
-         CUALQUIER margen en el eje cruzado (mx-auto del título,
-         -mx-5/-mx-6 del sangrado de la barra) interactúa con el
-         "stretch" por defecto de forma poco predecible — eso causó
-         tanto el título centrado como la barra sin padding. Con
-         margin-top normal en vez de "gap" de flex, título y barra
-         vuelven a comportarse como bloques normales, sin flexbox de
-         por medio en el eje horizontal. -->
-    <div data-portfolio-title-wrap class="container-tight pt-5 pb-4 md:pt-6 md:pb-5">
-      <!-- Sin "data-reveal-words": este título vive dentro de un
-           bloque "sticky" (una parte del scroll lo tiene fijo en
-           pantalla). El revelado por palabra usa ScrollTrigger, que
-           calcula posiciones de disparo asumiendo flujo normal del
-           documento — con un elemento sticky ese cálculo queda
-           inconsistente y podía dejar el título oculto (opacity:0)
-           tras algún recálculo, mientras la barra de categorías (sin
-           esta animación) seguía viéndose con normalidad. En su lugar,
-           al quedar "stuck" todo este bloque (título + padding) se
-           oculta y colapsa (ver "[data-portfolio-title-wrap]" en
-           global.css), dejando solo la barra de categorías. -->
-      <h1 class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
-    </div>
+  <!-- Título "PROYECTOS" en FLUJO NORMAL: se va con el scroll y
+       desaparece tras el header (fijo y opaco). Antes vivía DENTRO del
+       bloque sticky y se colapsaba con ".is-stuck" (IntersectionObserver
+       + centinela) al quedar pegado. Ese colapso —cambiar la altura de
+       un elemento en flujo— empujaba el grid de golpe (salto), y en
+       móvil la barra de direcciones al mostrarse/ocultarse hacía oscilar
+       ese colapso una y otra vez (el "salto al empezar a hacer scroll"
+       reportado). Con el título en flujo normal desaparece de forma
+       natural, sin colapso, sin salto y sin oscilación. Sigue siendo el
+       ÚNICO <h1> de la página (en /bodas/, /eventos/... también). -->
+  <div class="container-tight pt-5 pb-4 md:pt-6 md:pb-5">
+    <h1 class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
+  </div>
 
-    <!-- Bug conocido de WebKit/Safari (iOS): cuando el propio elemento
-         con "overflow-x: auto" tiene padding-inline (ya sea directo o
-         vía el truco de sangrado -mx/px sobre sí mismo), Safari IGNORA
-         ese padding al calcular el reposo del scroll, y el contenido
-         queda pegado al borde real de la pantalla en vez de al margen.
-         Fix real: el elemento que hace scroll (outer) sangra y no
-         tiene padding propio; el que tiene el padding (inner) NO es el
-         que scrollea — está dentro de outer, en flujo normal, y
-         reutiliza la MISMA clase ".container-tight" que el título y el
-         grid de fotos (en vez de repetir los valores px-5/sm:px-6
-         sueltos), así hereda el padding automáticamente. -->
-    <div class="no-scrollbar -mx-5 mt-4 overflow-x-auto sm:-mx-6 md:mt-5">
-      <div class="container-tight flex flex-nowrap gap-2 pb-5 sm:flex-wrap md:pb-6">
+  <!-- SOLO la barra de categorías es sticky, pegada justo bajo el header
+       (fixed, 6rem móvil / 7rem desktop). top-[calc(...-1px)]: 1px de
+       solape con el borde inferior del header para evitar una costura
+       por redondeo de subpíxeles. z-40 (el header es z-50): la barra
+       pasa por debajo del header. bg-black: cubre las fotos que pasan por
+       debajo al hacer scroll. Sticky (no fixed): se libera solo al
+       terminar la cuadrícula (fin de .filter-gallery), sin spacer. -->
+  <div data-fixed-header class="sticky top-[calc(6rem-1px)] z-40 bg-black md:top-[calc(7rem-1px)]">
+    <!-- Bug de WebKit/Safari (iOS): si el propio elemento con
+         "overflow-x: auto" tiene padding-inline, Safari lo ignora al
+         calcular el reposo del scroll y el contenido queda pegado al
+         borde. Fix: el que scrollea (outer) sangra (-mx) y NO tiene
+         padding; el padding lo pone el inner (.container-tight, misma
+         clase que el título y el grid). -->
+    <div class="no-scrollbar -mx-5 overflow-x-auto sm:-mx-6">
+      <div class="container-tight flex flex-nowrap gap-2 py-4 sm:flex-wrap md:py-5">
         <slot name="filters" />
       </div>
     </div>
   </div>
 
-  <!-- CUADRÍCULA: masonry con 2 columnas EXPLÍCITAS (no CSS
-       "columns-2"). Mobile: una sola lista secuencial; desde "sm:", dos
-       columnas repartidas por índice dentro de cada categoría — el
-       primer elemento de cada columna siempre arranca a la misma
-       altura, sin recortar ni forzar el tamaño de ninguna foto. Sin
-       vídeo a propósito: se quitó de las secciones internas de
-       Proyectos (antes había uno por categoría, GridMediaItem sigue
-       soportando "type: video" por si se retoma más adelante). -->
-  <div data-portfolio-grid={withGridId ? true : undefined} class="container-tight pb-24">
+  <!-- CUADRÍCULA: masonry con 2 columnas EXPLÍCITAS (no CSS "columns-2").
+       Mobile: una sola lista secuencial; desde "sm:", dos columnas
+       repartidas por índice dentro de cada categoría. -->
+  <div data-portfolio-grid={withGridId ? true : undefined} class="container-tight pb-24 pt-1 md:pt-2">
     {
       blocks.map((block) => (
         <div data-service={block.key}>

@@ -5,42 +5,21 @@ import { runOnPageLoad } from "@/scripts/on-page-load";
 // al seleccionar una categoría, la barra de pestañas puede desplazarse
 // horizontalmente y la cuadrícula de fotos cambia de alto, así que este
 // script mínimo (a) mantiene la pestaña elegida visible dentro de la
-// barra y (b) lleva la cuadrícula justo debajo del bloque "PROYECTOS +
-// filtros". Progressive enhancement: sin JS, el filtro sigue
-// funcionando igual, solo sin estos ajustes de scroll.
+// barra y (b) lleva la cuadrícula justo debajo de la barra de categorías
+// sticky. Progressive enhancement: sin JS, el filtro sigue funcionando.
+//
+// NOTA: ya NO hay lógica de "is-stuck"/centinela. El título "PROYECTOS"
+// vive en flujo normal y se va con el scroll; solo la barra de
+// categorías es sticky (ver ProjectsGallery.astro). Antes el título se
+// colapsaba por JS al quedar pegado, lo que causaba el salto/oscilación
+// en móvil que este cambio elimina.
 
-// El bloque "PROYECTOS + filtros" es "sticky", no "fixed": ocupa
-// espacio real en el flujo (no hace falta spacer) y se libera solo
-// antes del CTA/footer. Mientras está "pegado" (stuck), sigue tapando
-// la franja superior del viewport, así que al cambiar de categoría
-// hay que compensar ese alto al desplazar el grid hasta él.
-
-// CSS no tiene forma fiable (entre navegadores) de saber si un
-// elemento "sticky" está actualmente pegado o no — no existe un
-// ":stuck" estándar. El truco habitual: un centinela de altura 0
-// justo antes del bloque sticky; en cuanto ese centinela sale del
-// viewport por arriba, el sticky ya está pegado. Con eso se alterna
-// ".is-stuck" en el bloque, y el título "PROYECTOS" se encoge (ver
-// global.css) en vez de desaparecer, como indicador de sección.
-let stuckObserver: IntersectionObserver | undefined;
-
-// [Fix] "scrollIntoView" mueve TODOS los contenedores con scroll
-// necesarios para hacer visible el elemento — no solo el contenedor
-// horizontal de pestañas al que estaba dirigido, sino también la
-// página entera si hace falta (su eje vertical), usando el scroll
-// NATIVO del navegador. Como el scroll vertical del sitio lo lleva
-// Lenis (no el nativo), cada cambio de categoría desincronizaba un
-// poco más a Lenis de la posición real — el error se iba acumulando y
-// solo se notaba a partir del segundo cambio en adelante (el primero
-// aún no arrastraba desajuste), manifestándose como el header
-// "moviéndose" de sitio. Esta función solo toca el contenedor
-// horizontal de la barra (su propio "scrollLeft"), nunca el documento,
-// así es imposible que afecte al scroll vertical ni a Lenis.
-// Siempre alinea la pestaña al borde IZQUIERDO del área visible de la
-// barra (no solo "la mete en el encuadre más cercano"): al elegir una
-// categoría, esa pestaña debe quedar al inicio del recorte visible, no
-// centrada ni a medio camino — así el usuario ve de un vistazo cuáles
-// vienen después sin tener que arrastrar la barra primero.
+// [Fix] "scrollIntoView" nativo movería TODOS los contenedores con
+// scroll (incluida la página entera), y en desktop eso desincroniza a
+// Lenis. Esta función solo toca el "scrollLeft" del contenedor
+// horizontal de la barra, nunca el documento. Alinea la pestaña al borde
+// IZQUIERDO del área visible, para que se vean de un vistazo las que
+// vienen después.
 function scrollPillIntoView(pill: HTMLElement, behavior: ScrollBehavior) {
   const container = pill.closest<HTMLElement>(".no-scrollbar");
   if (!container) return;
@@ -49,53 +28,33 @@ function scrollPillIntoView(pill: HTMLElement, behavior: ScrollBehavior) {
   container.scrollBy({ left: pillRect.left - containerRect.left, behavior });
 }
 
-function watchStuckState(header: HTMLElement) {
-  const sentinel = document.querySelector<HTMLElement>("[data-sticky-sentinel]");
-  if (!sentinel) return;
-
-  stuckObserver = new IntersectionObserver(([entry]) => header.classList.toggle("is-stuck", !entry.isIntersecting), { threshold: 0 });
-  stuckObserver.observe(sentinel);
-}
-
-// Las páginas de servicio (/bodas/, /eventos/...) son documentos
-// distintos de verdad: cambiar de categoría ahí es una navegación real
-// (enlaces <a>, no radios), así que cada una vuelve a arrancar con el
-// bloque sticky en su estado inicial (título visible, sin scroll). Si
-// el usuario venía con la barra ya "stuck" (scrolleado, título
-// colapsado), eso se sentía como un salto: el título "reaparecía" de
-// golpe y el scroll volvía arriba. Guardamos la posición justo antes
-// de navegar y la restauramos (de forma instantánea, sin animación)
-// nada más cargar la página siguiente, para que el bloque sticky
-// arranque ya en el mismo estado en el que estaba.
+// Cambiar de categoría en las páginas de servicio (/bodas/, /eventos/...)
+// es una navegación real (enlaces <a>). Para que se sienta como "solo
+// cambiaron las fotos" (igual que el filtro CSS de /proyectos/), se
+// guarda la posición de scroll al pulsar una pestaña y se restaura al
+// cargar la página siguiente.
 const SCROLL_KEY = "proyectos-scroll-y";
 
-function preserveScrollOnCategoryNav(header: HTMLElement) {
+function preserveScrollOnCategoryNav() {
   document.querySelectorAll<HTMLAnchorElement>(".filter-pill[href]").forEach((link) => {
     link.addEventListener("click", () => {
-      if (header.classList.contains("is-stuck")) {
-        sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
-      }
+      sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
     });
   });
 }
 
-// IMPORTANTE: nunca "window.scrollTo" nativo aquí. Lenis lleva su
-// propio valor de scroll animado por dentro, separado del scroll
-// nativo del navegador; si se mueve la página por fuera de Lenis (como
-// hacía esta función antes), Lenis no se entera y se queda con su
-// valor interno desactualizado. La UI seguía viéndose bien en el acto,
-// pero en cuanto el usuario volvía a tocar la rueda/el táctil, Lenis
-// "corregía" de golpe hacia su posición interna vieja — un salto que
-// solo aparecía tras seguir navegando (justo el "funciona la primera
-// vez, luego cambia" reportado), no en el instante de la restauración.
-// "lenis.scrollTo(..., { immediate: true })" mueve Lenis Y el scroll
-// real a la vez, sin animación, así ambos quedan sincronizados desde
-// el primer momento.
+// IMPORTANTE: nunca "window.scrollTo" nativo si Lenis está activo (solo
+// desktop): Lenis lleva su propio valor de scroll animado; moverlo por
+// fuera lo desincroniza y "corrige" de golpe al siguiente gesto. En
+// móvil Lenis está desactivado (scroll nativo), así que ahí sí se usa
+// window.scrollTo. Se limita a la altura real del documento por si la
+// nueva categoría tiene menos fotos que la anterior.
 function restoreScrollFromCategoryNav(lenis: ReturnType<typeof getLenis>) {
   const saved = sessionStorage.getItem(SCROLL_KEY);
   sessionStorage.removeItem(SCROLL_KEY);
   if (saved === null) return;
-  const y = Number(saved);
+  const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  const y = Math.min(Number(saved), maxY);
   if (lenis) {
     lenis.scrollTo(y, { immediate: true });
   } else {
@@ -110,10 +69,7 @@ function setup() {
   const header = document.querySelector<HTMLElement>("[data-fixed-header]");
   const grid = document.querySelector<HTMLElement>("[data-portfolio-grid]");
 
-  if (header) {
-    watchStuckState(header);
-    preserveScrollOnCategoryNav(header);
-  }
+  preserveScrollOnCategoryNav();
 
   document.querySelectorAll<HTMLInputElement>('input[name="pf-filter"]').forEach((input) => {
     input.addEventListener("change", () => {
@@ -121,10 +77,9 @@ function setup() {
       const label = document.querySelector<HTMLElement>(`label[for="${input.id}"]`);
       if (label) scrollPillIntoView(label, "smooth");
 
-      // Cuadrícula filtrada, siempre visible justo debajo del bloque
-      // fijo: se usa Lenis (si está activo) en vez de scrollIntoView
-      // nativo, porque mezclar ambos motores de scroll en la misma
-      // página produce un salto/parpadeo perceptible.
+      // Cuadrícula filtrada, siempre visible justo debajo de la barra
+      // sticky. Se usa Lenis (si está activo) en vez de scrollIntoView
+      // nativo, porque mezclar ambos motores produce un salto/parpadeo.
       if (!grid) return;
       const headerHeight = header?.offsetHeight ?? 0;
       if (lenis) {
@@ -135,17 +90,11 @@ function setup() {
     });
   });
 
-  // Páginas de servicio (bodas, eventos...): el filtro activo se marca
-  // por navegación de página, no por radio; al llegar puede estar fuera
-  // de la vista en móvil, así que se desplaza al inicio sin animación
-  // (ya estamos cargando la página, no hace falta el "smooth").
+  // Páginas de servicio: el filtro activo se marca por navegación, no por
+  // radio; al llegar puede estar fuera de la vista en móvil, así que se
+  // desplaza al inicio de la barra sin animación.
   const active = document.querySelector<HTMLElement>(".filter-pill.is-active");
   if (active) scrollPillIntoView(active, "auto");
 }
 
-function cleanup() {
-  stuckObserver?.disconnect();
-  stuckObserver = undefined;
-}
-
-runOnPageLoad(setup, cleanup);
+runOnPageLoad(setup);

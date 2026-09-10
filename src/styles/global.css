@@ -870,44 +870,13 @@ details.menu[open] .word-reveal > span {
   }
 }
 
-/* Título "PROYECTOS" dentro del bloque sticky: al quedar pegado (bug ya
-   corregido de ScrollTrigger + position:fixed con "data-reveal-words"),
-   se OCULTA y colapsa su espacio por completo, dejando solo la barra
-   de categorías pegada arriba, sin hueco vacío encima.
-   ".is-stuck" la pone filter-scroll.ts vía IntersectionObserver sobre
-   "[data-sticky-sentinel]" (CSS no tiene un ":stuck" estándar).
-   "max-height" (con un tope generoso, mayor que el alto real del
-   título en cualquier breakpoint) es lo que permite animar el
-   colapso con "transition" — "height:auto" no se puede animar
-   directamente, y con "overflow:hidden" el contenido queda oculto
-   mientras se colapsa. Los paddings propios (pt/pb) también se llevan
-   a 0 para que no quede un margen residual. Esta regla vive fuera de
-   cualquier @layer a propósito: en Tailwind v4 las utilidades (px-*
-   del propio contenedor) viven en la capa "utilities", que SIEMPRE
-   gana sobre cualquier @layer aunque tenga menor especificidad — una
-   regla sin capa alguna, en cambio, gana sobre ambas capas sin
-   importar el orden. */
-[data-fixed-header] [data-portfolio-title-wrap] {
-  overflow: hidden;
-  max-height: 8rem;
-  opacity: 1;
-  transition:
-    max-height 0.3s ease,
-    opacity 0.25s ease,
-    padding-top 0.3s ease,
-    padding-bottom 0.3s ease;
-}
-[data-fixed-header].is-stuck [data-portfolio-title-wrap] {
-  max-height: 0;
-  opacity: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-fixed-header] [data-portfolio-title-wrap] {
-    transition: none;
-  }
-}
+/* (Eliminado) El título "PROYECTOS" ya NO se colapsa al quedar pegado:
+   vive en flujo normal y se va con el scroll, y solo la barra de
+   categorías es sticky. Aquel colapso por JS (".is-stuck" +
+   IntersectionObserver sobre un centinela) cambiaba la altura de un
+   elemento en flujo y empujaba el grid de golpe (salto); en móvil, la
+   barra de direcciones al mostrarse/ocultarse lo hacía oscilar. Ver
+   ProjectsGallery.astro y filter-scroll.ts. */
 
 /* Los CTAs (WhatsApp, "Solicitar información"...) son solo texto, sin
    icono: el mismo hover-flip vertical que el resto de enlaces del
