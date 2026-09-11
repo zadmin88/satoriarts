@@ -18,6 +18,20 @@
 // no, un macrotask (setTimeout 0, que le da al navegador margen de
 // sobra para disparar el evento primero de forma normal) actúa de
 // respaldo, ejecutando setup() una sola vez de todas formas.
+// [Fix] Por defecto, el navegador puede restaurar automáticamente una
+// posición de scroll ANTERIOR guardada en su propio historial para esa
+// URL (p. ej. si el usuario ya había scrolleado /bodas/ antes en esta
+// pestaña y vuelve a navegar ahí) — un mecanismo del propio navegador,
+// nada que ver con nuestro JS, pero con el mismo síntoma exacto que un
+// bug nuestro: la página "llega ya scrolleada" sin que el usuario haga
+// nada, activando de golpe el sticky de la barra de categorías. Con
+// "manual" desactivamos esa restauración automática; cada navegación
+// (incluida la SPA vía View Transitions) arranca siempre en su scroll
+// real, nunca en uno heredado del historial.
+if (typeof history !== "undefined" && "scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
 export function runOnPageLoad(setup: () => void, cleanup?: () => void) {
   let hasRun = false;
   const runOnce = () => {

@@ -129,27 +129,65 @@ const preview = [
        las más bajas. -->
   <section aria-labelledby="pf-titulo">
     <div class="section-space container-tight">
-      <!-- items-end (no items-baseline): el CTA usa ".hover-flip"
-           (overflow:hidden, necesario para el efecto de recorte del
-           texto al pasar el cursor) — por especificación CSS, un
-           elemento inline-block con overflow distinto de "visible" no
-           expone su línea base real a un ancestro flex: en su lugar
-           aporta el borde INFERIOR de su caja como "línea base"
-           sintética. Con "items-baseline" eso alineaba la línea base
-           real del título contra el borde inferior (no la línea base)
-           del CTA — dos puntos de referencia distintos, mucho más
-           descuadrados que antes. "items-end" alinea ambos por el
-           borde inferior de su caja (mismo tipo de referencia en los
-           dos) y "leading-none" en el título quita el aire de línea
-           extra que su tamaño de fuente añade por defecto, así su
-           borde inferior queda pegado al propio texto — visualmente
-           es lo que se percibe como "misma altura". -->
-      <div class="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
-        <h2 id="pf-titulo" data-reveal-words class="font-heading text-3xl leading-none font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h2>
-        <a href={routePath(locale, "portfolio")} class="hover-flip font-label text-sm font-medium uppercase tracking-wider text-white">
-          <span class="flip-a block">{t("cta.seeMore")}</span>
-          <span aria-hidden="true" class="flip-b block">{t("cta.seeMore")}</span>
-        </a>
+      <!-- items-baseline: alinea "PROYECTOS" y el CTA por su línea base
+           real de texto — lo pedido explícitamente. El problema técnico
+           real (ya diagnosticado y ahora resuelto de raíz, no con
+           ajustes a ojo): ".hover-flip" tiene "overflow: hidden"
+           (necesario para el efecto de recorte del texto al pasar el
+           cursor). Por especificación CSS, un elemento con overflow
+           distinto de "visible" NO expone su línea base real a un
+           ancestro flex — en su lugar aporta el borde INFERIOR de su
+           caja como "línea base" sintética. Ningún ajuste de
+           line-height (ni "leading-none", ni "normal") puede arreglar
+           esto: el problema no es el interlineado, es que el propio
+           overflow:hidden invalida la línea base para efectos de
+           flexbox, por diseño del estándar CSS.
+           Solución real: un texto "fantasma" invisible (visibility:
+           hidden, NUNCA display:none — así sigue ocupando espacio y
+           participa en el cálculo de items-baseline) con el MISMO
+           texto, MISMA fuente/tamaño, pero SIN overflow:hidden. Ese
+           fantasma es el que de verdad se usa para alinear (su línea
+           base es la real). El enlace ".hover-flip" (con la animación
+           de recorte intacta) se superpone exactamente encima con
+           "absolute inset-0", así el usuario ve y usa el de siempre,
+           pero el que cuenta para la alineación es el invisible. -->
+      <!-- Sin "data-reveal-words" en este título: ese atributo dispara
+           splitIntoView() en scroll-reveal.ts, que REESCRIBE por JS el
+           contenido del <h2> envolviendo cada palabra en un
+           "<span style='display:inline-block; overflow:hidden'>" para
+           el efecto de entrada palabra a palabra. Ese "overflow:hidden"
+           inyectado corrompe la línea base REAL del propio título (la
+           misma regla CSS de "overflow≠visible sintetiza la línea
+           base" que ya se corrigió del lado del CTA) — así que aunque
+           el CTA estuviera perfectamente resuelto, el título mismo
+           quedaba con una línea base falsa en cuanto el script de
+           reveal terminaba de correr, reintroduciendo el desajuste. El
+           bloque entero sigue animándose en conjunto vía ".reveal" (en
+           el div padre); solo se pierde el efecto palabra a palabra
+           específico de "PROYECTOS", mismo tipo de compromiso ya
+           aceptado en otros títulos con este problema (ver
+           ProjectsGallery.astro). -->
+      <div class="reveal mb-6 flex flex-wrap items-baseline justify-between gap-4">
+        <h2 id="pf-titulo" class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h2>
+        <span class="relative inline-block font-label text-sm font-medium uppercase tracking-wider">
+          <!-- Fantasma: mismo texto, mismo tipo/tamaño, visibility:hidden
+               (ocupa espacio y define la línea base real del span
+               padre) — nunca "display:none" (eso lo sacaría del
+               flujo y items-baseline no tendría de dónde tomar la
+               línea base). TAMPOCO "display:block": un hijo de nivel
+               bloque hace que el span contenedor deje de tener línea
+               de texto PROPIA (line box) — por especificación, en ese
+               caso su línea base también se sintetiza como el borde
+               inferior de la caja, el mismo problema que se quería
+               evitar. Debe quedarse "inline" (el valor por defecto de
+               un span), así el contenedor sí forma una línea de texto
+               real con una línea base real. -->
+          <span aria-hidden="true" class="invisible">{t("cta.seeMore")}</span>
+          <a href={routePath(locale, "portfolio")} class="hover-flip absolute inset-0 text-white">
+            <span class="flip-a block">{t("cta.seeMore")}</span>
+            <span aria-hidden="true" class="flip-b block">{t("cta.seeMore")}</span>
+          </a>
+        </span>
       </div>
       <div class="grid grid-cols-2 gap-x-3 sm:gap-x-4">
         {
@@ -197,18 +235,39 @@ const preview = [
        con fallback de arrastre/scroll nativo si algo falla). -->
   <section aria-labelledby="test-titulo" data-carousel class="bg-background">
     <div class="section-space container-tight">
-      <div class="reveal mb-6 flex flex-wrap items-end justify-between gap-4">
-        <h2 id="test-titulo" data-reveal-words class="font-heading text-3xl font-normal uppercase leading-tight text-foreground sm:text-5xl">{t("section.testimonials")}</h2>
-        <a href={SITE.googleReviewsUrl} target="_blank" rel="noopener" class="hover-flip inline-flex items-center gap-2 font-label text-sm font-medium uppercase tracking-wider">
-          <span class="flip-a flex items-center gap-2">
-            <span>{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-2.5 shrink-0"><path d="M8 5v14l11-7z" /></svg>
-          </span>
-          <span aria-hidden="true" class="flip-b flex items-center gap-2">
-            <span>{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-2.5 shrink-0"><path d="M8 5v14l11-7z" /></svg>
-          </span>
-        </a>
+      <!-- items-baseline + texto fantasma: mismo problema y misma
+           solución que "PROYECTOS"/"VER LOS PROYECTOS" del home (ver
+           esa sección para la explicación completa) — ".hover-flip"
+           usa overflow:hidden, que por especificación CSS invalida su
+           línea base real para efectos de flexbox (aporta el borde
+           inferior de su caja en su lugar). El texto fantasma
+           (visibility:hidden, sin overflow:hidden) es el que de verdad
+           define la línea base ante "items-baseline"; el enlace real
+           (con el icono y la animación de recorte) se superpone
+           encima. "absolute inset-y-0 left-0" (no "inset-0"): deja que
+           el enlace conserve su ancho natural (texto + icono), ya que
+           el fantasma no incluye el icono — solo necesita coincidir en
+           la parte superior/inferior y el punto de arranque
+           izquierdo. -->
+      <div class="reveal mb-6 flex flex-wrap items-baseline justify-between gap-4">
+        <!-- Sin "data-reveal-words": mismo motivo que "PROYECTOS" más
+             arriba (el reveal palabra a palabra inyecta overflow:hidden
+             por JS, corrompiendo la línea base real del título frente
+             a "items-baseline" con el CTA de reseñas de Google). -->
+        <h2 id="test-titulo" class="font-heading text-3xl font-normal uppercase leading-tight text-foreground sm:text-5xl">{t("section.testimonials")}</h2>
+        <span class="relative inline-block font-label text-sm font-medium uppercase tracking-wider text-muted-foreground">
+          <span aria-hidden="true" class="invisible block">{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
+          <a href={SITE.googleReviewsUrl} target="_blank" rel="noopener" class="hover-flip absolute inset-y-0 left-0 inline-flex items-center gap-2">
+            <span class="flip-a flex items-center gap-2">
+              <span>{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-2.5 shrink-0"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+            <span aria-hidden="true" class="flip-b flex items-center gap-2">
+              <span>{SITE.googleRating.toFixed(1)} · {SITE.googleReviewCount} {t("cta.googleReviews")}</span>
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-2.5 shrink-0"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+          </a>
+        </span>
       </div>
       <div data-carousel-track class="carousel-track -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto px-5 pb-2 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
         {

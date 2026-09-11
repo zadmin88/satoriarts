@@ -10,7 +10,6 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = useT(locale);
-const year = new Date().getFullYear();
 
 // Etiquetas ya en mayúsculas (JS), no con "text-transform: uppercase"
 // en CSS: aplicar "uppercase" en vivo a texto con acentos (Conócenos,
@@ -40,8 +39,17 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
        blanco de sobra debajo de la fila de copyright/legal, reportado
        repetidamente — el footer debe terminar prácticamente pegado a
        esa línea, sin aire simétrico con el de arriba. -->
+  <!-- Una sola unidad de espaciado ("gap-8") para todo el footer, en
+       vez de valores distintos por bloque (antes gap-10 arriba, mt-12
+       pt-6 abajo — de ahí los huecos desiguales reportados). En mobile,
+       Navegación y Social van en un grid de 2 columnas EXPLÍCITAS
+       (mismo eje horizontal, mismo ancho cada una) en vez de apiladas
+       en una sola columna con "Volver arriba" como tercer bloque
+       suelto — "Volver arriba" pasa a ocupar las 2 columnas debajo,
+       como una fila propia. En desktop (sm:), vuelve a ser una fila
+       con los 3 bloques repartidos como antes. -->
   <div class="stagger-grid container-tight pt-14 pb-4">
-    <div class="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+    <div class="grid grid-cols-2 gap-8 sm:flex sm:flex-row sm:items-start sm:justify-between">
       <nav aria-label={t("footer.navLabel")} class="reveal flex flex-col gap-3">
         <p class="font-heading text-sm font-medium text-black">{navLabel}</p>
         {
@@ -70,7 +78,7 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
         </a>
       </nav>
 
-      <div class="reveal flex flex-col gap-3">
+      <div class="reveal col-span-2 flex flex-col gap-3 sm:col-span-1">
         <a href="#top" class="hover-flip inline-flex items-center gap-2 text-sm font-heading font-medium uppercase text-black">
           <span class="flip-a flex items-center gap-2">
             <span>{t("a11y.backToTop")}</span>
@@ -84,38 +92,28 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
       </div>
     </div>
 
-    <!-- flex-col-reverse (no flex-col) en mobile: en el DOM, el bloque
-         de links legales va primero y el copyright después (así
-         "sm:flex-row-reverse" en desktop pone el copyright a la
-         izquierda, como en el resto del sitio) — pero en mobile
-         "flex-col" simplemente apila en orden de DOM, mostrando legal
-         ARRIBA y copyright ABAJO, al revés de desktop, sin ningún
-         criterio (era un efecto secundario no intencionado de
-         reutilizar el mismo truco de "row-reverse" solo pensado para
-         fila, no para columna). Con "flex-col-reverse" el último
-         elemento del DOM (el copyright) sube arriba también en mobile,
-         quedando siempre primero en los dos casos.
-         mt-10 (no mt-12 pt-6): mismo "gap-10" que ya separa
-         Navegación/Social/Volver arriba entre sí, en vez de un
-         espacio mayor y distinto solo para este bloque. -->
-    <div class="reveal mt-10 flex flex-col-reverse items-start gap-3 text-xs uppercase tracking-wide sm:flex-row-reverse sm:items-center sm:justify-between">
-      <div class="flex flex-col items-start gap-2 text-left sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2">
-        <a href={routePath(locale, "legalNotice")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
-          <span class="flip-a block">{legalNotice}</span>
-          <span aria-hidden="true" class="flip-b block">{legalNotice}</span>
-        </a>
-        <span aria-hidden="true" class="hidden text-neutral-300 sm:inline">·</span>
-        <a href={routePath(locale, "privacy")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
-          <span class="flip-a block">{privacy}</span>
-          <span aria-hidden="true" class="flip-b block">{privacy}</span>
-        </a>
-        <span aria-hidden="true" class="hidden text-neutral-300 sm:inline">·</span>
-        <span class="hover-flip normal-case inline-block text-neutral-500">
-          <span class="flip-a block">{credits}: {t("legal.pending")}</span>
-          <span aria-hidden="true" class="flip-b block text-black">{credits}: {t("legal.pending")}</span>
-        </span>
-      </div>
-      <span class="text-neutral-500">© {year} {SITE.brand}</span>
+    <!-- Sin la línea de copyright ("© 2026 SATORI ARTS"), a petición
+         explícita — solo queda la fila de links legales, alineada a la
+         DERECHA (justify-end), bajo "Volver arriba" (mt-8: misma
+         unidad de espaciado que separa Navegación/Social del bloque
+         "Volver arriba"). -->
+    <div class="reveal mt-8 flex flex-row flex-wrap items-center justify-end gap-x-4 gap-y-2 text-right text-xs uppercase tracking-wide">
+      <a href={routePath(locale, "legalNotice")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
+        <span class="flip-a block">{legalNotice}</span>
+        <span aria-hidden="true" class="flip-b block">{legalNotice}</span>
+      </a>
+      <span aria-hidden="true" class="text-neutral-300">·</span>
+      <a href={routePath(locale, "privacy")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
+        <span class="flip-a block">{privacy}</span>
+        <span aria-hidden="true" class="flip-b block">{privacy}</span>
+      </a>
+      <span aria-hidden="true" class="text-neutral-300">·</span>
+      <!-- Sin "[PENDIENTE]": ese placeholder ya no aplica, solo queda
+           la etiqueta "CRÉDITOS". -->
+      <span class="hover-flip normal-case inline-block text-neutral-500">
+        <span class="flip-a block">{credits}</span>
+        <span aria-hidden="true" class="flip-b block text-black">{credits}</span>
+      </span>
     </div>
   </div>
 </footer>
