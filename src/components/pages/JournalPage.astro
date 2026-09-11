@@ -59,7 +59,7 @@ const posts = JOURNAL_POSTS[locale];
     <div class="stagger-grid grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-3">
       {
         posts.map((d) => (
-          <a href={journalArticlePath(locale, d.slug)} class="reveal group block">
+          <a href={journalArticlePath(locale, d.slug)} class="reveal group block text-left">
             <div class="aspect-[16/9] overflow-hidden bg-card">
               <Image
                 src={servicePhotos(d.cover.service)[d.cover.index]}
@@ -71,8 +71,8 @@ const posts = JOURNAL_POSTS[locale];
               />
             </div>
             <span class="font-heading mt-5 block text-lg font-medium text-foreground">{d.title}</span>
-            <p class="font-label mt-2 text-sm font-medium text-foreground">{d.category}</p>
-            <p class="font-label text-xs text-muted-foreground">{d.date}</p>
+            <p class="font-label mt-2 text-sm font-medium text-foreground uppercase">{d.category}</p>
+            <p class="font-label text-xs text-muted-foreground uppercase">{d.date}</p>
           </a>
         ))
       }

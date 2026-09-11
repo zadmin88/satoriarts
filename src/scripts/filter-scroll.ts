@@ -28,48 +28,50 @@ function scrollPillIntoView(pill: HTMLElement, behavior: ScrollBehavior) {
   container.scrollBy({ left: pillRect.left - containerRect.left, behavior });
 }
 
-// Cambiar de categoría en las páginas de servicio (/bodas/, /eventos/...)
-// es una navegación real (enlaces <a>). Para que se sienta como "solo
-// cambiaron las fotos" (igual que el filtro CSS de /proyectos/), se
-// guarda la posición de scroll al pulsar una pestaña y se restaura al
-// cargar la página siguiente.
-const SCROLL_KEY = "proyectos-scroll-y";
-
-function preserveScrollOnCategoryNav() {
-  document.querySelectorAll<HTMLAnchorElement>(".filter-pill[href]").forEach((link) => {
-    link.addEventListener("click", () => {
-      sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
-    });
-  });
-}
-
-// IMPORTANTE: nunca "window.scrollTo" nativo si Lenis está activo (solo
-// desktop): Lenis lleva su propio valor de scroll animado; moverlo por
-// fuera lo desincroniza y "corrige" de golpe al siguiente gesto. En
-// móvil Lenis está desactivado (scroll nativo), así que ahí sí se usa
-// window.scrollTo. Se limita a la altura real del documento por si la
-// nueva categoría tiene menos fotos que la anterior.
-function restoreScrollFromCategoryNav(lenis: ReturnType<typeof getLenis>) {
-  const saved = sessionStorage.getItem(SCROLL_KEY);
-  sessionStorage.removeItem(SCROLL_KEY);
-  if (saved === null) return;
-  const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-  const y = Math.min(Number(saved), maxY);
+// [Fix] Antes había un "preserveScrollOnCategoryNav"/
+// "restoreScrollFromCategoryNav" que guardaba la posición de scroll en
+// sessionStorage al pulsar una pestaña y la restauraba en la página
+// siguiente — pensado para que cambiar de categoría (una navegación
+// real en /bodas/, /eventos/...) no hiciera "saltar" el título
+// "PROYECTOS", que entonces vivía DENTRO del bloque sticky y se
+// colapsaba por JS. Ese colapso ya no existe (el título va en flujo
+// normal, ver ProjectsGallery.astro), así que ese mecanismo ya no
+// arreglaba nada — y se había convertido en la causa de un bug nuevo:
+// cualquier valor que quedara en sessionStorage (de una pestaña
+// pulsada en CUALQUIER visita anterior de la sesión del navegador, no
+// solo la actual) se aplicaba igual en la siguiente carga, aunque el
+// usuario llegara sin haber hecho scroll — auto-desplazando la página
+// y haciendo que la barra sticky pareciera "pegada" desde el primer
+// instante, sin que el usuario hubiera scrolleado. Eliminado por
+// completo: cada página ahora carga siempre en su scroll real (0,
+// salvo restauración nativa del navegador), y la barra solo se pega
+// cuando el usuario de verdad hace scroll hasta ahí.
+// [Fix adicional] Además de quitar el "restore" propio y desactivar la
+// restauración nativa del navegador (on-page-load.ts), esta página
+// fuerza su propio scroll a 0 al cargar — sin condiciones ni
+// excepciones. Es la garantía definitiva: pase lo que pase durante la
+// transición entre categorías (View Transitions, un frame intermedio
+// del cross-fade con el scroll de la página anterior aún visible,
+// cualquier comportamiento del navegador que se nos escape), cada
+// categoría de Proyectos SIEMPRE arranca arriba del todo, con
+// "PROYECTOS" visible, nunca a mitad de scroll ni con la barra ya
+// pegada. Se hace de forma inmediata (sin animación) para que no se
+// note como un salto — el usuario nunca debería percibir esto, solo
+// beneficiarse de que ya no ocurra el bug.
+function forceScrollTopOnLoad(lenis: ReturnType<typeof getLenis>) {
   if (lenis) {
-    lenis.scrollTo(y, { immediate: true });
+    lenis.scrollTo(0, { immediate: true });
   } else {
-    window.scrollTo(0, y);
+    window.scrollTo(0, 0);
   }
 }
 
 function setup() {
   const lenis = getLenis();
-  restoreScrollFromCategoryNav(lenis);
+  forceScrollTopOnLoad(lenis);
 
   const header = document.querySelector<HTMLElement>("[data-fixed-header]");
   const grid = document.querySelector<HTMLElement>("[data-portfolio-grid]");
-
-  preserveScrollOnCategoryNav();
 
   document.querySelectorAll<HTMLInputElement>('input[name="pf-filter"]').forEach((input) => {
     input.addEventListener("change", () => {
