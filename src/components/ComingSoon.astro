@@ -1,0 +1,67 @@
+---
+/**
+ * Página "Próximamente" a pantalla completa (negra) con el logo girando,
+ * el mismo giro que el logo del header (clase .logo-spin). Se muestra en
+ * TODAS las rutas cuando COMING_SOON = true en src/config.ts. Incluye
+ * WhatsApp e Instagram para que se pueda contactar mientras se termina
+ * la web. Autocontenida (no depende del Header/Footer ni de scripts).
+ */
+import Logo from "@/components/Logo.astro";
+import { SITE, waLink, waDefaultMessage } from "@/config";
+import type { Locale } from "@/config";
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const COPY: Record<Locale, { label: string; line: string; cta: string; ig: string }> = {
+  es: {
+    label: "Próximamente",
+    line: "Estamos preparando nuestra nueva web. Mientras tanto, escríbenos: ya reservamos fechas.",
+    cta: "Escríbenos por WhatsApp",
+    ig: "Síguenos en Instagram",
+  },
+  en: {
+    label: "Coming soon",
+    line: "We're crafting our new site. In the meantime, get in touch — we're already booking dates.",
+    cta: "Message us on WhatsApp",
+    ig: "Follow us on Instagram",
+  },
+  ca: {
+    label: "Ben aviat",
+    line: "Estem preparant el nou web. Mentrestant, escriu-nos: ja reservem dates.",
+    cta: "Escriu-nos per WhatsApp",
+    ig: "Segueix-nos a Instagram",
+  },
+};
+const c = COPY[locale];
+---
+
+<main class="flex min-h-svh flex-1 flex-col items-center justify-center gap-10 bg-black px-6 py-16 text-center">
+  <Logo class="size-40 md:size-56" spin />
+
+  <div class="flex flex-col items-center gap-3">
+    <p class="text-xs font-medium uppercase tracking-[0.28em] text-gold">{c.label}</p>
+    <p class="max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">{c.line}</p>
+  </div>
+
+  <div class="flex flex-col items-center gap-4">
+    <a
+      href={waLink(waDefaultMessage(locale))}
+      target="_blank"
+      rel="noopener"
+      class="inline-flex h-13 items-center justify-center rounded-full bg-foreground px-8 text-base font-medium text-background transition-opacity hover:opacity-90"
+    >
+      {c.cta}
+    </a>
+    <a
+      href={SITE.instagramUrl}
+      target="_blank"
+      rel="noopener me"
+      class="text-sm uppercase tracking-wider text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+    >
+      {c.ig} · @{SITE.instagram}
+    </a>
+  </div>
+</main>

@@ -71,6 +71,20 @@ export function localizePath(locale: Locale, path: string): string {
 }
 
 /* ---------------------------------------------------------- */
+/*  Modo "Próximamente" (coming soon)                          */
+/* ---------------------------------------------------------- */
+
+/**
+ * `true`  → TODAS las rutas muestran una pantalla negra "Próximamente"
+ *           con el logo girando (en desarrollo Y en producción).
+ * `false` → se muestra el sitio completo.
+ *
+ * Para trabajar en el sitio real: ponlo en `false` (lo verás en
+ * `npm run dev`). Para LANZAR: `false` + `npm run build` + desplegar.
+ */
+export const COMING_SOON = true;
+
+/* ---------------------------------------------------------- */
 /*  Datos del negocio                                          */
 /* ---------------------------------------------------------- */
 

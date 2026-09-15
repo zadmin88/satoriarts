@@ -1,12 +1,13 @@
 ---
 import "@/styles/global.css";
 import { ClientRouter } from "astro:transitions";
-import { SITE, LOCALE_LANG, OG_LOCALE, LOCALES } from "@/config";
+import { SITE, LOCALE_LANG, OG_LOCALE, LOCALES, COMING_SOON } from "@/config";
 import type { Locale } from "@/config";
 import { businessSchema } from "@/lib/schema";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import JsonLd from "@/components/JsonLd.astro";
+import ComingSoon from "@/components/ComingSoon.astro";
 import { useT } from "@/i18n/ui";
 
 interface Props {
@@ -35,6 +36,11 @@ const {
 } = Astro.props;
 
 const t = useT(locale);
+
+// Modo "Próximamente" (COMING_SOON en config.ts): gatea TODO el sitio.
+const CS_TITLE: Record<Locale, string> = { es: "Próximamente", en: "Coming soon", ca: "Ben aviat" };
+const headTitle = COMING_SOON ? `${SITE.brand} · ${CS_TITLE[locale]}` : title;
+
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImageUrl = new URL(ogImage, SITE.url).href;
 
@@ -72,9 +78,9 @@ const allSchema = [businessSchema(locale), ...pageSchema];
     <link rel="preload" href="/fonts/general-sans/GeneralSans-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/general-sans/GeneralSans-600.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/general-sans/GeneralSans-700.woff2" as="font" type="font/woff2" crossorigin />
-    <title>{title}</title>
+    <title>{headTitle}</title>
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    {(noindex || COMING_SOON) && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
 
     {hreflangs.map((h) => <link rel="alternate" hreflang={h.lang} href={h.href} />)}
@@ -97,7 +103,7 @@ const allSchema = [businessSchema(locale), ...pageSchema];
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={SITE.brand} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={headTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
@@ -106,12 +112,12 @@ const allSchema = [businessSchema(locale), ...pageSchema];
     <meta property="og:locale" content={OG_LOCALE[locale]} />
     {LOCALES.filter((l) => l !== locale).map((l) => <meta property="og:locale:alternate" content={OG_LOCALE[l]} />)}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={headTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <JsonLd data={allSchema} />
-    <ClientRouter />
+    {!COMING_SOON && <JsonLd data={allSchema} />}
+    {!COMING_SOON && <ClientRouter />}
     <script>
       import "@/scripts/smooth-scroll";
       import "@/scripts/scroll-reveal";
@@ -127,16 +133,24 @@ const allSchema = [businessSchema(locale), ...pageSchema];
        viewport más pequeño posible, así el footer queda siempre pegado
        al final real, sin hueco. -->
   <body id="top" class="flex min-h-svh flex-col">
-    <a
-      href="#contenido"
-      class="sr-only rounded-lg bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50"
-    >
-      {t("a11y.skip")}
-    </a>
-    <Header locale={locale} alternates={alternates} logoRevealsOnScroll={logoRevealsOnScroll} />
-    <main id="contenido" class="main-offset flex-1" transition:animate="fade">
-      <slot />
-    </main>
-    <Footer locale={locale} />
+    {
+      COMING_SOON ? (
+        <ComingSoon locale={locale} />
+      ) : (
+        <>
+          <a
+            href="#contenido"
+            class="sr-only rounded-lg bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50"
+          >
+            {t("a11y.skip")}
+          </a>
+          <Header locale={locale} alternates={alternates} logoRevealsOnScroll={logoRevealsOnScroll} />
+          <main id="contenido" class="main-offset flex-1" transition:animate="fade">
+            <slot />
+          </main>
+          <Footer locale={locale} />
+        </>
+      )
+    }
   </body>
 </html>
