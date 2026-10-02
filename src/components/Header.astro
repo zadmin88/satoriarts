@@ -57,7 +57,7 @@ const HAS_ACCENT = /[áéíóúàèìòùäëïöüñçÁÉÍÓÚÀÈÌÒÙÄË�
 ---
 
 <header class:list={["site-header fixed top-0 inset-x-0 z-50", logoRevealsOnScroll ? "header-bar-reveal" : "bg-black"]}>
-  <div class="container-tight grid h-24 grid-cols-3 items-center md:h-28">
+  <div class="container-tight grid h-24 grid-cols-3 items-center md:h-32">
     <!-- Izquierda: botón "Menú" (pastilla de cristal, como verostudio.com) -->
     <details class="menu group relative min-w-0 justify-self-start">
       <summary
@@ -91,7 +91,7 @@ const HAS_ACCENT = /[áéíóúàèìòùäëïöüñçÁÉÍÓÚÀÈÌÒÙÄË�
       </summary>
 
       <div class="menu-panel flex min-h-dvh flex-col">
-        <nav aria-label="Principal" class="container-tight flex w-full flex-1 flex-col justify-center pt-24 pb-10 md:pt-28">
+        <nav aria-label="Principal" class="container-tight flex w-full flex-1 flex-col justify-center pt-24 pb-10 md:pt-32">
           <ol class="menu-list flex flex-col gap-1">
             {
               primaryNav.map((item) => (
@@ -216,7 +216,7 @@ const HAS_ACCENT = /[áéíóúàèìòùäëïöüñçÁÉÍÓÚÀÈÌÒÙÄË�
       class:list={["relative z-50 col-start-2 justify-self-center", logoRevealsOnScroll && "header-logo-reveal-on-scroll"]}
       aria-label={`${SITE.brand} — ${t("nav.home")}`}
     >
-      <Logo class="size-14 md:size-20" />
+      <Logo class="size-[4.5rem] md:size-24" />
     </a>
 
     <!-- Derecha: idioma + Contacto (en móvil, solo icono; texto completo desde sm:).

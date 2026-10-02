@@ -25,6 +25,8 @@ function scrollPillIntoView(pill: HTMLElement, behavior: ScrollBehavior) {
   if (!container) return;
   const pillRect = pill.getBoundingClientRect();
   const containerRect = container.getBoundingClientRect();
+  // El padding está en el contenedor exterior, así que el borde del
+  // scroller ya es el margen: se alinea directamente a él.
   container.scrollBy({ left: pillRect.left - containerRect.left, behavior });
 }
 
@@ -82,12 +84,19 @@ function setup() {
       // Cuadrícula filtrada, siempre visible justo debajo de la barra
       // sticky. Se usa Lenis (si está activo) en vez de scrollIntoView
       // nativo, porque mezclar ambos motores produce un salto/parpadeo.
-      if (!grid) return;
-      const headerHeight = header?.offsetHeight ?? 0;
+      // Solo si el usuario ya había scrolleado y la cuadrícula quedó por
+      // encima de la barra sticky. Si no, NO se mueve la página (antes
+      // siempre se hacía scroll con animación → el "salto" al elegir
+      // pestaña). El borde inferior de la barra incluye el header fijo,
+      // porque la barra está pegada justo debajo de él. Salto inmediato:
+      // el contenido ya cambió, animar solo añade un segundo movimiento.
+      if (!grid || !header) return;
+      const delta = grid.getBoundingClientRect().top - header.getBoundingClientRect().bottom;
+      if (delta >= 0) return;
       if (lenis) {
-        lenis.scrollTo(grid, { offset: -headerHeight, duration: 1 });
+        lenis.scrollTo(window.scrollY + delta, { immediate: true });
       } else {
-        grid.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.scrollBy({ top: delta, behavior: "instant" });
       }
     });
   });

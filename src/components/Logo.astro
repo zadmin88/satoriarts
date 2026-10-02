@@ -1,32 +1,34 @@
 ---
-import { Image } from "astro:assets";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { SITE } from "@/config";
-import logoRing from "@/assets/brand/logo-ring.png";
-import logoIcon from "@/assets/brand/logo-icon.png";
 
 interface Props {
   class?: string;
-  /** Desactiva el giro del anillo (logo fijo, como marca de agua estática). */
+  /** Gira el anillo de texto (el zorro central queda fijo). */
   spin?: boolean;
 }
 
 const { class: className = "size-14 sm:size-20", spin = true } = Astro.props;
+
+// Fuente única: public/brand/logo.svg. Se incrusta como vector en línea
+// (no como <img> con máscara) para que el texto del anillo se vea nítido
+// también mientras gira. El primer <path> es el zorro; el resto, el anillo.
+const raw = readFileSync(join(process.cwd(), "public", "brand", "logo.svg"), "utf8");
+const fox = raw.match(/<path class="cls-1"[^>]*\/>/)![0];
+const ring = raw
+  .replace(fox, "")
+  .replace(/^[\s\S]*?<\/defs>/, "")
+  .replace(/<\/svg>\s*$/, "");
 ---
 
-<span class:list={["relative inline-block", className]}>
-  <Image
-    src={logoRing}
-    alt=""
-    aria-hidden="true"
-    width={160}
-    height={160}
-    class:list={["absolute inset-0 size-full", spin && "logo-spin"]}
-  />
-  <Image
-    src={logoIcon}
-    alt={SITE.brand}
-    width={160}
-    height={160}
-    class="absolute inset-0 size-full"
-  />
+<span class:list={["relative inline-block", className]} role="img" aria-label={SITE.brand}>
+  <!-- El giro se hace con SMIL dentro del propio SVG (no con una animación CSS
+       de transform): así el navegador vuelve a pintar el vector en cada
+       fotograma y el texto se mantiene nítido, en vez de girar una capa
+       ya rasterizada (que se ve borrosa). -->
+  <svg viewBox="0 0 1080 1080" aria-hidden="true" shape-rendering="geometricPrecision" stroke-linejoin="round" class="absolute inset-0 size-full fill-white stroke-white [stroke-width:3]">
+    <g set:html={ring + (spin ? '<animateTransform attributeName="transform" type="rotate" from="0 540 540" to="360 540 540" dur="24s" repeatCount="indefinite"/>' : '')} />
+  </svg>
+  <svg viewBox="0 0 1080 1080" aria-hidden="true" shape-rendering="geometricPrecision" class="absolute inset-0 size-full fill-white" set:html={fox} />
 </span>

@@ -18,18 +18,18 @@ const t = useT(locale);
 const SEO: Record<Locale, { title: string; description: string; intro: string }> = {
   es: {
     title: "Proyectos · Fotografía y Film · Satori Arts",
-    description: "Proyectos de Satori Arts: bodas, eventos, hoteles y paisaje en foto y vídeo. Barcelona, Madrid y destino.",
-    intro: "Una selección de nuestro trabajo. Bodas, eventos, hoteles y paisaje, en foto y en film.",
+    description: "Proyectos de Satori Arts: bodas, hoteles y restaurantes, y paisaje en foto y vídeo. Barcelona, Madrid y destino.",
+    intro: "Una selección de nuestro trabajo. Bodas, hoteles y restaurantes, y paisaje, en foto y en film.",
   },
   en: {
     title: "Projects · Photography & Film · Satori Arts",
-    description: "Satori Arts projects: weddings, events, hotels and landscape in photo and film. Barcelona, Madrid and destination.",
-    intro: "A selection of our work. Weddings, events, hotels and landscape, in photo and film.",
+    description: "Satori Arts projects: weddings, hotels & restaurants and landscape in photo and film. Barcelona, Madrid and destination.",
+    intro: "A selection of our work. Weddings, hotels & restaurants and landscape, in photo and film.",
   },
   ca: {
     title: "Projectes · Fotografia i Film · Satori Arts",
-    description: "Projectes de Satori Arts: casaments, esdeveniments, hotels i paisatge en foto i vídeo. Barcelona, Madrid i destí.",
-    intro: "Una selecció de la nostra feina. Casaments, esdeveniments, hotels i paisatge, en foto i film.",
+    description: "Projectes de Satori Arts: casaments, hotels & restaurants i paisatge en foto i vídeo. Barcelona, Madrid i destí.",
+    intro: "Una selecció de la nostra feina. Casaments, hotels & restaurants i paisatge, en foto i film.",
   },
 };
 const seo = SEO[locale];
@@ -48,9 +48,15 @@ const seo = SEO[locale];
 // filtrable por servicio con radio + :has() (cero JavaScript): cada
 // foto lleva su propio "data-service", y también el contenedor que las
 // envuelve.
-const serviceBlocks: ServiceBlock[] = SERVICES.map((s) => {
+// Dentro de cada categoría, orden numérico normal (01, 02, 03...). La
+// pestaña "Todos" no apila cada categoría entera una detrás de otra:
+// intercala una foto de cada categoría por turno (round-robin), así se
+// ve una mezcla de proyectos en vez de bloques separados. El filtrado
+// por categoría sigue funcionando igual (CSS :has() + data-service en
+// cada foto, ver GridMediaItem.astro), da igual el orden del DOM.
+const byCategory = SERVICES.map((s) => {
   const copy = s.i18n[locale];
-  const photos: GridItem[] = servicePhotos(s.key).map((image, i) => ({
+  return servicePhotos(s.key).map((image, i) => ({
     type: "photo" as const,
     image,
     alt: photoAlt(locale, copy.title, i),
@@ -58,10 +64,17 @@ const serviceBlocks: ServiceBlock[] = SERVICES.map((s) => {
     href: servicePath(locale, s),
     title: copy.title,
   }));
-  const photoColumns: [GridItem[], GridItem[]] = [[], []];
-  photos.forEach((p, i) => photoColumns[i % 2].push(p));
-  return { key: s.key, photos, photoColumns };
 });
+const maxLen = Math.max(...byCategory.map((c) => c.length));
+const mixedPhotos: GridItem[] = [];
+for (let i = 0; i < maxLen; i++) {
+  for (const cat of byCategory) {
+    if (cat[i]) mixedPhotos.push(cat[i]);
+  }
+}
+const mixedColumns: [GridItem[], GridItem[]] = [[], []];
+mixedPhotos.forEach((p, i) => mixedColumns[i % 2].push(p));
+const serviceBlocks: ServiceBlock[] = [{ key: "bodas", photos: mixedPhotos, photoColumns: mixedColumns }];
 ---
 
 <BaseLayout locale={locale} title={seo.title} description={seo.description} alternates={routeAlternates("portfolio")}>
