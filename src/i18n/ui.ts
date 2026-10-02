@@ -43,7 +43,7 @@ export const UI = {
     "section.manifesto.eyebrow": "Nuestro criterio",
     "section.manifesto.title": "Hay un instante que no se repite. Ese es el que buscamos.",
     "section.manifesto.text": "Luz honesta, edición con carácter y una entrega que resiste el tiempo, sea una boda íntima o la campaña de un hotel.",
-    "section.statement": "Bodas, eventos, hoteles y paisaje. La misma exigencia en cada encargo.",
+    "section.statement": "Bodas, hoteles, restaurantes y paisaje. La misma exigencia en cada encargo.",
     "section.disciplines": "Dos disciplinas, una misma narrativa",
     "section.why": "Por qué Satori Arts",
     "section.social": "Confianza construida en cada entrega",
@@ -57,7 +57,7 @@ export const UI = {
     "cta.blockText":
       "En Satori Arts, nuestra prioridad es ofrecerte un servicio personalizado y cercano, acompañándote en cada paso del proceso.",
     "footer.tagline":
-      "Estudio de fotografía y film de autor para bodas, eventos y hoteles. Con sede en Barcelona y Madrid, y disponibilidad para destino.",
+      "Estudio de fotografía y film de autor para bodas, hoteles y restaurantes, y paisaje. Con sede en Barcelona y Madrid, y disponibilidad para destino.",
     "footer.services": "Servicios",
     "footer.explore": "Explora",
     "footer.legal": "Legal",
@@ -129,7 +129,7 @@ export const UI = {
     "cta.blockText":
       "Tell us the date, the place and what you picture. We'll reply on WhatsApp with availability and ideas, no strings attached.",
     "footer.tagline":
-      "Photography and film duo for weddings, events, hotels and landscape in Barcelona, Madrid and wherever the story takes us.",
+      "Photography and film duo for weddings, hotels & restaurants and landscape in Barcelona, Madrid and wherever the story takes us.",
     "footer.services": "Services",
     "footer.explore": "Explore",
     "footer.legal": "Legal",
@@ -201,7 +201,7 @@ export const UI = {
     "cta.blockText":
       "Explica'ns la data, el lloc i què imagines. Et responem per WhatsApp amb disponibilitat i idees, sense compromís.",
     "footer.tagline":
-      "Duo de fotografia i film per a casaments, esdeveniments, hotels i paisatge a Barcelona, Madrid i allà on ens porti la història.",
+      "Duo de fotografia i film per a casaments, hotels & restaurants i paisatge a Barcelona, Madrid i allà on ens porti la història.",
     "footer.services": "Serveis",
     "footer.explore": "Explora",
     "footer.legal": "Legal",

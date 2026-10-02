@@ -1033,3 +1033,25 @@ body {
 /*  (ver src/scripts/scroll-reveal.ts).                         */
 /* ---------------------------------------------------------- */
 
+
+/* Fotos en B/N (Photo.astro "grayscale", p. ej. retratos de /nosotros/):
+   en táctil no hay hover, así que pasan de B/N a color solas al hacer
+   scroll, según la foto entra en pantalla (CSS puro, sin JS). Donde el
+   navegador no soporta animation-timeline sigue valiendo el toque
+   (grayscale-tap.ts). */
+@media (hover: none) {
+  @supports (animation-timeline: view()) {
+    [data-grayscale-tap] {
+      animation: grayscale-to-color linear both;
+      animation-timeline: view();
+      animation-range: entry 25% cover 55%;
+    }
+  }
+}
+@keyframes grayscale-to-color {
+  from { filter: grayscale(1); }
+  to { filter: grayscale(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-grayscale-tap] { animation: none !important; }
+}

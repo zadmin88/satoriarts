@@ -20,14 +20,35 @@ const t = useT(locale);
 const seo = HOME_SEO[locale];
 const testimonials = TESTIMONIALS[locale];
 
-const preview = [
-  { image: servicePhotos("bodas")[0], alt: photoAlt(locale, SERVICES[0].i18n[locale].title, 0) },
-  { image: servicePhotos("hoteles")[0], alt: photoAlt(locale, SERVICES[2].i18n[locale].title, 0) },
-  { image: servicePhotos("paisaje")[0], alt: photoAlt(locale, SERVICES[3].i18n[locale].title, 0) },
-  { image: servicePhotos("eventos")[1], alt: photoAlt(locale, SERVICES[1].i18n[locale].title, 1) },
-  { image: servicePhotos("bodas")[2], alt: photoAlt(locale, SERVICES[0].i18n[locale].title, 2) },
-  { image: servicePhotos("hoteles")[3], alt: photoAlt(locale, SERVICES[2].i18n[locale].title, 3) },
-];
+// 12 fotos en la home: 6 de bodas, 4 de hoteles, 2 de paisaje (las
+// primeras de cada categoría), intercaladas para que las 2 columnas no
+// agrupen una categoría entera de golpe.
+const previewCounts: Record<(typeof SERVICES)[number]["key"], number> = {
+  bodas: 6,
+  hoteles: 4,
+  paisaje: 2,
+};
+const previewKeys: (typeof SERVICES)[number]["key"][] = ["bodas", "hoteles", "paisaje"];
+const previewByCategory = previewKeys.map((key, si) =>
+  servicePhotos(key)
+    .slice(0, previewCounts[key])
+    .map((image, i) => ({
+      image,
+      alt: photoAlt(locale, SERVICES[si].i18n[locale].title, i),
+    })),
+);
+// Reparto proporcional (no round-robin simple): a cada foto le
+// corresponde una posición ideal según cuántas tiene su categoría
+// respecto al total, así con recuentos desiguales (6/4/2) quedan bien
+// repartidas en toda la fila en vez de agrupar bodas al final, que es
+// lo que pasa en cuanto se agotan hoteles y paisaje con un turno fijo.
+const previewTotal = previewByCategory.reduce((sum, cat) => sum + cat.length, 0);
+const preview = previewByCategory
+  .flatMap((cat, ci) =>
+    cat.map((item, i) => ({ item, pos: (i + 0.5) * (previewTotal / cat.length), ci })),
+  )
+  .sort((a, b) => a.pos - b.pos || a.ci - b.ci)
+  .map((w) => w.item);
 ---
 
 <BaseLayout
@@ -46,7 +67,7 @@ const preview = [
   <section class="relative -mt-24 flex h-[92svh] min-h-[560px] w-full flex-col items-center justify-center overflow-hidden bg-background px-5 text-center sm:px-6 md:-mt-28 md:h-[92dvh]">
     <div data-parallax="0.1" class="absolute inset-0">
       <video
-        src="/video_hero.mp4"
+        src="/video/hero.mp4"
         poster={heroPhotos[0].src}
         preload="metadata"
         autoplay
@@ -191,7 +212,7 @@ const preview = [
       </div>
       <div class="grid grid-cols-2 gap-x-3 sm:gap-x-4">
         {
-          [preview.filter((_, i) => i % 2 === 0), preview.filter((_, i) => i % 2 === 1)].map((col) => (
+          [preview.slice(0, Math.ceil(preview.length / 2)), preview.slice(Math.ceil(preview.length / 2))].map((col) => (
             <div class="flex flex-col gap-3 sm:gap-4">
               {col.map((p) => (
                 <Image
@@ -210,19 +231,16 @@ const preview = [
     </div>
   </section>
 
-  <!-- CLIENTES: tarjetas blancas horizontales, como el carrusel de
-       clientes de videinfra.com. [PENDIENTE]: cuando haya nombres y
-       descripciones reales, volver a envolver cada tarjeta en <details>
-       con nombre + icono "+" al pie, que despliega la descripción del
-       cliente (sin JS) — mientras tanto se muestra solo el logo. -->
+  <!-- CLIENTES: logos blancos de public/clients/ (ver CLIENTS en
+       config.ts), cada uno en una caja del mismo tamaño y centrado. -->
   <section aria-labelledby="clientes-titulo" class="reveal bg-background">
     <div class="section-space container-tight">
-      <p id="clientes-titulo" data-reveal-words class="mb-6 font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("section.clients")}</p>
-      <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
+      <p id="clientes-titulo" data-reveal-words class="mb-12 font-heading text-3xl font-normal uppercase text-foreground sm:mb-16 sm:text-5xl">{t("section.clients")}</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-16 gap-y-10 [--client-h:2.25rem] sm:gap-x-24 sm:[--client-h:2.75rem]">
         {
           CLIENTS.map((c) => (
-            <div class="flex aspect-[4/3] items-center justify-center">
-              <Logo class="size-20 opacity-80" spin={false} />
+            <div class="flex items-center justify-center">
+              <img src={c.logo} alt={c.name} loading="lazy" style={`height:calc(var(--client-h) * ${c.scale})`} class="w-auto max-w-[70vw] object-contain" />
             </div>
           ))
         }

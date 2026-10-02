@@ -9,7 +9,6 @@ import type { Locale, ServiceKey, City, Service } from "@/config";
 /** Fragmento de slug SEO por servicio e idioma (sin la ciudad) */
 export const SERVICE_CITY_SLUG: Record<ServiceKey, Record<Locale, string>> = {
   bodas: { es: "fotografo-de-bodas", en: "wedding-photographer", ca: "fotograf-de-casaments" },
-  eventos: { es: "fotografo-de-eventos", en: "event-photographer", ca: "fotograf-desdeveniments" },
   hoteles: { es: "fotografo-de-hoteles", en: "hotel-photographer", ca: "fotograf-dhotels" },
   paisaje: { es: "fotografo-de-paisaje", en: "landscape-photographer", ca: "fotograf-de-paisatge" },
 };

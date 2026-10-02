@@ -1,0 +1,41 @@
+---
+import type { Locale } from "@/config";
+import { useT } from "@/i18n/ui";
+
+/**
+ * Flecha flotante "Volver arriba": aparece al hacer scroll (script
+ * back-to-top.ts, que añade/quita "is-visible") y sube al inicio de la
+ * página. Círculo claro (bg-foreground) sin contorno, con triángulo
+ * oscuro; hover algo más tenue.
+ * Es un <a href="#top"> real: sin JS sigue funcionando como ancla.
+ */
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = useT(locale);
+---
+
+<a
+  href="#top"
+  data-back-to-top
+  aria-label={t("a11y.backToTop")}
+  class="back-to-top fixed right-5 bottom-5 z-40 inline-flex size-11 items-center justify-center rounded-full bg-foreground text-background transition-[opacity,transform] duration-300 hover:bg-foreground/80 sm:right-6 sm:bottom-6"
+>
+  <!-- Triángulo sólido (mismo glifo que la flecha de "Volver arriba" del
+       footer), sin contorno en el círculo. -->
+  <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="size-4 -rotate-90"><path d="M8 5v14l11-7z"></path></svg>
+</a>
+
+<style>
+  .back-to-top {
+    opacity: 0;
+    transform: translateY(0.5rem);
+    pointer-events: none;
+  }
+  .back-to-top.is-visible {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+</style>

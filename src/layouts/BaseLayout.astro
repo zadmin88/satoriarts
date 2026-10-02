@@ -6,6 +6,7 @@ import type { Locale } from "@/config";
 import { businessSchema } from "@/lib/schema";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import BackToTop from "@/components/BackToTop.astro";
 import JsonLd from "@/components/JsonLd.astro";
 import ComingSoon from "@/components/ComingSoon.astro";
 import { useT } from "@/i18n/ui";
@@ -87,13 +88,14 @@ const allSchema = [businessSchema(locale), ...pageSchema];
     <link rel="alternate" hreflang="x-default" href={new URL(alternates.es, SITE.url).href} />
 
     <!-- favicon.ico/favicon.png/apple-touch-icon.png: el isotipo real
-         (Satoriarts_Isotipo.png) es blanco sobre fondo transparente —
+         (public/brand/isotipo-white.png) es blanco sobre fondo transparente —
          invisible en la pestaña del navegador (fondo claro) o como
          ícono de iOS (no admite transparencia). Se generaron con fondo
          negro compuesto (script con "sharp"). Se añade también un
          .ico real (16/32/48px) porque algunos navegadores/Windows dan
          prioridad al .ico sobre un <link> de PNG, o directamente piden
          "/favicon.ico" por convención aunque no esté declarado. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -123,6 +125,7 @@ const allSchema = [businessSchema(locale), ...pageSchema];
       import "@/scripts/scroll-reveal";
       import "@/scripts/close-on-scroll";
       import "@/scripts/grayscale-tap";
+      import "@/scripts/back-to-top";
     </script>
   </head>
   <!-- min-h-svh (no dvh): dvh se recalcula cuando la barra de
@@ -149,6 +152,7 @@ const allSchema = [businessSchema(locale), ...pageSchema];
             <slot />
           </main>
           <Footer locale={locale} />
+          <BackToTop locale={locale} />
         </>
       )
     }

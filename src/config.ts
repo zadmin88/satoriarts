@@ -82,7 +82,7 @@ export function localizePath(locale: Locale, path: string): string {
  * Para trabajar en el sitio real: ponlo en `false` (lo verás en
  * `npm run dev`). Para LANZAR: `false` + `npm run build` + desplegar.
  */
-export const COMING_SOON = true;
+export const COMING_SOON = false;
 
 /* ---------------------------------------------------------- */
 /*  Datos del negocio                                          */
@@ -133,17 +133,16 @@ export const SITE = {
    */
   url: "https://satoriarts.es",
 
-  /** [PLACEHOLDER] Nota media y nº de reseñas de la ficha de Google Business. */
+  /** Nota media y nº de reseñas de la ficha de Google Business (5,0 · 6 reseñas). */
   googleRating: 5.0,
-  googleReviewCount: 8,
+  googleReviewCount: 6,
   /**
-   * Nombre exacto de la ficha de Google Business ("Satori Arts Visual Love
-   * Feeling- Fotografia y video"). Sin Place ID confirmado, se enlaza a una
+   * Nombre de la ficha de Google Business ("Satori Arts - Fotografia y video"). Sin Place ID confirmado, se enlaza a una
    * búsqueda de Google Maps por nombre: abre directamente la ficha con sus
    * reseñas. Sustituir por el enlace corto (g.page/r/.../review) cuando se
    * confirme el Place ID exacto, para ir directo al formulario de reseña.
    */
-  googleBusinessName: "Satori Arts Visual Love Feeling- Fotografia y video",
+  googleBusinessName: "Satori Arts - Fotografia y video",
   get googleReviewsUrl() {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(this.googleBusinessName)}`;
   },
@@ -182,27 +181,41 @@ export const CITIES: City[] = [
   { slug: "madrid", name: "Madrid", region: "Comunidad de Madrid" },
 ];
 
-/** [PLACEHOLDER] Marcas/hoteles/venues reales para la sección "Algunos de
- *  nuestros clientes" de la home. `description` es el texto breve que se
- *  despliega al pulsar el "+" de la tarjeta (como en videinfra.com).
- *  Sustituir por los nombres y descripciones reales cuando se confirmen. */
+/** Logos de clientes de la sección "Algunos de nuestros clientes" de la home.
+ *  Logos recortados y optimizados
+ *  (WebP, sin margen transparente) en public/clients/.
+ *  Para añadir uno: copia el archivo ahí y añade una entrada. Todos se
+ *  muestran en una caja del mismo tamaño y centrados. */
 export interface Client {
   name: string;
-  description: string;
+  /** Ruta pública del logo (blanco, transparente, recortado al contenido). */
+  logo: string;
+  /** Factor de altura para igualar el peso visual (los logos finos necesitan
+   *  más altura que los densos). 1 = altura base de la sección. */
+  scale: number;
 }
 export const CLIENTS: Client[] = [
-  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
-  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
-  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
-  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
-  { name: "[PENDIENTE]", description: "[PENDIENTE]" },
+  { name: "Hilton Barcelona", logo: "/clients/hotel-hilton.webp", scale: 1 },
+  { name: "Kimpton Vividora Barcelona", logo: "/clients/kimpton-vividora.webp", scale: 1.2 },
+  { name: "Gran Hotel Central", logo: "/clients/gran-hotel-central.webp", scale: 1.45 },
+  { name: "Museu Egipci de Barcelona", logo: "/clients/museu-egipci-png.webp", scale: 1.05 },
+  { name: "Mas de Torrent", logo: "/clients/mas-de-torrent.webp", scale: 1.5 },
+  { name: "Torre del Remei", logo: "/clients/torre-del-remei.webp", scale: 1.5 },
+  { name: "The Lodge Mallorca", logo: "/clients/the-lodge.webp", scale: 1.17 },
+  { name: "St-Germain", logo: "/clients/st-germain.webp", scale: 0.78 },
+  { name: "Serras Barcelona", logo: "/clients/serras-barcelona.webp", scale: 0.96 },
+  { name: "IC Moda", logo: "/clients/icmoda.webp", scale: 0.85 },
+  { name: "Soldatal", logo: "/clients/soldatal.svg", scale: 0.62 },
+  { name: "The Society of Art", logo: "/clients/society-of-art.svg", scale: 1.37 },
+  { name: "Barcelona Open Banc Sabadell", logo: "/clients/open-banc-sabadell.webp", scale: 1.03 },
+  { name: "Reial Acadèmia de Medicina de Catalunya", logo: "/clients/academia-medicina-catalunya.webp", scale: 1.5 },
 ];
 
 /* ---------------------------------------------------------- */
 /*  Servicios (verticales)                                     */
 /* ---------------------------------------------------------- */
 
-export type ServiceKey = "bodas" | "eventos" | "hoteles" | "paisaje";
+export type ServiceKey = "bodas" | "hoteles" | "paisaje";
 
 export interface ServiceCopy {
   /** slug de URL para este idioma (SEO) */
@@ -251,54 +264,27 @@ export const SERVICES: Service[] = [
     },
   },
   {
-    key: "eventos",
-    disciplines: ["photo", "film"],
-    i18n: {
-      es: {
-        slug: "eventos",
-        title: "Eventos",
-        menuLabel: "Eventos",
-        short:
-          "El instante en que una marca se vuelve experiencia. Cobertura discreta, cuidada.",
-      },
-      en: {
-        slug: "events",
-        title: "Events",
-        menuLabel: "Events",
-        short:
-          "Corporate, brand and private events covered discreetly and delivered fast.",
-      },
-      ca: {
-        slug: "esdeveniments",
-        title: "Esdeveniments",
-        menuLabel: "Esdeveniments",
-        short:
-          "Corporatius, celebracions i esdeveniments de marca coberts amb discreció i lliurats ràpid.",
-      },
-    },
-  },
-  {
     key: "hoteles",
     disciplines: ["photo", "film"],
     i18n: {
       es: {
         slug: "hoteles",
-        title: "Hoteles & Hostelería",
-        menuLabel: "Hoteles",
+        title: "Hoteles & Restaurantes",
+        menuLabel: "Hoteles & Restaurantes",
         short:
           "El instante en que un espacio invita a quedarse. Pensado para la reserva directa.",
       },
       en: {
         slug: "hotels",
-        title: "Hotels & Hospitality",
-        menuLabel: "Hotels",
+        title: "Hotels & Restaurants",
+        menuLabel: "Hotels & Restaurants",
         short:
           "Images that sell: rooms, dining, spa and lifestyle for hotels, resorts and rentals.",
       },
       ca: {
         slug: "hotels",
-        title: "Hotels & Hostaleria",
-        menuLabel: "Hotels",
+        title: "Hotels & Restaurants",
+        menuLabel: "Hotels & Restaurants",
         short:
           "Imatges que venen: habitacions, restaurant, spa i lifestyle per a hotels i allotjaments.",
       },

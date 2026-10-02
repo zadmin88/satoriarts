@@ -8,7 +8,7 @@ import type { Locale } from "@/config";
  * Bloque "PROYECTOS + barra de categorías + cuadrícula", ÚNICO
  * componente compartido por /proyectos/ (PortfolioPage.astro, las 4
  * categorías a la vez con filtro CSS :has()) y cada página de servicio
- * (ServiceLayout.astro, /bodas/, /eventos/...). Con un único componente,
+ * (ServiceLayout.astro, /bodas/, /hoteles/...). Con un único componente,
  * cualquier ajuste de spacing/sticky/grid se hace aquí una sola vez.
  *
  * La ÚNICA pieza que no se unifica son las propias pestañas: en
@@ -49,7 +49,7 @@ const t = useT(locale);
        ese colapso una y otra vez (el "salto al empezar a hacer scroll"
        reportado). Con el título en flujo normal desaparece de forma
        natural, sin colapso, sin salto y sin oscilación. Sigue siendo el
-       ÚNICO <h1> de la página (en /bodas/, /eventos/... también). -->
+       ÚNICO <h1> de la página (en /bodas/, /hoteles/... también). -->
   <div class="container-tight pt-5 pb-4 md:pt-6 md:pb-5">
     <h1 class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
   </div>
@@ -77,9 +77,16 @@ const t = useT(locale);
          scroll ya llega a los bordes por ser ancho completo; el padding
          (px) lo pone el .container-tight interior, que además evita el
          bug de Safari de ignorar el padding-inline del propio scroller. -->
-    <div class="no-scrollbar overflow-x-auto">
-      <div class="container-tight flex flex-nowrap gap-2 py-4 sm:flex-wrap md:py-5">
-        <slot name="filters" />
+    <!-- ACTUALIZADO: el padding lo pone el contenedor EXTERIOR y el
+         scroller va dentro, sin padding. Así las pestañas se recortan en
+         el margen (20px) al desplazarse, no en el borde de la pantalla.
+         (El bug de Safari era padding en el propio elemento scrolleable;
+         aquí el padding está en su padre, no le afecta.) -->
+    <div class="container-tight py-4 md:py-5">
+      <div class="no-scrollbar overflow-x-auto">
+        <div class="flex flex-nowrap gap-2 sm:flex-wrap">
+          <slot name="filters" />
+        </div>
       </div>
     </div>
   </div>
@@ -90,7 +97,7 @@ const t = useT(locale);
   <div data-portfolio-grid={withGridId ? true : undefined} class="container-tight pb-24 pt-1 md:pt-2">
     {
       blocks.map((block) => (
-        <div data-service={block.key}>
+        <div>
           {/* Fotos: 1 columna en mobile, 2 en desktop */}
           <div class="mb-6 flex flex-col gap-6 sm:mb-10 sm:hidden">
             {block.photos.map((item) => (

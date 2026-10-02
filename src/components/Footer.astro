@@ -97,7 +97,7 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
          DERECHA (justify-end), bajo "Volver arriba" (mt-8: misma
          unidad de espaciado que separa Navegación/Social del bloque
          "Volver arriba"). -->
-    <div class="reveal mt-8 flex flex-row flex-wrap items-center justify-end gap-x-4 gap-y-2 text-right text-xs uppercase tracking-wide">
+    <div class="reveal mt-8 flex flex-row flex-wrap items-center justify-start gap-x-4 gap-y-2 text-left text-xs uppercase tracking-wide sm:justify-end sm:text-right">
       <a href={routePath(locale, "legalNotice")} class="hover-flip normal-case inline-block text-neutral-500 hover:text-black">
         <span class="flip-a block">{legalNotice}</span>
         <span aria-hidden="true" class="flip-b block">{legalNotice}</span>
