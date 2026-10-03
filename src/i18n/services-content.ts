@@ -55,7 +55,7 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     en: {
-      seoTitle: "Wedding Photographer & Videographer in Barcelona & Madrid · Satori Arts",
+      seoTitle: "Wedding Photographer & Film in Barcelona & Madrid · Satori Arts",
       seoDescription:
         "Editorial wedding photography and film in Barcelona, Madrid and destination. Real moments, editing with character and careful delivery.",
       h1: "Your wedding, told the way it deserves",
@@ -121,7 +121,7 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
   /* ============================ HOTELES ============================ */
   hoteles: {
     es: {
-      seoTitle: "Fotografía de Hoteles y Hostelería en Barcelona y Madrid · Satori Arts",
+      seoTitle: "Fotógrafo de Hoteles en Barcelona y Madrid · Satori Arts",
       seoDescription:
         "Fotografía y film para hoteles, resorts y restaurantes. Un archivo visual pensado para vender la experiencia y elevar la reserva directa.",
       h1: "Imágenes que llenan habitaciones",
@@ -153,7 +153,7 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     en: {
-      seoTitle: "Hotel & Hospitality Photography in Barcelona & Madrid · Satori Arts",
+      seoTitle: "Hotel Photographer in Barcelona & Madrid · Satori Arts",
       seoDescription:
         "Photography and film for hotels, resorts and restaurants. Images that sell rooms and experiences and grow direct bookings.",
       h1: "Images that fill rooms",
@@ -185,7 +185,7 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     ca: {
-      seoTitle: "Fotografia d'Hotels i Hostaleria a Barcelona i Madrid · Satori Arts",
+      seoTitle: "Fotògraf d'Hotels a Barcelona i Madrid · Satori Arts",
       seoDescription:
         "Fotografia i vídeo per a hotels, resorts i restaurants. Imatges que venen habitacions i experiències i pugen les reserves directes.",
       h1: "Imatges que omplen habitacions",
@@ -277,7 +277,7 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     ca: {
-      seoTitle: "Fotografia de Paisatge Fine-Art i Còpies d'Autor · Satori Arts",
+      seoTitle: "Fotografia de Paisatge i Còpies d'Autor · Satori Arts",
       seoDescription:
         "Fotografia de paisatge fine-art de Satori Arts. Còpies d'autor numerades per col·leccionar o vestir espais amb caràcter.",
       h1: "Paisatge per mirar cada dia",

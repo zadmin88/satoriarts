@@ -68,7 +68,7 @@ export const HOME_SEO: Record<Locale, { title: string; description: string }> = 
       "Photography and film duo in Barcelona and Madrid. Weddings, events, hotels and landscape with an editorial eye. Message us on WhatsApp.",
   },
   ca: {
-    title: "Satori Arts · Fotografia i Film de Casaments, Esdeveniments i Hotels",
+    title: "Fotografia i Film de Casaments i Hotels · Satori Arts",
     description:
       "Duo de fotografia i vídeo a Barcelona i Madrid. Casaments, esdeveniments, hotels i paisatge amb mirada editorial. Escriu-nos per WhatsApp.",
   },

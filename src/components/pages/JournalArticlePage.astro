@@ -3,8 +3,8 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import { Image } from "astro:assets";
 import type { Locale } from "@/config";
-import { waDefaultMessage } from "@/config";
-import { journalArticlePath, journalArticleAlternates } from "@/i18n/routes";
+import { SITE, waDefaultMessage } from "@/config";
+import { journalArticlePath, journalArticleAlternates, routePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { getJournalPost, relatedJournalPosts, type JournalPost } from "@/i18n/journal-content";
 import { servicePhotos, photoAlt } from "@/lib/photos";
@@ -37,6 +37,35 @@ const bodyText = post.blocks
   .filter((b) => b.type === "text" || b.type === "quote")
   .map((b) => (b.type === "quote" ? b.text : b.html.replace(/<[^>]+>/g, "")))
   .join(" ");
+
+// SEO: datos estructurados del artículo (BlogPosting + migas de pan).
+// Solo <head>, sin efecto visual.
+const articleUrl = new URL(journalArticlePath(locale, post.slug), SITE.url).href;
+const coverImage = servicePhotos(post.cover.service)[post.cover.index] ?? galleryPhotos[0]?.image;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.sortDate,
+    inLanguage: locale,
+    mainEntityOfPage: articleUrl,
+    url: articleUrl,
+    ...(coverImage ? { image: new URL(coverImage.src, SITE.url).href } : {}),
+    author: { "@type": "Organization", name: SITE.brand, url: SITE.url },
+    publisher: { "@id": SITE.url + "/#business" },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t("nav.home"), item: new URL(routePath(locale, "home"), SITE.url).href },
+      { "@type": "ListItem", position: 2, name: "Journal", item: new URL(routePath(locale, "journal"), SITE.url).href },
+      { "@type": "ListItem", position: 3, name: post.title, item: articleUrl },
+    ],
+  },
+];
 ---
 
 <BaseLayout
@@ -44,6 +73,8 @@ const bodyText = post.blocks
   title={`${post.title} · Journal · Satori Arts`}
   description={post.excerpt}
   alternates={journalArticleAlternates(post.groupId)}
+  jsonLd={jsonLd}
+  noindex={post.draft === true}
 >
   <!-- -mb-16 sm:-mb-20 md:-mb-28 SOLO cuando no hay carrusel de
        relacionados después (related.length === 0): en ese caso este es

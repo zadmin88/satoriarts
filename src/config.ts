@@ -99,16 +99,16 @@ export const SITE = {
   ],
 
   /**
-   * [PLACEHOLDER] WhatsApp en formato internacional, SIN "+" ni
+   * WhatsApp en formato internacional, SIN "+" ni
    * espacios. España 6XX XX XX XX → "346XXXXXXXX".
    */
-  whatsappNumber: "34600000000",
+  whatsappNumber: "34675938839",
 
-  /** [PLACEHOLDER] Cómo se muestra el teléfono en pantalla */
-  phoneDisplay: "+34 600 00 00 00",
+  /** Cómo se muestra el teléfono en pantalla */
+  phoneDisplay: "+34 675 93 88 39",
 
-  /** [PLACEHOLDER] Email de contacto (footer y legales) */
-  email: "hola@satoriarts.com",
+  /** Email de contacto (footer y legales) */
+  email: "satorivisualarts@gmail.com",
 
   /** Instagram (canal principal actual) */
   instagram: "satoriarts_",

@@ -13,6 +13,15 @@ export const SERVICE_CITY_SLUG: Record<ServiceKey, Record<Locale, string>> = {
   paisaje: { es: "fotografo-de-paisaje", en: "landscape-photographer", ca: "fotograf-de-paisatge" },
 };
 
+/** Frase clave para el <title> de las páginas servicio×ciudad (≤ ~65 car.).
+ *  Separada del título visible del servicio ("Hoteles & Restaurantes"…),
+ *  que es demasiado largo para un <title> y no es la búsqueda real. */
+const TITLE_KEYWORD: Record<ServiceKey, Record<Locale, string>> = {
+  bodas: { es: "Fotógrafo de Bodas", en: "Wedding Photographer", ca: "Fotògraf de Casaments" },
+  hoteles: { es: "Fotógrafo de Hoteles", en: "Hotel Photographer", ca: "Fotògraf d'Hotels" },
+  paisaje: { es: "Fotógrafo de Paisaje", en: "Landscape Photographer", ca: "Fotògraf de Paisatge" },
+};
+
 export function cityServiceSlug(locale: Locale, key: ServiceKey, city: City): string {
   return `${SERVICE_CITY_SLUG[key][locale]}-${city.slug}`;
 }
@@ -53,10 +62,11 @@ export function cityServiceCopy(locale: Locale, service: Service, city: City): C
   const s = service.i18n[locale].title;
   const n = city.name;
   const r = city.region;
+  const kw = TITLE_KEYWORD[service.key][locale];
 
   if (locale === "en") {
     return {
-      title: `${s} Photographer in ${n} · Photo & Film · Satori Arts`,
+      title: `${kw} in ${n} · Photo & Film · Satori Arts`,
       description: `${s.toLowerCase()} photography and film in ${n}. Satori Arts, a duo with an editorial eye. Message us on WhatsApp for availability.`,
       h1: `${s} photography & film in ${n}`,
       intro: `Looking for a ${s.toLowerCase()} photographer and videographer in ${n}? We're Satori Arts, a duo covering ${n} and all of ${r}.`,
@@ -75,7 +85,7 @@ export function cityServiceCopy(locale: Locale, service: Service, city: City): C
   }
   if (locale === "ca") {
     return {
-      title: `Fotògraf de ${s} a ${n} · Foto & Film · Satori Arts`,
+      title: `${kw} a ${n} · Foto & Film · Satori Arts`,
       description: `Fotografia i vídeo de ${s.toLowerCase()} a ${n}. Satori Arts, un duo amb mirada editorial. Escriu-nos per WhatsApp per disponibilitat.`,
       h1: `Fotografia i film de ${s.toLowerCase()} a ${n}`,
       intro: `Busques fotògraf i càmera de ${s.toLowerCase()} a ${n}? Som Satori Arts, un duo que cobreix ${n} i tot ${r}.`,
@@ -94,7 +104,7 @@ export function cityServiceCopy(locale: Locale, service: Service, city: City): C
   }
   // es
   return {
-    title: `Fotógrafo de ${s} en ${n} · Foto y Vídeo · Satori Arts`,
+    title: `${kw} en ${n} · Foto y Vídeo · Satori Arts`,
     description: `Fotografía y vídeo de ${s.toLowerCase()} en ${n}. Satori Arts, un dúo con mirada editorial. Escríbenos por WhatsApp para ver disponibilidad.`,
     h1: `Fotografía y film de ${s.toLowerCase()} en ${n}`,
     intro: `¿Buscas fotógrafo y cámara de ${s.toLowerCase()} en ${n}? Somos Satori Arts, un dúo que cubre ${n} y toda ${r}.`,
