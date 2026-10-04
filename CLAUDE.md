@@ -81,7 +81,7 @@ npm run preview      # previsualiza el build
   React con `client:*` salvo necesidad real. Interactividad simple con CSS o
   `<details>` (menú móvil, dropdown de servicios, FAQ, galería).
 - **Imágenes**: son **fotos reales** en WebP en `src/assets/photos/<carpeta>/`
-  (`hero`, `bodas`, `eventos`, `hoteles`, `paisaje`), cargadas con `astro:assets`
+  (`bodas`, `eventos`, `hoteles`, `paisaje`, `team`), cargadas con `astro:assets`
   vía `src/lib/photos.ts` (`import.meta.glob`). Se muestran con `Photo.astro`
   (duotono + revelado) y `EditorialGallery.astro` (retícula rota). `alt` SIEMPRE.
   Los originales sin optimizar están en `_originals-fotossatori/` (gitignored, no
@@ -123,7 +123,7 @@ entrada a `SERVICES` en `src/config.ts` (con `i18n` de los 3 idiomas y
 
 **Añadir/renovar fotos**: 1) convierte los originales a WebP con
 `node scripts/convert-photos.mjs --src <carpeta> --out src/assets/photos/_incoming`;
-2) reparte los `.webp` en `src/assets/photos/{hero,bodas,eventos,hoteles,paisaje}/`.
+2) reparte los `.webp` en `src/assets/photos/{bodas,eventos,hoteles,paisaje}/`.
 El manifiesto `src/lib/photos.ts` los recoge solo (orden alfabético por nombre);
 no hay que tocar código. astro:assets genera las variantes responsive en el build.
 

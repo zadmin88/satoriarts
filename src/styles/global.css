@@ -1065,3 +1065,15 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue { animation: none; }
 }
+
+/* Logos de clientes en móvil: pase continuo de derecha a izquierda. La lista
+   va duplicada, así que desplazar -50 % cierra el bucle sin salto. En sm+ se
+   muestra estática; con "reducir movimiento" se queda quieta y se puede
+   arrastrar con el dedo. */
+.clients-track { animation: clients-marquee 90s linear infinite; }
+@keyframes clients-marquee { to { transform: translateX(-50%); } }
+@media (min-width: 640px) { .clients-track { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .clients-track { animation: none; }
+  .clients-marquee { overflow-x: auto; }
+}

@@ -9,7 +9,7 @@ import type { Locale } from "@/config";
 import { routePath, routeAlternates } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { TESTIMONIALS, HOME_SEO } from "@/i18n/home";
-import { servicePhotos, heroPhotos, photoAlt } from "@/lib/photos";
+import { servicePhotos, photoAlt } from "@/lib/photos";
 
 interface Props {
   locale: Locale;
@@ -68,8 +68,7 @@ const preview = previewByCategory
     <div data-parallax="0.1" class="absolute inset-0">
       <video
         src="/video/hero.mp4"
-        poster={heroPhotos[0].src}
-        preload="metadata"
+        preload="auto"
         autoplay
         muted
         loop
@@ -106,7 +105,9 @@ const preview = previewByCategory
 
     <!-- Flecha de scroll: solo el triángulo de las flechas del sitio, en blanco,
          girado hacia abajo. -->
-    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="scroll-cue absolute bottom-6 left-1/2 z-10 size-4 -translate-x-1/2 rotate-90 text-white sm:bottom-8"><path d="M8 5v14l11-7z" /></svg>
+    <div class="absolute inset-x-0 bottom-6 z-10 flex justify-center sm:bottom-8">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="scroll-cue size-4 rotate-90 text-white"><path d="M8 5v14l11-7z" /></svg>
+    </div>
   </section>
 
   <!-- TEXTO GRANDE: solo el lema "Fotografía y vídeo...", como la pantalla
@@ -240,11 +241,31 @@ const preview = previewByCategory
   <section aria-labelledby="clientes-titulo" class="reveal bg-background">
     <div class="section-space container-tight">
       <p id="clientes-titulo" data-reveal-words class="mb-12 font-heading text-3xl font-normal uppercase text-foreground sm:mb-16 sm:text-5xl">{t("section.clients")}</p>
-      <div class="flex flex-wrap items-center justify-center gap-x-16 gap-y-10 [--client-h:2.25rem] sm:gap-x-24 sm:[--client-h:2.75rem]">
+      <!-- Móvil: dos filas con pase continuo (marquee CSS, sin JS), la segunda
+           en sentido contrario; cada fila lleva su lista duplicada para que el
+           bucle sea invisible. Desde sm: una sola cuadrícula centrada estática. -->
+      <div class="flex flex-col gap-8 [--client-h:2.25rem] sm:hidden">
+        {
+          [CLIENTS.slice(0, Math.ceil(CLIENTS.length / 2)), CLIENTS.slice(Math.ceil(CLIENTS.length / 2))].map((row) => (
+            <div class="clients-marquee overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]">
+              <div class="clients-track flex w-max items-center">
+                {[false, true].map((copy) =>
+                  row.map((c) => (
+                    <div class="flex items-center justify-center px-7" aria-hidden={copy ? "true" : undefined}>
+                      <img src={c.logo} alt={copy ? "" : c.name} loading="eager" style={`height:calc(var(--client-h) * ${c.scale})`} class="w-auto max-w-none object-contain" />
+                    </div>
+                  )),
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      <div class="hidden flex-wrap items-center justify-center gap-x-24 gap-y-10 [--client-h:2.75rem] sm:flex">
         {
           CLIENTS.map((c) => (
             <div class="flex items-center justify-center">
-              <img src={c.logo} alt={c.name} loading="lazy" style={`height:calc(var(--client-h) * ${c.scale})`} class="w-auto max-w-[70vw] object-contain" />
+              <img src={c.logo} alt={c.name} loading="lazy" style={`height:calc(var(--client-h) * ${c.scale})`} class="w-auto max-w-none object-contain" />
             </div>
           ))
         }
