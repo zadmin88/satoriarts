@@ -34,7 +34,7 @@ const previewByCategory = previewKeys.map((key, si) =>
     .slice(0, previewCounts[key])
     .map((image, i) => ({
       image,
-      alt: photoAlt(locale, SERVICES[si].i18n[locale].title, i),
+      alt: photoAlt(locale, SERVICES[si].i18n[locale].title, i, image),
     })),
 );
 // Reparto proporcional (no round-robin simple): a cada foto le

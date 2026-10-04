@@ -4,7 +4,7 @@
  * degradado inferior para dar profundidad de marca.
  *
  * Uso:  node scripts/make-og.mjs [ruta_imagen_origen]
- * Por defecto usa src/assets/photos/hero/01.webp
+ * Por defecto usa src/assets/photos/hero/01-novios-escalinata-jardin.webp
  */
 import { createRequire } from "module";
 import path from "path";
@@ -16,7 +16,7 @@ const sharp = require(
   }),
 );
 
-const SRC = process.argv[2] || "src/assets/photos/hero/01.webp";
+const SRC = process.argv[2] || "src/assets/photos/hero/01-novios-escalinata-jardin.webp";
 const OUT = "public/og-image.jpg";
 const W = 1200;
 const H = 630;

@@ -30,9 +30,14 @@ interface Props {
   /** Solo /proyectos/ lo necesita: filter-scroll.ts hace scroll hasta
    *  aquí al cambiar de filtro por radio. */
   withGridId?: boolean;
+  /** Etiqueta del título "PROYECTOS". "h1" en /proyectos/; "p" en las
+   *  páginas de servicio, cuyo h1 (con la keyword) va en el bloque de
+   *  texto SEO bajo la galería. Mismas clases → aspecto idéntico. */
+  titleAs?: "h1" | "p";
 }
 
-const { locale, blocks, withGridId = false } = Astro.props;
+const { locale, blocks, withGridId = false, titleAs = "h1" } = Astro.props;
+const TitleTag = titleAs;
 const t = useT(locale);
 ---
 
@@ -49,9 +54,10 @@ const t = useT(locale);
        ese colapso una y otra vez (el "salto al empezar a hacer scroll"
        reportado). Con el título en flujo normal desaparece de forma
        natural, sin colapso, sin salto y sin oscilación. Sigue siendo el
-       ÚNICO h1 de la página (en /bodas/, /hoteles/... también). -->
+       h1 de /proyectos/; en las páginas de servicio se renderiza como <p>
+       (titleAs="p") y el h1 vive en el texto SEO bajo la galería. -->
   <div class="container-tight pt-5 pb-4 md:pt-6 md:pb-5">
-    <h1 class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</h1>
+    <TitleTag class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</TitleTag>
   </div>
 
   <!-- SOLO la barra de categorías es sticky, pegada justo bajo el header

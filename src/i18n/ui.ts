@@ -54,6 +54,8 @@ export const UI = {
     "cta.blockTitle": "Cuéntanos de tu proyecto",
     "cta.talkQuestion": "¿Hablamos de tu proyecto?",
     "cta.dateQuestion": "¿Buscas fecha para tu proyecto?",
+    "service.faqTitle": "Preguntas frecuentes",
+    "service.citiesTitle": "Dónde trabajamos",
     "cta.blockText":
       "En Satori Arts, nuestra prioridad es ofrecerte un servicio personalizado y cercano, acompañándote en cada paso del proceso.",
     "footer.tagline":
@@ -126,6 +128,8 @@ export const UI = {
     "cta.blockTitle": "Shall we talk about your project?",
     "cta.talkQuestion": "Shall we talk about your project?",
     "cta.dateQuestion": "Looking for a date for your project?",
+    "service.faqTitle": "Frequently asked questions",
+    "service.citiesTitle": "Where we work",
     "cta.blockText":
       "Tell us the date, the place and what you picture. We'll reply on WhatsApp with availability and ideas, no strings attached.",
     "footer.tagline":
@@ -198,6 +202,8 @@ export const UI = {
     "cta.blockTitle": "Parlem del teu projecte?",
     "cta.talkQuestion": "Parlem del teu projecte?",
     "cta.dateQuestion": "Busques data per al teu projecte?",
+    "service.faqTitle": "Preguntes freqüents",
+    "service.citiesTitle": "On treballem",
     "cta.blockText":
       "Explica'ns la data, el lloc i què imagines. Et responem per WhatsApp amb disponibilitat i idees, sense compromís.",
     "footer.tagline":

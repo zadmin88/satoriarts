@@ -11,6 +11,7 @@ WhatsApp**. Trilingüe: **español (raíz), inglés (`/en/`) y catalán (`/ca/`)
 npm run dev          # servidor local en http://localhost:4321
 npm run build        # genera el sitio en ./dist
 npm run preview      # previsualiza el build
+npm run seo:check    # build + comprobación SEO automática (falla si hay errores)
 ```
 
 ## Dónde está cada cosa
@@ -89,6 +90,12 @@ npm run preview      # previsualiza el build
 
 ### SEO (no tocar sin entender)
 
+> **Obligatorio:** antes y después de cualquier cambio que toque páginas,
+> textos, títulos, rutas, imágenes, layouts, `config.ts`, i18n o schema
+> (también rediseños "solo visuales"), sigue la skill
+> **`.claude/skills/satori-seo/SKILL.md`** y termina con `npm run seo:check`
+> sin errores. Resumen de lo esencial:
+
 - Cada página pasa `title` (≤ ~65 car., keyword al principio) y `description`
   únicos a `BaseLayout`. No dupliques títulos entre páginas ni idiomas.
 - Un solo `<h1>` por página; jerarquía h1 → h2 → h3 sin saltos.
@@ -123,11 +130,14 @@ entrada a `SERVICES` en `src/config.ts` (con `i18n` de los 3 idiomas y
 
 **Añadir/renovar fotos**: 1) convierte los originales a WebP con
 `node scripts/convert-photos.mjs --src <carpeta> --out src/assets/photos/_incoming`;
-2) reparte los `.webp` en `src/assets/photos/{hero,bodas,eventos,hoteles,paisaje}/`.
-El manifiesto `src/lib/photos.ts` los recoge solo (orden alfabético por nombre);
-no hay que tocar código. astro:assets genera las variantes responsive en el build.
+2) reparte los `.webp` en `src/assets/photos/{hero,bodas,hoteles,paisaje,team}/`
+con nombre **`NN-descripcion-corta.webp`** (el `NN` fija el orden — el Journal
+referencia fotos por índice —; la descripción ayuda a Google Imágenes);
+3) añade su alt descriptivo (es/en/ca, lo que SE VE en la foto) en
+`src/lib/photo-alts.ts`. `src/lib/photos.ts` las recoge solo; astro:assets
+genera las variantes responsive en el build.
 
-**Antes de dar por terminado un cambio**: `npm run build` debe pasar sin errores
+**Antes de dar por terminado un cambio**: `npm run seo:check` (incluye el build) debe pasar sin errores
 y conviene mirar la página afectada con `npm run dev`.
 
 ## Pendientes conocidos (PLACEHOLDER)

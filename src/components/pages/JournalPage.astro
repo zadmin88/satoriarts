@@ -63,7 +63,7 @@ const posts = JOURNAL_POSTS[locale];
             <div class="aspect-[16/9] overflow-hidden bg-card">
               <Image
                 src={servicePhotos(d.cover.service)[d.cover.index]}
-                alt={photoAlt(locale, d.title, d.cover.index)}
+                alt={photoAlt(locale, d.title, d.cover.index, servicePhotos(d.cover.service)[d.cover.index])}
                 widths={[480, 768]}
                 sizes="(max-width: 640px) 100vw, 33vw"
                 loading="eager"
