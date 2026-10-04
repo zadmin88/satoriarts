@@ -5,7 +5,7 @@ import type { Locale } from "@/config";
 import { routeAlternates, journalArticlePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
-import { JOURNAL_POSTS } from "@/i18n/journal-content";
+import { JOURNAL_ENABLED, JOURNAL_POSTS } from "@/i18n/journal-content";
 
 interface Props {
   locale: Locale;
@@ -35,14 +35,9 @@ const SEO: Record<Locale, { title: string; description: string; h1: string; lead
 };
 const seo = SEO[locale];
 
-// Artículos del Journal (src/i18n/journal-content.ts). Cuando haya
-// muchos más, esto es lo que habría que migrar a una content
-// collection — de momento el mismo patrón que services-content.ts es
-// suficiente y consistente con el resto del sitio. Siempre hay 3
-// entradas: las que aún no tienen reportaje definitivo usan contenido
-// temporal (marcado "[Contenido temporal]" en el cuerpo), nunca un
-// estado vacío tipo "Próximamente" — se reemplazan editando el array,
-// sin tocar el diseño de esta página.
+// Artículos del Journal (src/i18n/journal-content.ts). Mientras
+// JOURNAL_ENABLED sea false, las tarjetas se muestran solo como foto en gris
+// con "Próximamente" encima, sin enlace ni texto.
 const posts = JOURNAL_POSTS[locale];
 ---
 
@@ -52,29 +47,38 @@ const posts = JOURNAL_POSTS[locale];
     <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">{seo.lead}</p>
   </section>
 
-  <!-- Tarjetas con imagen: foto arriba y título debajo, en tres
-       columnas, como el journal de referencia. Siempre 3 artículos con
-       contenido completo (real o temporal) — nunca huecos vacíos. -->
   <section class="container-tight pb-24">
     <div class="stagger-grid grid grid-cols-1 gap-x-8 gap-y-14 sm:grid-cols-3">
       {
-        posts.map((d) => (
-          <a href={journalArticlePath(locale, d.slug)} class="reveal group block text-left">
-            <div class="aspect-[16/9] overflow-hidden bg-card">
+        posts.map((d) => {
+          const photo = (
+            <div class="relative aspect-[16/9] overflow-hidden bg-card">
               <Image
                 src={servicePhotos(d.cover.service)[d.cover.index]}
-                alt={photoAlt(locale, d.title, d.cover.index)}
+                alt={JOURNAL_ENABLED ? photoAlt(locale, d.title, d.cover.index) : ""}
                 widths={[480, 768]}
                 sizes="(max-width: 640px) 100vw, 33vw"
                 loading="eager"
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                class={JOURNAL_ENABLED ? "h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" : "h-full w-full object-cover grayscale"}
               />
+              {!JOURNAL_ENABLED && (
+                <div class="absolute inset-0 flex items-center justify-center bg-black/55">
+                  <span class="font-label text-sm font-medium tracking-[0.2em] text-white uppercase">{t("journal.comingSoon")}</span>
+                </div>
+              )}
             </div>
-            <span class="font-heading mt-5 block text-lg font-medium text-foreground">{d.title}</span>
-            <p class="font-label mt-2 text-sm font-medium text-foreground uppercase">{d.category}</p>
-            <p class="font-label text-xs text-muted-foreground uppercase">{d.date}</p>
-          </a>
-        ))
+          );
+          return JOURNAL_ENABLED ? (
+            <a href={journalArticlePath(locale, d.slug)} class="reveal group block text-left">
+              {photo}
+              <span class="font-heading mt-5 block text-lg font-medium text-foreground">{d.title}</span>
+              <p class="font-label mt-2 text-sm font-medium text-foreground uppercase">{d.category}</p>
+              <p class="font-label text-xs text-muted-foreground uppercase">{d.date}</p>
+            </a>
+          ) : (
+            <div class="reveal">{photo}</div>
+          );
+        })
       }
     </div>
   </section>

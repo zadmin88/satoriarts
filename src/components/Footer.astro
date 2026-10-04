@@ -22,6 +22,7 @@ const nav = [
   { href: routePath(locale, "journal"), label: t("nav.journal").toLocaleUpperCase(locale) },
 ];
 const navLabel = t("footer.navLabel").toLocaleUpperCase(locale);
+const contactLabel = t("footer.contactLabel").toLocaleUpperCase(locale);
 const followLabel = t("footer.follow").toLocaleUpperCase(locale);
 const legalNotice = t("footer.legalNotice").toLocaleUpperCase(locale);
 const privacy = t("footer.privacy").toLocaleUpperCase(locale);
@@ -77,6 +78,18 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
           <span aria-hidden="true" class="flip-b block">YouTube</span>
         </a>
       </nav>
+
+      <address class="reveal col-span-2 flex flex-col gap-3 not-italic sm:col-span-1">
+        <p class="font-heading text-sm font-medium text-black">{contactLabel}</p>
+        <a href={SITE.phoneHref} class="hover-flip inline-block text-xs font-medium tracking-wide text-neutral-500 hover:text-black">
+          <span class="flip-a block">{SITE.phoneDisplay}</span>
+          <span aria-hidden="true" class="flip-b block">{SITE.phoneDisplay}</span>
+        </a>
+        <a href={`mailto:${SITE.email}`} class="hover-flip inline-block text-xs font-medium tracking-wide text-neutral-500 hover:text-black">
+          <span class="flip-a block">{SITE.email}</span>
+          <span aria-hidden="true" class="flip-b block">{SITE.email}</span>
+        </a>
+      </address>
 
       <div class="reveal col-span-2 flex flex-col gap-3 sm:col-span-1">
         <a href="#top" class="hover-flip inline-flex items-center gap-2 text-sm font-heading font-medium uppercase text-black">

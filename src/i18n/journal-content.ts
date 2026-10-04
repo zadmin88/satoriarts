@@ -44,6 +44,13 @@ export interface JournalPost {
   blocks: JournalBlock[];
 }
 
+/**
+ * Interruptor del Journal. Mientras sea `false` las tarjetas se ven en gris con "Próximamente", sin texto ni enlace, y no
+ * se generan las páginas de artículo (los textos actuales son provisionales).
+ * Al tener reportajes reales, ponerlo en `true` (y sustituir el contenido).
+ */
+export const JOURNAL_ENABLED = false;
+
 export const JOURNAL_POSTS: Record<Locale, JournalPost[]> = {
   es: [
     {
@@ -69,9 +76,9 @@ export const JOURNAL_POSTS: Record<Locale, JournalPost[]> = {
       ],
     },
     {
-      groupId: "hotel-boutique-madrid",
-      slug: "un-hotel-boutique-en-madrid",
-      title: "Un hotel boutique en Madrid",
+      groupId: "hotel-boutique-andorra",
+      slug: "un-hotel-boutique-en-andorra",
+      title: "Un hotel boutique en Andorra",
       category: "Hoteles & Restaurantes",
       date: "18 jul 2026",
       sortDate: "2026-07-18",
@@ -113,9 +120,9 @@ export const JOURNAL_POSTS: Record<Locale, JournalPost[]> = {
       ],
     },
     {
-      groupId: "hotel-boutique-madrid",
-      slug: "a-boutique-hotel-in-madrid",
-      title: "A boutique hotel in Madrid",
+      groupId: "hotel-boutique-andorra",
+      slug: "a-boutique-hotel-in-andorra",
+      title: "A boutique hotel in Andorra",
       category: "Hotels & Restaurants",
       date: "18 Jul 2026",
       sortDate: "2026-07-18",
@@ -157,9 +164,9 @@ export const JOURNAL_POSTS: Record<Locale, JournalPost[]> = {
       ],
     },
     {
-      groupId: "hotel-boutique-madrid",
-      slug: "un-hotel-boutique-a-madrid",
-      title: "Un hotel boutique a Madrid",
+      groupId: "hotel-boutique-andorra",
+      slug: "un-hotel-boutique-a-andorra",
+      title: "Un hotel boutique a Andorra",
       category: "Hotels & Restaurants",
       date: "18 jul 2026",
       sortDate: "2026-07-18",
