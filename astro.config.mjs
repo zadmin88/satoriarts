@@ -44,9 +44,9 @@ export default defineConfig({
         // Artículos del Journal en borrador (draft: true en
         // src/i18n/journal-content.ts → noindex). Quitar de aquí cuando
         // tengan su texto definitivo.
-        !page.includes('/journal/un-hotel-boutique-en-madrid') &&
-        !page.includes('/journal/a-boutique-hotel-in-madrid') &&
-        !page.includes('/journal/un-hotel-boutique-a-madrid'),
+        !page.includes('/journal/un-hotel-boutique-en-andorra') &&
+        !page.includes('/journal/a-boutique-hotel-in-andorra') &&
+        !page.includes('/journal/un-hotel-boutique-a-andorra'),
     }),
   ],
 

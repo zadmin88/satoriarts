@@ -142,7 +142,7 @@ y conviene mirar la página afectada con `npm run dev`.
 
 ## Pendientes conocidos (PLACEHOLDER)
 
-- `src/config.ts`: `whatsappNumber`, `phoneDisplay`, `email`, `url` y las
+- `src/config.ts`: `url` y las
   `CITIES` reales. `site` en `astro.config.mjs` y el sitemap de
   `public/robots.txt` deben coincidir con `SITE.url`.
 - Falta `public/og-image.jpg` (1200×630).

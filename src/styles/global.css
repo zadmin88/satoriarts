@@ -1055,3 +1055,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   [data-grayscale-tap] { animation: none !important; }
 }
+
+/* Flecha de scroll del hero: pequeño vaivén vertical. */
+.scroll-cue { animation: scroll-cue 1.8s ease-in-out infinite; }
+@keyframes scroll-cue {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue { animation: none; }
+}

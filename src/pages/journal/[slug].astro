@@ -1,8 +1,9 @@
 ---
 import JournalArticlePage from "@/components/pages/JournalArticlePage.astro";
-import { JOURNAL_POSTS } from "@/i18n/journal-content";
+import { JOURNAL_ENABLED, JOURNAL_POSTS } from "@/i18n/journal-content";
 
 export function getStaticPaths() {
+  if (!JOURNAL_ENABLED) return [];
   return JOURNAL_POSTS.es.map((post) => ({ params: { slug: post.slug } }));
 }
 
