@@ -19,7 +19,13 @@ export function businessSchema(locale: Locale): Record<string, unknown> {
     priceRange: "€€€",
     inLanguage: LOCALE_LANG[locale],
     sameAs: [SITE.instagramUrl],
-    areaServed: CITIES.map((c) => ({ "@type": "City", name: c.name })),
+    // Negocio con área de servicio (sin local abierto al público): base en
+    // el Maresme (Arenys) + ciudades de CITIES. Sin "address" a propósito,
+    // igual que la ficha de Google Business (dirección oculta).
+    areaServed: [
+      { "@type": "AdministrativeArea", name: "Maresme" },
+      ...CITIES.map((c) => ({ "@type": "City", name: c.name })),
+    ],
     knowsLanguage: ["es", "en", "ca"],
     makesOffer: [
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Wedding photography & film" } },

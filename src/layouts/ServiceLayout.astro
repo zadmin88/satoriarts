@@ -3,7 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import WhatsAppButton from "@/components/WhatsAppButton.astro";
 import ProjectsGallery, { type ServiceBlock } from "@/components/ProjectsGallery.astro";
 import type { GridItem } from "@/components/GridMediaItem.astro";
-import type { FaqItem } from "@/components/Faq.astro";
+import Faq, { type FaqItem } from "@/components/Faq.astro";
 import {
   SITE,
   SERVICES,
@@ -13,6 +13,7 @@ import {
 } from "@/config";
 import type { Locale, Service } from "@/config";
 import { serviceAlternates, routePath } from "@/i18n/routes";
+import { cityServicePath, cityServiceLabel } from "@/i18n/city-service";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
 
@@ -21,11 +22,20 @@ interface Props {
   service: Service;
   seoTitle: string;
   seoDescription: string;
+  /** Frase editorial grande del bloque de texto ("Vuestra boda, …") */
+  h1: string;
   heroIntro: string;
+  bodyHtml: string;
   faqs: FaqItem[];
 }
 
-const { locale, service, seoTitle, seoDescription, heroIntro } = Astro.props;
+const { locale, service, seoTitle, seoDescription, h1, heroIntro, bodyHtml, faqs } = Astro.props;
+
+// h1 con la búsqueda real ("Fotógrafo y Vídeo de Bodas en Barcelona y
+// Madrid"): el <title> sin la marca. Se muestra con el estilo .eyebrow
+// ya existente, sobre la frase editorial grande.
+const keywordH1 = seoTitle.replace(/\s*·\s*Satori Arts\s*$/, "");
+const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "");
 const t = useT(locale);
 const copy = service.i18n[locale];
 
@@ -40,7 +50,7 @@ const alternates = serviceAlternates(service.key);
 const photos: GridItem[] = servicePhotos(service.key).map((image, i) => ({
   type: "photo" as const,
   image,
-  alt: photoAlt(locale, copy.title, i),
+  alt: photoAlt(locale, copy.title, i, image),
   key: service.key,
   href: servicePath(locale, service),
   title: copy.title,
@@ -69,6 +79,15 @@ const jsonLd = [
     areaServed: CITIES.map((c) => ({ "@type": "City", name: c.name })),
     provider: { "@type": "ProfessionalService", name: SITE.brand, url: SITE.url },
   },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: stripHtml(f.a) },
+    })),
+  },
 ];
 ---
 
@@ -88,7 +107,7 @@ const jsonLd = [
          su propia URL indexable para el SEO local) — ver
          ProjectsGallery.astro para la explicación completa de por qué
          ese es el único punto que no se puede unificar. -->
-    <ProjectsGallery locale={locale} blocks={blocks}>
+    <ProjectsGallery locale={locale} blocks={blocks} titleAs="p">
       <Fragment slot="filters">
         <a href={routePath(locale, "portfolio")} class="btn filter-pill shrink-0">
           <span class="hover-flip">
@@ -108,6 +127,35 @@ const jsonLd = [
         }
       </Fragment>
     </ProjectsGallery>
+
+    <!-- TEXTO SEO del servicio (visible: Google no posiciona texto oculto).
+         Sin estilos nuevos: reutiliza exactamente el patrón de las páginas
+         servicio×ciudad (.reveal .prose-body .section-space
+         .container-prose-left), el .eyebrow del sitio para el h1, el estilo
+         del titular del manifiesto de la home para la frase grande y el
+         acordeón Faq.astro ya existente. Textos en services-content.ts. -->
+    <section aria-labelledby="servicio-h1" class="section-space container-prose-left">
+      <div class="reveal prose-body">
+        <h1 id="servicio-h1" class="eyebrow mb-4">{keywordH1}</h1>
+        <p class="font-heading text-3xl font-medium text-balance text-foreground sm:text-5xl">{h1}</p>
+        <p>{heroIntro}</p>
+        <Fragment set:html={bodyHtml} />
+        <h2>{t("service.citiesTitle")}</h2>
+        <ul>
+          {CITIES.map((city) => (
+            <li>
+              <a href={cityServicePath(locale, service.key, city)} class="underline underline-offset-4">
+                {cityServiceLabel(locale, service.key, city)}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <h2>{t("service.faqTitle")}</h2>
+      </div>
+      <div class="reveal">
+        <Faq items={faqs} />
+      </div>
+    </section>
 
     <!-- CTA de cierre, alineado a la izquierda (mismo eje que
          "PROYECTOS", la barra de categorías y el grid) — ver

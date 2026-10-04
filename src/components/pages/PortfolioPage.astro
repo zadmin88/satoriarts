@@ -59,7 +59,7 @@ const byCategory = SERVICES.map((s) => {
   return servicePhotos(s.key).map((image, i) => ({
     type: "photo" as const,
     image,
-    alt: photoAlt(locale, copy.title, i),
+    alt: photoAlt(locale, copy.title, i, image),
     key: s.key,
     href: servicePath(locale, s),
     title: copy.title,

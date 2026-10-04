@@ -28,6 +28,9 @@ export type JournalBlock =
   | { type: "image"; refs: JournalPhotoRef[] };
 
 export interface JournalPost {
+  /** Borrador (contenido provisional): se renderiza igual, pero con noindex
+   *  y fuera del sitemap. Quitar cuando llegue el texto definitivo. */
+  draft?: boolean;
   /** Enlaza las 3 versiones de idioma del mismo artículo entre sí */
   groupId: string;
   slug: string;
@@ -77,6 +80,7 @@ export const JOURNAL_POSTS: Record<Locale, JournalPost[]> = {
     },
     {
       groupId: "hotel-boutique-andorra",
+      draft: true, // [PENDIENTE] contenido provisional
       slug: "un-hotel-boutique-en-andorra",
       title: "Un hotel boutique en Andorra",
       category: "Hoteles & Restaurantes",
@@ -121,6 +125,7 @@ export const JOURNAL_POSTS: Record<Locale, JournalPost[]> = {
     },
     {
       groupId: "hotel-boutique-andorra",
+      draft: true, // [PENDIENTE] contenido provisional
       slug: "a-boutique-hotel-in-andorra",
       title: "A boutique hotel in Andorra",
       category: "Hotels & Restaurants",
@@ -165,6 +170,7 @@ export const JOURNAL_POSTS: Record<Locale, JournalPost[]> = {
     },
     {
       groupId: "hotel-boutique-andorra",
+      draft: true, // [PENDIENTE] contenido provisional
       slug: "un-hotel-boutique-a-andorra",
       title: "Un hotel boutique a Andorra",
       category: "Hotels & Restaurants",

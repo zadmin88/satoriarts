@@ -196,10 +196,12 @@ const HAS_ACCENT = /[áéíóúàèìòùäëïöüñçÁÉÍÓÚÀÈÌÒÙÄË�
               <span class="flip-a block">Instagram</span>
               <span aria-hidden="true" class="flip-b block text-gold">Instagram</span>
             </a>
-            <a href={SITE.facebookUrl} target="_blank" rel="noopener" class="hover-flip font-heading text-lg font-medium text-foreground uppercase">
-              <span class="flip-a block">Facebook</span>
-              <span aria-hidden="true" class="flip-b block text-gold">Facebook</span>
-            </a>
+            {SITE.facebook && (
+              <a href={SITE.facebookUrl} target="_blank" rel="noopener" class="hover-flip font-heading text-lg font-medium text-foreground uppercase">
+                <span class="flip-a block">Facebook</span>
+                <span aria-hidden="true" class="flip-b block text-gold">Facebook</span>
+              </a>
+            )}
             <a href={SITE.youtubeUrl} target="_blank" rel="noopener" class="hover-flip font-heading text-lg font-medium text-foreground uppercase">
               <span class="flip-a block">YouTube</span>
               <span aria-hidden="true" class="flip-b block text-gold">YouTube</span>

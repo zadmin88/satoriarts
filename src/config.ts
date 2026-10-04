@@ -120,8 +120,13 @@ export const SITE = {
     return `https://www.instagram.com/${this.instagram}/`;
   },
 
-  /** [PLACEHOLDER] Confirmar usuario/página reales antes de publicar. */
-  facebook: "satoriarts",
+  /**
+   * Usuario de la página de Facebook. VACÍO = el enlace no se muestra
+   * (menú y footer). OJO: facebook.com/satoriarts NO es nuestro, es otro
+   * negocio ("Satori Arts | Eureka Springs AR", EE. UU.). Rellenar solo
+   * con la página real del estudio.
+   */
+  facebook: "" as string,
   get facebookUrl() {
     return `https://www.facebook.com/${this.facebook}/`;
   },

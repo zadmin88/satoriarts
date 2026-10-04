@@ -18,7 +18,7 @@ const t = useT(locale);
 const service = getService(serviceKey);
 const city = CITIES.find((c) => c.slug === citySlug)!;
 const copy = cityServiceCopy(locale, service, city);
-const galleryItems = servicePhotos(serviceKey).map((image, i) => ({ image, alt: photoAlt(locale, service.i18n[locale].title, i) }));
+const galleryItems = servicePhotos(serviceKey).map((image, i) => ({ image, alt: photoAlt(locale, service.i18n[locale].title, i, image) }));
 const pageUrl = new URL(cityServicePath(locale, serviceKey, city), SITE.url).href;
 
 const jsonLd = [

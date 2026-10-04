@@ -34,7 +34,7 @@ const previewByCategory = previewKeys.map((key, si) =>
     .slice(0, previewCounts[key])
     .map((image, i) => ({
       image,
-      alt: photoAlt(locale, SERVICES[si].i18n[locale].title, i),
+      alt: photoAlt(locale, SERVICES[si].i18n[locale].title, i, image),
     })),
 );
 // Reparto proporcional (no round-robin simple): a cada foto le
@@ -252,7 +252,7 @@ const preview = previewByCategory
                 {[false, true].map((copy) =>
                   row.map((c) => (
                     <div class="flex items-center justify-center px-7" aria-hidden={copy ? "true" : undefined}>
-                      <img src={c.logo} alt={copy ? "" : c.name} loading="eager" style={`height:calc(var(--client-h) * ${c.scale})`} class="w-auto max-w-none object-contain" />
+                      <img src={c.logo} alt={c.name} loading="eager" style={`height:calc(var(--client-h) * ${c.scale})`} class="w-auto max-w-none object-contain" />
                     </div>
                   )),
                 )}

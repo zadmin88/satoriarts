@@ -7,7 +7,7 @@
  *
  * Ejemplo (lo usado para las fotos reales):
  *   node scripts/convert-photos.mjs --src _originals-fotossatori --out src/assets/photos/_incoming
- *   # luego repartir los .webp en src/assets/photos/{bodas,eventos,hoteles,paisaje,hero}/
+ *   # luego repartir los .webp en src/assets/photos/{bodas,hoteles,paisaje,team}/
  *
  * Nota: astro:assets vuelve a optimizar en el build, pero convertir a WebP aquí
  * reduce muchísimo el peso de los originales (DSLR de 10-20 MB → ~200-500 KB).
