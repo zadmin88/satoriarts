@@ -50,7 +50,7 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
        como una fila propia. En desktop (sm:), vuelve a ser una fila
        con los 3 bloques repartidos como antes. -->
   <div class="stagger-grid container-tight pt-14 pb-4">
-    <div class="grid grid-cols-2 gap-8 sm:flex sm:flex-row sm:items-start sm:justify-between">
+    <div class="grid grid-cols-1 gap-10 sm:flex sm:flex-row sm:items-start sm:justify-between">
       <nav aria-label={t("footer.navLabel")} class="reveal flex flex-col gap-3">
         <p class="font-heading text-sm font-medium text-black">{navLabel}</p>
         {
@@ -81,7 +81,7 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
         </a>
       </nav>
 
-      <address class="reveal col-span-2 flex flex-col gap-3 not-italic sm:col-span-1">
+      <address class="reveal flex flex-col gap-3 not-italic">
         <p class="font-heading text-sm font-medium text-black">{contactLabel}</p>
         <a href={SITE.phoneHref} class="hover-flip inline-block text-xs font-medium tracking-wide text-neutral-500 hover:text-black">
           <span class="flip-a block">{SITE.phoneDisplay}</span>
@@ -93,7 +93,7 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
         </a>
       </address>
 
-      <div class="reveal col-span-2 flex flex-col gap-3 sm:col-span-1">
+      <div class="reveal flex flex-col gap-3">
         <a href="#top" class="hover-flip inline-flex items-center gap-2 text-sm font-heading font-medium uppercase text-black">
           <span class="flip-a flex items-center gap-2">
             <span>{t("a11y.backToTop")}</span>

@@ -33,7 +33,6 @@ export function photosIn(folder: string): ImageMetadata[] {
   return (byFolder.get(folder) ?? []).map((e) => e.img);
 }
 
-export const heroPhotos = photosIn("hero");
 export const teamPhotos = photosIn("team");
 
 export function servicePhotos(key: ServiceKey): ImageMetadata[] {

@@ -220,27 +220,27 @@
 
   /* Tipografía de contenido largo (páginas de servicio, journal) */
   .prose-body h2 {
-    @apply font-heading text-foreground mt-12 mb-4 text-2xl font-semibold uppercase first:mt-0 sm:text-3xl;
+    @apply font-heading text-foreground mt-14 mb-5 text-2xl leading-tight font-normal uppercase first:mt-0 sm:mt-20 sm:mb-6 sm:text-4xl;
   }
   .prose-body h3 {
     @apply font-heading text-foreground mt-8 mb-2 text-xl font-medium;
   }
   .prose-body p {
-    @apply text-foreground/80 mb-4 leading-relaxed;
+    @apply text-muted-foreground mb-5 text-base leading-relaxed sm:text-lg;
   }
   .prose-body ul {
-    @apply mb-6 flex flex-col gap-2.5;
+    @apply mb-6 flex flex-col gap-3;
   }
   .prose-body ul li {
-    @apply text-foreground/80 relative pl-7 leading-relaxed;
+    @apply text-muted-foreground relative pl-7 text-base leading-relaxed sm:text-lg;
   }
   .prose-body ul li::before {
     content: "";
     position: absolute;
     left: 0;
-    top: 0.55rem;
-    width: 0.5rem;
-    height: 0.5rem;
+    top: 0.65rem;
+    width: 0.4rem;
+    height: 0.4rem;
     border-radius: 9999px;
     background-color: var(--foreground);
   }
@@ -1064,4 +1064,16 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue { animation: none; }
+}
+
+/* Logos de clientes en móvil: pase continuo de derecha a izquierda. La lista
+   va duplicada, así que desplazar -50 % cierra el bucle sin salto. En sm+ se
+   muestra estática; con "reducir movimiento" se queda quieta y se puede
+   arrastrar con el dedo. */
+.clients-track { animation: clients-marquee 90s linear infinite; }
+@keyframes clients-marquee { to { transform: translateX(-50%); } }
+@media (min-width: 640px) { .clients-track { animation: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .clients-track { animation: none; }
+  .clients-marquee { overflow-x: auto; }
 }

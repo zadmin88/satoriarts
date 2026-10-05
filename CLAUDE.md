@@ -82,7 +82,7 @@ npm run seo:check    # build + comprobación SEO automática (falla si hay error
   React con `client:*` salvo necesidad real. Interactividad simple con CSS o
   `<details>` (menú móvil, dropdown de servicios, FAQ, galería).
 - **Imágenes**: son **fotos reales** en WebP en `src/assets/photos/<carpeta>/`
-  (`hero`, `bodas`, `eventos`, `hoteles`, `paisaje`), cargadas con `astro:assets`
+  (`bodas`, `eventos`, `hoteles`, `paisaje`, `team`), cargadas con `astro:assets`
   vía `src/lib/photos.ts` (`import.meta.glob`). Se muestran con `Photo.astro`
   (duotono + revelado) y `EditorialGallery.astro` (retícula rota). `alt` SIEMPRE.
   Los originales sin optimizar están en `_originals-fotossatori/` (gitignored, no
@@ -130,7 +130,7 @@ entrada a `SERVICES` en `src/config.ts` (con `i18n` de los 3 idiomas y
 
 **Añadir/renovar fotos**: 1) convierte los originales a WebP con
 `node scripts/convert-photos.mjs --src <carpeta> --out src/assets/photos/_incoming`;
-2) reparte los `.webp` en `src/assets/photos/{hero,bodas,hoteles,paisaje,team}/`
+2) reparte los `.webp` en `src/assets/photos/{bodas,hoteles,paisaje,team}/`
 con nombre **`NN-descripcion-corta.webp`** (el `NN` fija el orden — el Journal
 referencia fotos por índice —; la descripción ayuda a Google Imágenes);
 3) añade su alt descriptivo (es/en/ca, lo que SE VE en la foto) en

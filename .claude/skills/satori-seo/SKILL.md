@@ -153,7 +153,7 @@ choca con una regla, avisa antes de romperla.
 
 - No subir originales pesados a `public/` (⚠ 294 MB de JPG se movieron a
   `_originals-fotossatori/`, gitignored).
-- Vídeo del hero con `poster`; fuentes autoalojadas con `preload`.
+- Vídeo del hero sin póster (decisión de diseño: solo vídeo); fuentes autoalojadas con `preload`.
 - Ojo con el scroll horizontal en móvil (⚠ un `-mx-5` sobre un contenedor a
   ancho completo desbordaba la página). `body` tiene `overflow-x: clip`; no lo
   cambies a `hidden` (rompe `position: sticky`).

@@ -13,7 +13,6 @@ import {
 } from "@/config";
 import type { Locale, Service } from "@/config";
 import { serviceAlternates, routePath } from "@/i18n/routes";
-import { cityServicePath, cityServiceLabel } from "@/i18n/city-service";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
 
@@ -134,25 +133,15 @@ const jsonLd = [
          .container-prose-left), el .eyebrow del sitio para el h1, el estilo
          del titular del manifiesto de la home para la frase grande y el
          acordeón Faq.astro ya existente. Textos en services-content.ts. -->
-    <section aria-labelledby="servicio-h1" class="section-space container-prose-left">
-      <div class="reveal prose-body">
+    <section aria-labelledby="servicio-h1" class="section-space container-tight">
+      <div class="reveal prose-body max-w-3xl">
         <h1 id="servicio-h1" class="eyebrow mb-4">{keywordH1}</h1>
         <p class="font-heading text-3xl font-medium text-balance text-foreground sm:text-5xl">{h1}</p>
         <p>{heroIntro}</p>
         <Fragment set:html={bodyHtml} />
-        <h2>{t("service.citiesTitle")}</h2>
-        <ul>
-          {CITIES.map((city) => (
-            <li>
-              <a href={cityServicePath(locale, service.key, city)} class="underline underline-offset-4">
-                {cityServiceLabel(locale, service.key, city)}
-              </a>
-            </li>
-          ))}
-        </ul>
         <h2>{t("service.faqTitle")}</h2>
       </div>
-      <div class="reveal">
+      <div class="reveal max-w-3xl">
         <Faq items={faqs} />
       </div>
     </section>
