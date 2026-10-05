@@ -39,7 +39,7 @@ const sitemap = existsSync(path.join(DIST, "sitemap-0.xml")) ? readFileSync(path
 const inSitemap = new Set(all(/<loc>([^<]+)<\/loc>/g, sitemap).map((x) => x[1].replace(SITE, "")));
 
 const pages = [];
-const linkedFrom = new Map(); // url → nº de páginas que enlazan con <a>
+const linksOf = new Map(); // url → Set de URLs internas enlazadas con <a>
 
 for (const f of files) {
   const raw = readFileSync(f, "utf8");
@@ -68,12 +68,19 @@ for (const f of files) {
   };
   pages.push(p);
 
-  const seen = new Set();
-  for (const a of all(/<a\b[^>]*\shref="(\/[^"#?]*)"/g, body)) {
-    if (a[1] === url || seen.has(a[1])) continue;
-    seen.add(a[1]);
-    linkedFrom.set(a[1], (linkedFrom.get(a[1]) || 0) + 1);
-  }
+  linksOf.set(url, new Set(all(/<a\b[^>]*\shref="(\/[^"#?]*)"/g, body).map((a) => a[1])));
+}
+
+// Páginas alcanzables desde las 3 homes siguiendo enlaces <a>, como haría
+// Google. Una página que solo enlazan sus propias versiones en otros
+// idiomas (selector ES/EN/CA) forma una "isla" y NO es alcanzable.
+const reachable = new Set();
+const queue = ["/", "/en/", "/ca/"].filter((u) => linksOf.has(u));
+while (queue.length) {
+  const u = queue.shift();
+  if (reachable.has(u)) continue;
+  reachable.add(u);
+  for (const v of linksOf.get(u) || []) if (linksOf.has(v) && !reachable.has(v)) queue.push(v);
 }
 
 const errors = [];
@@ -104,7 +111,7 @@ for (const p of indexable) {
   if (p.title.length > 65) W(p.url, `title de ${p.title.length} caracteres (máx. ~65): "${p.title}"`);
   if (p.title.length && p.title.length < 20) W(p.url, `title muy corto (${p.title.length}): "${p.title}"`);
   if (p.desc && (p.desc.length < 70 || p.desc.length > 160)) W(p.url, `description de ${p.desc.length} caracteres (ideal 70–160)`);
-  if (p.url !== "/" && !linkedFrom.get(p.url)) W(p.url, "huérfana: ninguna otra página la enlaza con <a>");
+  if (!reachable.has(p.url)) W(p.url, "no se llega a ella navegando desde la home (huérfana o solo enlazada por el selector de idioma)");
   if (p.words < 250 && /^\/(?:(?:en|ca)\/)?(bodas|hoteles|paisaje|weddings|hotels|landscape|casaments|paisatge|fotograf|wedding-|hotel-|landscape-)/.test(p.url))
     W(p.url, `contenido escaso para una página que debe posicionar (${p.words} palabras, objetivo ≥ 250)`);
   if (p.title) (byTitle.get(p.title) || byTitle.set(p.title, []).get(p.title)).push(p.url);

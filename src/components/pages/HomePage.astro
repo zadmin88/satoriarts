@@ -66,8 +66,16 @@ const preview = previewByCategory
        debajo. -->
   <section class="relative -mt-24 flex h-[92svh] min-h-[560px] w-full flex-col items-center justify-center overflow-hidden bg-background px-5 text-center sm:px-6 md:-mt-28 md:h-[92dvh]">
     <div data-parallax="0.1" class="absolute inset-0">
+      <!-- Vídeo optimizado para web (sin audio, H.264, faststart): 720p en
+           móvil (~ancho ≤ 767px) y 1080p en el resto. El original de 18 MB
+           a 5 Mbit/s tardaba tanto que se veía su primer fotograma congelado
+           ("el vídeo no carga"). El poster es ese mismo primer fotograma,
+           ligero (WebP), para que la transición al vídeo sea invisible.
+           hero-video.ts fuerza play() tras cargar/navegar. Para regenerar
+           los ficheros desde un vídeo nuevo, ver scripts/encode-hero-video.mjs. -->
       <video
-        src="/video/hero.mp4"
+        data-hero-video
+        poster="/video/hero-poster.webp"
         preload="auto"
         autoplay
         muted
@@ -75,7 +83,10 @@ const preview = previewByCategory
         playsinline
         aria-hidden="true"
         class="ken-burns h-full w-full object-cover"
-      ></video>
+      >
+        <source src="/video/hero-720.mp4" type="video/mp4" media="(max-width: 767px)" />
+        <source src="/video/hero-1080.mp4" type="video/mp4" />
+      </video>
     </div>
     <!-- Degradado con solo el canal alpha (sin color-mix, que en Safari/
          WebView móviles sin soporte cae a un fallback que lo vuelve
@@ -336,4 +347,7 @@ const preview = previewByCategory
   </script>
 
   <CtaSection locale={locale} message={waDefaultMessage(locale)} />
+  <script>
+    import "@/scripts/hero-video";
+  </script>
 </BaseLayout>

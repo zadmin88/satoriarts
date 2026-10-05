@@ -5,7 +5,7 @@ import ProjectsGallery, { type ServiceBlock } from "@/components/ProjectsGallery
 import type { GridItem } from "@/components/GridMediaItem.astro";
 import { SERVICES, servicePath, waDefaultMessage } from "@/config";
 import type { Locale } from "@/config";
-import { routeAlternates } from "@/i18n/routes";
+import { routeAlternates, routePath } from "@/i18n/routes";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
 
@@ -81,30 +81,29 @@ const serviceBlocks: ServiceBlock[] = [{ key: "bodas", photos: mixedPhotos, phot
   <!-- ProjectsGallery: MISMO componente que usa cada página de
        servicio (vía ServiceLayout.astro) — cualquier cambio de
        spacing/sticky/grid se hace una sola vez ahí y se refleja en las
-       5 categorías. Solo las pestañas (radio+label aquí, filtrado 100%
-       CSS con :has() para no recargar página) llegan por el slot
-       "filters" — es la única pieza que de verdad no se puede unificar
-       (ver ProjectsGallery.astro para la explicación completa). -->
+       5 categorías. Las pestañas son ENLACES reales, igual que en las
+       páginas de servicio: "Todos" (esta página, activa) y cada servicio
+       lleva a su URL (/bodas/, /hoteles/...), donde está su texto SEO.
+       Antes eran radios + filtro CSS :has(): cambiaban las fotos sin
+       cambiar la URL ni la página (bug reportado), y Google no veía esos
+       enlaces internos. Sin radios, el filtro CSS de global.css no se
+       aplica y aquí se ven todas las fotos mezcladas. -->
   <ProjectsGallery locale={locale} blocks={serviceBlocks} withGridId>
     <Fragment slot="filters">
-      <input type="radio" name="pf-filter" id="pf-all" class="sr-only" checked />
-      <label for="pf-all" class="btn filter-pill shrink-0">
+      <a href={routePath(locale, "portfolio")} class="btn filter-pill is-active shrink-0" aria-current="page">
         <span class="hover-flip">
           <span class="flip-a block">{t("portfolio.filterAll")}</span>
           <span aria-hidden="true" class="flip-b block">{t("portfolio.filterAll")}</span>
         </span>
-      </label>
+      </a>
       {
         SERVICES.map((s) => (
-          <>
-            <input type="radio" name="pf-filter" id={`pf-filter-${s.key}`} class="sr-only" />
-            <label for={`pf-filter-${s.key}`} class="btn filter-pill shrink-0">
-              <span class="hover-flip">
-                <span class="flip-a block">{s.i18n[locale].title}</span>
-                <span aria-hidden="true" class="flip-b block">{s.i18n[locale].title}</span>
-              </span>
-            </label>
-          </>
+          <a href={servicePath(locale, s)} class="btn filter-pill shrink-0">
+            <span class="hover-flip">
+              <span class="flip-a block">{s.i18n[locale].title}</span>
+              <span aria-hidden="true" class="flip-b block">{s.i18n[locale].title}</span>
+            </span>
+          </a>
         ))
       }
     </Fragment>

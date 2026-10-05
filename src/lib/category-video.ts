@@ -3,7 +3,7 @@ import type { ServiceKey } from "@/config";
 /**
  * [PLACEHOLDER] Un vídeo por categoría, como elemento protagonista de
  * su cuadrícula (antes de las fotos). De momento las 4 apuntan al
- * mismo vídeo de referencia (public/video/hero.mp4) mientras no
+ * mismo vídeo de referencia (public/video/hero-1080.mp4) mientras no
  * lleguen los definitivos — cuando el cliente los envíe, basta con
  * sustituir la ruta de cada clave por su archivo real (p. ej.
  * "/video-bodas.mp4"), sin tocar ningún componente.
@@ -17,7 +17,7 @@ import type { ServiceKey } from "@/config";
  * de lazy-loading ni de autoplay.
  */
 export const CATEGORY_VIDEO: Record<ServiceKey, string> = {
-  bodas: "/video/hero.mp4",
-  hoteles: "/video/hero.mp4",
-  paisaje: "/video/hero.mp4",
+  bodas: "/video/hero-1080.mp4",
+  hoteles: "/video/hero-1080.mp4",
+  paisaje: "/video/hero-1080.mp4",
 };
