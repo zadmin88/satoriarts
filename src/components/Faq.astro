@@ -14,7 +14,7 @@ const { items } = Astro.props;
 <div>
   {
     items.map((item) => (
-      <details class="group py-5">
+      <details class="group border-t border-border py-5 first:border-t-0 last:border-b">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-foreground [&::-webkit-details-marker]:hidden">
           {item.q}
           <span class="plus-icon shrink-0 text-foreground" aria-hidden="true" />

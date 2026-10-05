@@ -15,7 +15,7 @@ const { item } = Astro.props;
 
 {
   item.type === "video" ? (
-    <a href={item.href} data-service={item.key} class="mb-6 block break-inside-avoid overflow-hidden">
+    <a href={item.href} data-service={item.key} class="mb-3 block break-inside-avoid overflow-hidden sm:mb-6">
       <!-- aspect-video: un <video> sin width/height declarados no
            tiene tamaño conocido hasta que carga sus metadatos
            (preload="metadata"), así que el navegador le da una caja
@@ -48,7 +48,7 @@ const { item } = Astro.props;
       />
     </a>
   ) : (
-    <a href={item.href} data-service={item.key} class="mb-6 block break-inside-avoid overflow-hidden">
+    <a href={item.href} data-service={item.key} class="mb-3 block break-inside-avoid overflow-hidden sm:mb-6">
       <Image
         src={item.image}
         alt={item.alt}

@@ -24,16 +24,15 @@ interface Props {
   /** Frase editorial grande del bloque de texto ("Vuestra boda, …") */
   h1: string;
   heroIntro: string;
+  /** Titular y botón del cierre; si faltan, los genéricos de ui.ts */
+  ctaTitle?: string;
+  ctaLabel?: string;
   bodyHtml: string;
   faqs: FaqItem[];
 }
 
-const { locale, service, seoTitle, seoDescription, h1, heroIntro, bodyHtml, faqs } = Astro.props;
+const { locale, service, seoTitle, seoDescription, h1, heroIntro, ctaTitle, ctaLabel, bodyHtml, faqs } = Astro.props;
 
-// h1 con la búsqueda real ("Fotógrafo y Vídeo de Bodas en Barcelona y
-// Madrid"): el <title> sin la marca. Se muestra con el estilo .eyebrow
-// ya existente, sobre la frase editorial grande.
-const keywordH1 = seoTitle.replace(/\s*·\s*Satori Arts\s*$/, "");
 const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "");
 const t = useT(locale);
 const copy = service.i18n[locale];
@@ -46,7 +45,7 @@ const alternates = serviceAlternates(service.key);
 // componente ProjectsGallery, esta página de servicio individual
 // renderiza EXACTAMENTE la misma estructura que su categoría dentro de
 // /proyectos/, sin poder divergir.
-const photos: GridItem[] = servicePhotos(service.key).map((image, i) => ({
+const allPhotos: GridItem[] = servicePhotos(service.key).map((image, i) => ({
   type: "photo" as const,
   image,
   alt: photoAlt(locale, copy.title, i, image),
@@ -54,10 +53,58 @@ const photos: GridItem[] = servicePhotos(service.key).map((image, i) => ({
   href: servicePath(locale, service),
   title: copy.title,
 }));
-const photoColumns: [GridItem[], GridItem[]] = [[], []];
-photos.forEach((p, i) => photoColumns[i % 2].push(p));
-
-const blocks: ServiceBlock[] = [{ key: service.key, photos, photoColumns }];
+// Las fotos se reparten mitad y mitad: galería 1 y galería 2 con fotos
+// DISTINTAS (nunca repetidas), el bloque de venta entre las dos.
+// Reparto en 2 columnas (desktop) para que ambas terminen a la misma altura:
+// se prueban todas las combinaciones y se elige la de menor diferencia de alto
+// total (cada foto suma además su separación), con un pequeño empate a favor
+// del orden alterno (1-2, 1-2…). El corte entre galería 1 y 2 puede moverse
+// una foto hacia cada lado para que las dos galerías queden bien cerradas.
+const aspect = (p: GridItem) => ("image" in p && p.image ? p.image.height / p.image.width : 1);
+const GAP = 0.07; // 48px de separación vertical ≈ 0,07 del ancho de columna
+const balanceColumns = (items: GridItem[]) => {
+  const n = items.length;
+  let best = 0;
+  let bestScore = Infinity;
+  let bestDiff = 0;
+  for (let mask = 0; mask < 1 << n; mask++) {
+    const h = [0, 0];
+    const c = [0, 0];
+    let mismatch = 0;
+    items.forEach((p, i) => {
+      const side = (mask >> i) & 1;
+      h[side] += aspect(p) + GAP;
+      c[side]++;
+      if (side !== i % 2) mismatch++;
+    });
+    if (Math.abs(c[0] - c[1]) > 2) continue;
+    const diff = Math.abs(h[0] - h[1]);
+    const score = diff + 0.02 * Math.min(mismatch, n - mismatch);
+    if (score < bestScore) {
+      bestScore = score;
+      best = mask;
+      bestDiff = diff;
+    }
+  }
+  const cols: [GridItem[], GridItem[]] = [[], []];
+  items.forEach((p, i) => cols[(best >> i) & 1].push(p));
+  return { cols, diff: bestDiff };
+};
+const half = Math.ceil(allPhotos.length / 2);
+let firstCount = half;
+let bestTotal = Infinity;
+for (const k of [half, half - 1, half + 1]) {
+  const total = balanceColumns(allPhotos.slice(0, k)).diff + balanceColumns(allPhotos.slice(k)).diff;
+  if (total < bestTotal - 0.15) {
+    bestTotal = total;
+    firstCount = k;
+  }
+}
+const makeBlocks = (items: GridItem[]): ServiceBlock[] => [
+  { key: service.key, photos: items, photoColumns: balanceColumns(items).cols },
+];
+const blocks1 = makeBlocks(allPhotos.slice(0, firstCount));
+const blocks2 = makeBlocks(allPhotos.slice(firstCount));
 
 const jsonLd = [
   {
@@ -98,15 +145,11 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <article>
-    <!-- ProjectsGallery: MISMO componente que usa /proyectos/
-         (PortfolioPage.astro) — sigue mostrando "Proyectos" a
-         propósito (no el nombre del servicio), para que no "salte"
-         visualmente al cambiar de pestaña entre servicios. Solo las
-         pestañas difieren (enlaces reales, no radios: cada servicio es
-         su propia URL indexable para el SEO local) — ver
-         ProjectsGallery.astro para la explicación completa de por qué
-         ese es el único punto que no se puede unificar. -->
-    <ProjectsGallery locale={locale} blocks={blocks} titleAs="p">
+    <!-- ORDEN (pautas de Proyectos): H1 + intro corta → galería 1
+         → bloque de venta → galería 2 → FAQ → CTA. Arriba poco texto: las
+         fotos aparecen rápido. El h1 es el titular editorial (la keyword va en
+         el <title> y la descripción). -->
+    <ProjectsGallery locale={locale} blocks={blocks1} titleAs="p">
       <Fragment slot="filters">
         <a href={routePath(locale, "portfolio")} class="btn filter-pill shrink-0">
           <span class="hover-flip">
@@ -125,35 +168,45 @@ const jsonLd = [
           ))
         }
       </Fragment>
-    </ProjectsGallery>
+      <Fragment slot="intro">
+      <section aria-labelledby="servicio-h1" class="container-tight pt-2 pb-6 md:pt-4 md:pb-7">
+        <div class="reveal prose-body max-w-none">
+            <h1 id="servicio-h1" class="font-heading mb-5 text-2xl leading-tight font-normal uppercase text-balance text-foreground sm:mb-6 sm:text-4xl lg:max-w-5xl">{h1}</h1>
+          <p class="mb-0 max-w-2xl text-pretty md:max-w-3xl lg:max-w-4xl">{heroIntro}</p>
+        </div>
+      </section>
+      </Fragment>
+      <Fragment slot="after">
+        <!-- BLOQUE DE VENTA entre las dos galerías: se lee con el cliente ya
+             interesado y corta el scroll largo de fotos. -->
+        <section class="container-tight pt-0 pb-[7.25rem] sm:pb-[9.5rem]">
+          <div class="reveal prose-body max-w-3xl sm:mx-auto sm:text-center md:max-w-4xl lg:max-w-6xl [&>p]:mx-auto [&>p]:max-w-3xl [&>p:last-child]:mb-0 [&_h2]:!mt-0">
+            <Fragment set:html={bodyHtml} />
+          </div>
+        </section>
 
-    <!-- TEXTO SEO del servicio (visible: Google no posiciona texto oculto).
-         Sin estilos nuevos: reutiliza exactamente el patrón de las páginas
-         servicio×ciudad (.reveal .prose-body .section-space
-         .container-prose-left), el .eyebrow del sitio para el h1, el estilo
-         del titular del manifiesto de la home para la frase grande y el
-         acordeón Faq.astro ya existente. Textos en services-content.ts. -->
-    <section aria-labelledby="servicio-h1" class="section-space container-tight">
-      <div class="reveal prose-body max-w-3xl">
-        <h1 id="servicio-h1" class="eyebrow mb-4">{keywordH1}</h1>
-        <p class="font-heading text-3xl font-medium text-balance text-foreground sm:text-5xl">{h1}</p>
-        <p>{heroIntro}</p>
-        <Fragment set:html={bodyHtml} />
-        <h2>{t("service.faqTitle")}</h2>
-      </div>
-      <div class="reveal max-w-3xl">
-        <Faq items={faqs} />
-      </div>
-    </section>
+        {blocks2[0].photos.length > 0 && <ProjectsGallery locale={locale} blocks={blocks2} showTitle={false} showBar={false} />}
+
+        <!-- FAQ: para quien ya está decidido y solo tiene dudas prácticas. -->
+        <section class="container-tight pt-0 pb-[6.25rem] sm:pb-[8.75rem]">
+          <div class="reveal prose-body max-w-3xl sm:mx-auto sm:text-center">
+            <h2>{t("service.faqTitle")}</h2>
+          </div>
+          <div class="reveal max-w-3xl sm:mx-auto">
+            <Faq items={faqs} />
+          </div>
+        </section>
+      </Fragment>
+    </ProjectsGallery>
 
     <!-- CTA de cierre, alineado a la izquierda (mismo eje que
          "PROYECTOS", la barra de categorías y el grid) — ver
          PortfolioPage.astro para la explicación completa de por qué ya
          no se centra en desktop como el resto de las páginas del
          sitio. -->
-    <section class="section-space reveal container-tight flex flex-col items-start gap-8 text-left sm:gap-6">
-      <p class="text-balance font-heading text-4xl font-medium text-foreground sm:text-3xl">{t("cta.dateQuestion")}</p>
-      <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={t("cta.book")} />
+    <section class="section-space reveal container-tight flex flex-col items-start pt-0 pb-14 gap-8 text-left sm:items-center sm:gap-6 sm:pb-12 sm:text-center">
+      <p class="text-balance font-heading text-4xl font-medium text-foreground sm:text-3xl">{ctaTitle ?? t("cta.dateQuestion")}</p>
+      <WhatsAppButton size="lg" message={waServiceMessage(locale, service)} label={ctaLabel ?? t("cta.book")} />
     </section>
   </article>
 

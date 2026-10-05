@@ -736,13 +736,12 @@ details.menu[open] .word-reveal > span {
 /* Flecha de scroll bajo el hero (como verostudio.com) */
 .scroll-cue {
   position: absolute;
-  bottom: 1.75rem;
-  left: 50%;
+  bottom: 1.25rem;
+  left: calc(50% - 0.875rem);
   z-index: 10;
   width: 1.75rem;
   height: 1.75rem;
   color: oklch(1 0 0 / 0.8);
-  transform: translateX(-50%);
 }
 
 /* ---------------------------------------------------------- */
@@ -1070,7 +1069,7 @@ body {
    va duplicada, así que desplazar -50 % cierra el bucle sin salto. En sm+ se
    muestra estática; con "reducir movimiento" se queda quieta y se puede
    arrastrar con el dedo. */
-.clients-track { animation: clients-marquee 90s linear infinite; }
+.clients-track { animation: clients-marquee 60s linear infinite; }
 @keyframes clients-marquee { to { transform: translateX(-50%); } }
 @media (min-width: 640px) { .clients-track { animation: none; } }
 @media (prefers-reduced-motion: reduce) {

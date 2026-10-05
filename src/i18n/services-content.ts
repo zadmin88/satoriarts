@@ -11,6 +11,9 @@ export interface ServiceContent {
   seoDescription: string;
   h1: string;
   heroIntro: string;
+  /** Titular y botón del cierre (si faltan, los genéricos de ui.ts) */
+  ctaTitle?: string;
+  ctaLabel?: string;
   bodyHtml: string;
   faqs: FaqItem[];
   gallery: { label?: string; ratio?: "portrait" | "landscape" | "square"; tone?: 1 | 2 | 3 | 4 }[];
@@ -26,28 +29,20 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
     es: {
       seoTitle: "Fotógrafo y Vídeo de Bodas en Barcelona y Madrid · Satori Arts",
       seoDescription:
-        "Fotografía y film de boda con mirada de autor en Barcelona, Madrid y destino. Documentamos la emoción real y entregamos un archivo a la altura del día.",
-      h1: "Vuestra boda, con el peso que merece",
+        "Fotografía y vídeo de boda con un solo equipo, más de diez años de experiencia. Tú vives el día, nosotros nos aseguramos de que no se pierda nada.",
+      h1: "Fotos y vídeo de boda que vas a querer volver a ver",
       heroIntro:
-        "Somos un fotógrafo y una cineasta documentando a la vez: mientras una cámara capta la emoción, la otra rueda la película. Sin poses eternas — lo que vivís, tal y como sucede.",
+        "Fotografía y vídeo de bodas en Barcelona, Madrid o destino. Un solo equipo, más de diez años de experiencia. Tú vives el día. Nosotros nos aseguramos de que no se pierda nada.",
+      ctaTitle: "Las fechas se llenan rápido. Consulta si la tuya está libre.",
+      ctaLabel: "Consultar disponibilidad",
       bodyHtml: `
-        <h2>Un mismo estudio, dos disciplinas coordinadas</h2>
-        <p>Contratar un solo estudio para foto y film elimina la fricción de coordinar dos equipos: no competimos por el mismo instante, lo documentamos desde ángulos complementarios. Podéis contratar solo fotografía, solo film o ambas disciplinas.</p>
-        <ul>
-          <li>Cobertura de preparativos, ceremonia, sesión de pareja y celebración.</li>
-          <li>Galería privada online con la selección editada.</li>
-          <li>Un adelanto para compartir y una película completa para conservar.</li>
-        </ul>
-        <h2>Un estilo documental, con criterio editorial</h2>
-        <p>Buscamos la luz honesta y los gestos que no se repiten. Dirigimos lo justo para que os sintáis cómodos, sin forzar nada: el resultado es un archivo que se sostiene con los años, no una colección de postales.</p>
-        <h2>Bodas de destino</h2>
-        <p>Trabajamos en toda España y fuera de ella. Costa Brava, Empordà, la sierra de Madrid, masías, fincas y hoteles con carácter: si el lugar tiene alma, allí estaremos.</p>
+        <h2>Por qué elegir Satori Arts</h2>
+        <p>Contratar foto y vídeo con el mismo equipo lo hace todo más fácil: un solo proveedor, sin planos repetidos ni prisas de última hora. Trabajamos con discreción, casi sin que notes que estamos. Cada boda la editamos nosotros mismos, con todo el cuidado que merece.</p>
       `,
       faqs: [
-        { q: "¿Hacéis foto y vídeo a la vez?", a: "Sí. Trabajamos como equipo coordinado — una persona en la cámara de foto, otra en la de vídeo — para no perder ningún momento. También podéis contratar una sola disciplina." },
-        { q: "¿Viajáis fuera de Barcelona o Madrid?", a: "Sí, cubrimos bodas de destino en toda España y en el extranjero. Escríbenos con la fecha y el lugar y te confirmamos disponibilidad." },
-        { q: "¿Cuándo recibimos las fotos y el vídeo?", a: "Un primer avance en pocos días y la entrega completa en unas semanas, según temporada. Lo concretamos antes de confirmar la reserva." },
-        { q: "¿Cómo reservamos la fecha?", a: "Escríbenos por WhatsApp. Revisamos disponibilidad, resolvemos dudas y bloqueamos la fecha con un anticipo." },
+        { q: "¿Qué incluye la fotografía y el vídeo de boda?", a: "Preparativos, ceremonia, sesión de pareja y fiesta. Recibes una galería privada online, un avance para compartir y el vídeo completo." },
+        { q: "¿Se puede contratar solo foto o solo vídeo?", a: "Sí. Puedes elegir solo fotografía, solo vídeo o los dos." },
+        { q: "¿Satori Arts trabaja fuera de Barcelona y Madrid?", a: "Sí, en toda España y en el extranjero." },
       ],
       gallery: g(
         ["Ceremonia", "portrait", 1], ["Detalles", "square", 4], ["Pareja", "landscape", 2],
@@ -57,28 +52,20 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
     en: {
       seoTitle: "Wedding Photographer & Film in Barcelona & Madrid · Satori Arts",
       seoDescription:
-        "Editorial wedding photography and film in Barcelona, Madrid and destination. Real moments, editing with character and careful delivery.",
-      h1: "Your wedding, told the way it deserves",
+        "Wedding photography and video with a single team and more than ten years of experience. You live the day, we make sure nothing is missed.",
+      h1: "Wedding photos and video you will want to watch again",
       heroIntro:
-        "We are a photo and film duo. While one documents the emotion, the other shoots the film. No endless posing: what you live, exactly as it happens.",
+        "Wedding photography and video in Barcelona, Madrid or destination. One team, more than ten years of experience. You live the day. We make sure nothing is missed.",
+      ctaTitle: "Dates fill up fast. Check if yours is free.",
+      ctaLabel: "Check availability",
       bodyHtml: `
-        <h2>Photo and film, same day, same team</h2>
-        <p>Booking one studio for both photo and film has a big upside: we coordinate rather than compete for the moment. You can book photography only, film only, or both.</p>
-        <ul>
-          <li>Coverage of preparations, ceremony, couple session and party.</li>
-          <li>Private online gallery with the best edited images.</li>
-          <li>A short highlight to share and a long feature to keep.</li>
-        </ul>
-        <h2>Our style</h2>
-        <p>Documentary with an editorial soul. We look for good light, honest gestures and the details that will move you again years from now. We direct just enough for you to feel at ease.</p>
-        <h2>Destination weddings</h2>
-        <p>We travel across Spain and beyond. Costa Brava, Empordà, the Madrid mountains, country estates and charming hotels: if the place speaks to you, we'll be there.</p>
+        <h2>Why choose Satori Arts</h2>
+        <p>Hiring photo and video from the same team makes everything easier: one supplier, no repeated shots, no last-minute rush. We work with discretion, almost without you noticing we are there. We edit every wedding ourselves, with all the care it deserves.</p>
       `,
       faqs: [
-        { q: "Do you shoot photo and film at the same time?", a: "Yes. We are two people, one on photo and one on film, in sync. You can also book a single discipline." },
-        { q: "Do you travel outside Barcelona or Madrid?", a: "Yes, we cover destination weddings across Spain and abroad. Message us with your date and location." },
-        { q: "When do we get the photos and film?", a: "A preview within days and the full delivery in a few weeks, depending on the season. We agree it before booking." },
-        { q: "How do we book our date?", a: "Message us on WhatsApp. We check availability, walk you through the options and hold the date with a deposit." },
+        { q: "What do wedding photography and video include?", a: "Preparations, ceremony, couple session and party. You receive a private online gallery, a preview to share and the full film." },
+        { q: "Can I hire only photo or only video?", a: "Yes. You can choose photography only, video only, or both." },
+        { q: "Does Satori Arts work outside Barcelona and Madrid?", a: "Yes, across Spain and abroad." },
       ],
       gallery: g(
         ["Ceremony", "portrait", 1], ["Details", "square", 4], ["Couple", "landscape", 2],
@@ -88,28 +75,20 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
     ca: {
       seoTitle: "Fotògraf i Vídeo de Casaments a Barcelona i Madrid · Satori Arts",
       seoDescription:
-        "Fotografia i film de casament amb estil editorial a Barcelona, Madrid i destí. Moments reals, edició amb caràcter i lliurament acurat.",
-      h1: "El vostre casament, explicat com es mereix",
+        "Fotografia i vídeo de casament amb un sol equip i més de deu anys d'experiència. Tu vius el dia, nosaltres ens assegurem que no es perdi res.",
+      h1: "Fotos i vídeo de casament que voldràs tornar a veure",
       heroIntro:
-        "Som un duo de foto i vídeo. Mentre un documenta l'emoció, l'altre roda la pel·lícula. Sense poses eternes: el que viviu, tal com passa.",
+        "Fotografia i vídeo de casaments a Barcelona, Madrid o destinació. Un sol equip, més de deu anys d'experiència. Tu vius el dia. Nosaltres ens assegurem que no es perdi res.",
+      ctaTitle: "Les dates s'omplen ràpid. Consulta si la teva és lliure.",
+      ctaLabel: "Consultar disponibilitat",
       bodyHtml: `
-        <h2>Foto i film, el mateix dia i el mateix equip</h2>
-        <p>Treballar amb un sol estudi per a foto i vídeo té un gran avantatge: ens coordinem, no competim pel moment. Podeu contractar només fotografia, només film o tots dos.</p>
-        <ul>
-          <li>Cobertura de preparatius, cerimònia, sessió de parella i festa.</li>
-          <li>Galeria en línia privada amb les millors imatges editades.</li>
-          <li>Tràiler curt per compartir i pel·lícula llarga per guardar.</li>
-        </ul>
-        <h2>El nostre estil</h2>
-        <p>Documental amb ànima editorial. Busquem la bona llum, els gestos de veritat i els detalls que d'aquí uns anys us tornaran a emocionar. Dirigim just el necessari perquè estigueu còmodes.</p>
-        <h2>Casaments de destí</h2>
-        <p>Ens movem per tot Espanya i fora. Costa Brava, Empordà, serra de Madrid, masies i hotels amb encant: si el lloc us enamora, hi serem.</p>
+        <h2>Per què triar Satori Arts</h2>
+        <p>Contractar foto i vídeo amb el mateix equip ho fa tot més fàcil: un sol proveïdor, sense plans repetits ni presses d'última hora. Treballem amb discreció, gairebé sense que notis que hi som. Cada casament l'editem nosaltres mateixos, amb tota la cura que es mereix.</p>
       `,
       faqs: [
-        { q: "Feu foto i vídeo alhora?", a: "Sí. Som dues persones; una a la foto i una al vídeo, coordinades. També podeu contractar només una disciplina." },
-        { q: "Viatgeu fora de Barcelona o Madrid?", a: "Sí, cobrim casaments de destí per tot Espanya i a l'estranger. Escriu-nos amb la data i el lloc." },
-        { q: "Quan rebem les fotos i el vídeo?", a: "Un avançament en pocs dies i el lliurament complet en unes setmanes, segons temporada. Ho concretem abans de reservar." },
-        { q: "Com reservem la data?", a: "Escriu-nos per WhatsApp. Mirem disponibilitat, t'expliquem les opcions i bloquegem la data amb una bestreta." },
+        { q: "Què inclou la fotografia i el vídeo de casament?", a: "Preparatius, cerimònia, sessió de parella i festa. Reps una galeria privada en línia, un avanç per compartir i el vídeo complet." },
+        { q: "Es pot contractar només foto o només vídeo?", a: "Sí. Pots triar només fotografia, només vídeo o tots dos." },
+        { q: "Satori Arts treballa fora de Barcelona i Madrid?", a: "Sí, a tot Espanya i a l'estranger." },
       ],
       gallery: g(
         ["Cerimònia", "portrait", 1], ["Detalls", "square", 4], ["Parella", "landscape", 2],
@@ -121,31 +100,25 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
   /* ============================ HOTELES ============================ */
   hoteles: {
     es: {
-      seoTitle: "Fotógrafo de Hoteles en Barcelona y Madrid · Satori Arts",
+      seoTitle: "Fotografía de Hoteles y Restaurantes en Barcelona · Satori Arts",
       seoDescription:
-        "Fotografía y film para hoteles, resorts y restaurantes. Un archivo visual pensado para vender la experiencia y elevar la reserva directa.",
-      h1: "Imágenes que llenan habitaciones",
+        "Fotografía y vídeo para hoteles y restaurantes en Barcelona y Madrid. Contenido para vender más en tu web, en las OTAs o en redes, en una sola producción.",
+      h1: "Fotos y vídeo que hacen que elijan tu hotel",
       heroIntro:
-        "Fotografía y film para hoteles, resorts y restaurantes de carácter. Contenido que transmite la experiencia real y reduce la dependencia de las OTAs.",
+        "Fotografía y vídeo para hoteles y restaurantes en Barcelona, Madrid o cualquier lugar de España. Hilton Barcelona, Kimpton Vividora, Mas de Torrent o Torre del Remei ya confían en nosotros.",
+      ctaTitle: "Cuéntanos qué necesitas y te preparamos una propuesta.",
+      ctaLabel: "Pedir presupuesto",
       bodyHtml: `
-        <h2>Qué cubrimos</h2>
-        <p>Producimos el catálogo visual completo del establecimiento, listo para web, OTAs, redes sociales y campañas de temporada.</p>
-        <ul>
-          <li>Habitaciones y suites, con luz y estilismo cuidados al detalle.</li>
-          <li>Restaurante, gastronomía, spa y zonas comunes.</li>
-          <li>Arquitectura, exteriores y lifestyle con modelos.</li>
-          <li>Film para web y formatos verticales para redes.</li>
-        </ul>
-        <h2>Producción pensada para vender</h2>
-        <p>No entregamos fotografías bonitas sin más: pensamos en conversión. Imágenes coherentes con la identidad de marca que reducen la fricción de reserva y refuerzan el canal directo — el único sin comisión.</p>
-        <h2>Una producción que no interrumpe la operativa</h2>
-        <p>Coordinamos la sesión con dirección y recepción para trabajar sin afectar a los huéspedes. Planificamos horas de luz y ocupación para sacar el máximo partido a cada jornada.</p>
+        <h2>Por qué elegir Satori Arts para tu hotel o restaurante</h2>
+        <p>Resolvemos todo en una sola producción: habitaciones, gastronomía, spa, exteriores con dron, lifestyle con modelos, vídeo para redes. Lo organizamos contigo para no molestar a los huéspedes. Al terminar, recibes cada formato listo para publicar. Un solo proveedor, un mismo estilo, nada que coordinar por tu parte.</p>
       `,
       faqs: [
-        { q: "¿Trabajáis con cadenas y grupos?", a: "Sí, con hoteles independientes, boutique, resorts y grupos hoteleros. Nos adaptamos al manual de marca de cada uno." },
-        { q: "¿Incluís vídeo y reels?", a: "Sí. El servicio incluye fotografía, film para web y formatos verticales optimizados para redes." },
-        { q: "¿Cómo se factura?", a: "Con un presupuesto cerrado por proyecto, según entregables y jornadas de producción. Emitimos factura." },
-        { q: "¿Necesitáis cerrar el hotel?", a: "No. Planificamos por zonas y horarios para no afectar la operativa ni la experiencia de los huéspedes." },
+        { q: "¿Qué incluye una sesión de fotografía de hotel?", a: "Habitaciones, restaurante, spa, zonas comunes. También arquitectura, exteriores con tomas aéreas de dron, lifestyle con modelos, vídeo para la web, vídeos verticales para redes." },
+        { q: "¿Incluye fotografía gastronómica para restaurantes?", a: "Sí. Platos, sala, barra, equipo de cocina. Para la web, las redes o la carta." },
+        { q: "¿Hay que cerrar el hotel durante la sesión?", a: "No. Lo planificamos contigo según la ocupación y el horario." },
+        { q: "¿El dron cumple la normativa?", a: "Sí. Volamos con certificación AESA." },
+        { q: "¿Satori Arts trabaja con cadenas y grupos hoteleros?", a: "Sí. Podemos producir varias propiedades con el mismo estilo visual." },
+        { q: "¿Cómo se presupuesta?", a: "Hacemos un presupuesto para cada proyecto, según los espacios, los días de producción, los formatos que necesites." },
       ],
       gallery: g(
         ["Suite", "landscape", 1], ["Gastronomía", "square", 4], ["Spa", "portrait", 3],
@@ -153,31 +126,25 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     en: {
-      seoTitle: "Hotel Photographer in Barcelona & Madrid · Satori Arts",
+      seoTitle: "Hotel & Restaurant Photographer in Barcelona · Satori Arts",
       seoDescription:
-        "Photography and film for hotels, resorts and restaurants. Images that sell rooms and experiences and grow direct bookings.",
-      h1: "Images that fill rooms",
+        "Photography and video for hotels and restaurants in Barcelona and Madrid. Content that sells more on your website, OTAs or social media, in one production.",
+      h1: "Photos and video that make guests choose your hotel",
       heroIntro:
-        "Photography and film for hotels, resorts, restaurants and rentals. Content that conveys the experience and drives direct bookings.",
+        "Photography and video for hotels and restaurants in Barcelona, Madrid or anywhere in Spain. Hilton Barcelona, Kimpton Vividora, Mas de Torrent and Torre del Remei already trust us.",
+      ctaTitle: "Tell us what you need and we will prepare a proposal.",
+      ctaLabel: "Request a quote",
       bodyHtml: `
-        <h2>What we cover</h2>
-        <p>We produce your property's full visual catalogue, ready for web, OTAs, social and campaigns.</p>
-        <ul>
-          <li>Rooms and suites, with careful light and styling.</li>
-          <li>Restaurant, food, spa and common areas.</li>
-          <li>Exteriors, architecture and lifestyle with models.</li>
-          <li>Film for web and vertical reels for social.</li>
-        </ul>
-        <h2>Built to sell</h2>
-        <p>We don't just make pretty pictures: we think conversion. On-brand images that reduce friction and grow direct, commission-free bookings.</p>
-        <h2>Hassle-free production</h2>
-        <p>We coordinate with management and front desk to work without disturbing guests. We plan around light and occupancy to get the most out of the shoot.</p>
+        <h2>Why choose Satori Arts for your hotel or restaurant</h2>
+        <p>We handle everything in a single production: rooms, dining, spa, aerial drone exteriors, lifestyle with models, video for social media. We plan it with you so guests are not disturbed. When we finish, you receive every format ready to publish. One supplier, one style, nothing for you to coordinate.</p>
       `,
       faqs: [
-        { q: "Do you work with chains and groups?", a: "Yes, with independent and boutique hotels, resorts and groups. We follow brand guidelines." },
-        { q: "Do you include film and reels?", a: "Yes. We offer photo, web film and vertical reels optimised for social." },
-        { q: "How do you invoice?", a: "A fixed quote per project based on deliverables and shoot days. We issue invoices." },
-        { q: "Do you need to close the hotel?", a: "No. We plan by areas and times so we don't affect operations or guests." },
+        { q: "What does a hotel photo shoot include?", a: "Rooms, restaurant, spa and common areas. Also architecture, exteriors with aerial drone shots, lifestyle with models, video for the web and vertical videos for social media." },
+        { q: "Do you shoot food photography for restaurants?", a: "Yes. Dishes, dining room, bar and kitchen team, for the website, social media or the menu." },
+        { q: "Does the hotel have to close during the shoot?", a: "No. We plan it with you around occupancy and schedule." },
+        { q: "Is the drone use compliant with regulations?", a: "Yes. We fly with AESA certification." },
+        { q: "Does Satori Arts work with hotel chains and groups?", a: "Yes. We can produce several properties with the same visual style." },
+        { q: "How is it quoted?", a: "We prepare a quote for each project, based on the spaces, the production days and the formats you need." },
       ],
       gallery: g(
         ["Suite", "landscape", 1], ["Food", "square", 4], ["Spa", "portrait", 3],
@@ -185,31 +152,25 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     ca: {
-      seoTitle: "Fotògraf d'Hotels a Barcelona i Madrid · Satori Arts",
+      seoTitle: "Fotògraf d'Hotels i Restaurants a Barcelona · Satori Arts",
       seoDescription:
-        "Fotografia i vídeo per a hotels, resorts i restaurants. Imatges que venen habitacions i experiències i pugen les reserves directes.",
-      h1: "Imatges que omplen habitacions",
+        "Fotografia i vídeo per a hotels i restaurants a Barcelona i Madrid. Contingut per vendre més al teu web, a les OTA o a les xarxes, en una sola producció.",
+      h1: "Fotos i vídeo que fan que triïn el teu hotel",
       heroIntro:
-        "Fotografia i film per a hotels, resorts, restaurants i allotjaments. Contingut que transmet l'experiència i empeny la reserva directa.",
+        "Fotografia i vídeo per a hotels i restaurants a Barcelona, Madrid o qualsevol lloc d'Espanya. Hilton Barcelona, Kimpton Vividora, Mas de Torrent o Torre del Remei ja confien en nosaltres.",
+      ctaTitle: "Explica'ns què necessites i et preparem una proposta.",
+      ctaLabel: "Demanar pressupost",
       bodyHtml: `
-        <h2>Què cobrim</h2>
-        <p>Produïm el catàleg visual complet del teu establiment, a punt per a web, OTAs, xarxes i campanyes.</p>
-        <ul>
-          <li>Habitacions i suites, amb llum i estilisme cuidats.</li>
-          <li>Restaurant, gastronomia, spa i zones comunes.</li>
-          <li>Exteriors, arquitectura i lifestyle amb models.</li>
-          <li>Vídeo per a web i reels verticals per a xarxes.</li>
-        </ul>
-        <h2>Pensat per vendre</h2>
-        <p>No fem fotos boniques sense més: pensem en conversió. Imatges coherents amb la teva marca que redueixen la fricció i augmenten la reserva directa.</p>
-        <h2>Producció sense complicacions</h2>
-        <p>Ens coordinem amb direcció i recepció per treballar sense molestar els hostes. Planifiquem hores de llum i ocupació per treure'n el màxim partit.</p>
+        <h2>Per què triar Satori Arts per al teu hotel o restaurant</h2>
+        <p>Ho resolem tot en una sola producció: habitacions, gastronomia, spa, exteriors amb dron, lifestyle amb models, vídeo per a xarxes. Ho organitzem amb tu per no molestar els hostes. En acabar, rebs cada format a punt per publicar. Un sol proveïdor, un mateix estil, res a coordinar per part teva.</p>
       `,
       faqs: [
-        { q: "Treballeu amb cadenes i grups?", a: "Sí, amb hotels independents, boutique, resorts i grups. Ens adaptem a manuals de marca." },
-        { q: "Incloeu vídeo i reels?", a: "Sí. Oferim foto, vídeo per a web i reels verticals optimitzats per a xarxes." },
-        { q: "Com es factura?", a: "Pressupost tancat per projecte segons lliurables i jornades. Emetem factura." },
-        { q: "Cal tancar l'hotel?", a: "No. Planifiquem per zones i horaris per no afectar l'operativa ni els hostes." },
+        { q: "Què inclou una sessió de fotografia d'hotel?", a: "Habitacions, restaurant, spa i zones comunes. També arquitectura, exteriors amb preses aèries de dron, lifestyle amb models, vídeo per al web i vídeos verticals per a xarxes." },
+        { q: "Inclou fotografia gastronòmica per a restaurants?", a: "Sí. Plats, sala, barra i equip de cuina, per al web, les xarxes o la carta." },
+        { q: "Cal tancar l'hotel durant la sessió?", a: "No. Ho planifiquem amb tu segons l'ocupació i l'horari." },
+        { q: "El dron compleix la normativa?", a: "Sí. Volem amb certificació AESA." },
+        { q: "Satori Arts treballa amb cadenes i grups hotelers?", a: "Sí. Podem produir diverses propietats amb el mateix estil visual." },
+        { q: "Com es pressuposta?", a: "Fem un pressupost per a cada projecte, segons els espais, els dies de producció i els formats que necessitis." },
       ],
       gallery: g(
         ["Suite", "landscape", 1], ["Gastronomia", "square", 4], ["Spa", "portrait", 3],
@@ -221,27 +182,21 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
   /* ============================ PAISAJE ============================ */
   paisaje: {
     es: {
-      seoTitle: "Fotografía de Paisaje Fine-Art y Copias de Autor · Satori Arts",
+      seoTitle: "Fotografía de Paisaje y Naturaleza · Satori Arts",
       seoDescription:
-        "Fotografía de paisaje fine-art de Satori Arts. Copias de autor, numeradas y de tirada limitada, para coleccionar o vestir espacios con carácter.",
-      h1: "Paisaje para mirar cada día",
+        "Fotografía y vídeo de paisaje, nuestro trabajo más personal. También por encargo, desde tierra o con dron, para hoteles, fincas o destinos.",
+      h1: "El paisaje, nuestro trabajo más personal",
       heroIntro:
-        "Nuestro trabajo más personal: paisaje fine-art. Copias de autor, numeradas y de tirada limitada, para coleccionar o para dar carácter a un espacio.",
+        "Fotografía y vídeo de paisaje: es lo que hacemos cuando viajamos por nuestra cuenta, sin encargo ni prisa. Por eso también lo ofrecemos, con el mismo cuidado, a hoteles, fincas o destinos que quieren mostrar su entorno.",
+      ctaTitle: "¿Quieres mostrar tu entorno?",
+      ctaLabel: "Escríbenos",
       bodyHtml: `
-        <h2>Copias de autor</h2>
-        <p>Cada imagen se revela e imprime con exigencia de estudio, en papeles de calidad museo. Tiradas limitadas y numeradas, listas para enmarcar.</p>
-        <ul>
-          <li>Varios tamaños y acabados a elegir.</li>
-          <li>Impresión giclée sobre papel fine-art.</li>
-          <li>Proyectos a medida para interiorismo y hostelería.</li>
-        </ul>
-        <h2>Para espacios con carácter</h2>
-        <p>Trabajamos con estudios de interiorismo, hoteles y coleccionistas privados que buscan una pieza única, no un póster de catálogo. Cuéntanos el espacio y encontramos la imagen adecuada.</p>
+        <h2>Por qué elegir Satori Arts para tu entorno</h2>
+        <p>Sabemos esperar la hora adecuada, volver si hace falta, buscar el ángulo que nadie ha fotografiado. Desde tierra o con dron, mostramos las montañas, la costa, los viñedos que rodean tu hotel o tu finca, porque también forman parte de lo que vendes.</p>
       `,
       faqs: [
-        { q: "¿Vendéis copias?", a: "Sí, copias de autor numeradas, en varios tamaños. Escríbenos y te enviamos opciones y precios." },
-        { q: "¿Hacéis encargos a medida?", a: "Sí, para interiorismo, hostelería y coleccionistas privados. Podemos desarrollar una serie pensada para un espacio concreto." },
-        { q: "¿Cómo se envía?", a: "Con embalaje protegido y envío asegurado. Confirmamos los plazos según tamaño y acabado." },
+        { q: "¿Satori Arts hace encargos de fotografía de paisaje?", a: "Sí. Nos cuentas qué lugar quieres mostrar y organizamos la producción." },
+        { q: "¿El dron cumple la normativa?", a: "Sí. Volamos con certificación AESA." },
       ],
       gallery: g(
         ["Montaña", "landscape", 3], ["Costa", "portrait", 2], ["Bruma", "square", 1],
@@ -249,27 +204,21 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     en: {
-      seoTitle: "Fine-Art Landscape Photography & Signed Prints · Satori Arts",
+      seoTitle: "Landscape & Nature Photography · Satori Arts",
       seoDescription:
-        "Fine-art landscape photography by Satori Arts. Signed, numbered prints to collect or dress spaces with character.",
-      h1: "Landscape to look at every day",
+        "Landscape photography and video, our most personal work. Also on commission, from the ground or with a drone, for hotels, estates and destinations.",
+      h1: "Landscape, our most personal work",
       heroIntro:
-        "Our most personal side: fine-art landscape. Signed, numbered prints, finished with care, to collect or give soul to a space.",
+        "Landscape photography and video: it is what we do when we travel on our own, with no commission and no rush. That is why we also offer it, with the same care, to hotels, estates and destinations that want to show their surroundings.",
+      ctaTitle: "Want to show your surroundings?",
+      ctaLabel: "Write to us",
       bodyHtml: `
-        <h2>Signed prints</h2>
-        <p>Each image is edited and printed with care on museum-quality papers. Limited, numbered editions, ready to frame.</p>
-        <ul>
-          <li>Several sizes and finishes to choose from.</li>
-          <li>Giclée printing on fine-art paper.</li>
-          <li>Commissions and bespoke projects for interior design and hospitality.</li>
-        </ul>
-        <h2>For spaces with character</h2>
-        <p>We work with interior studios, hotels and private clients who want unique pieces, not catalogue posters. Tell us about the space and we'll find the image.</p>
+        <h2>Why choose Satori Arts for your surroundings</h2>
+        <p>We know how to wait for the right hour, to go back if we have to, to look for the angle nobody has photographed. From the ground or with a drone, we show the mountains, the coast and the vineyards around your hotel or estate, because they are also part of what you sell.</p>
       `,
       faqs: [
-        { q: "Do you sell prints?", a: "Yes, signed, numbered prints in several sizes. Message us and we'll send options and prices." },
-        { q: "Do you take commissions?", a: "Yes, for interior design, hospitality and private clients. We can create a series for a specific space." },
-        { q: "How is it shipped?", a: "Protected packaging and insured shipping. We confirm timings by size and finish." },
+        { q: "Does Satori Arts take landscape photography commissions?", a: "Yes. You tell us which place you want to show and we organise the production." },
+        { q: "Is the drone use compliant with regulations?", a: "Yes. We fly with AESA certification." },
       ],
       gallery: g(
         ["Mountain", "landscape", 3], ["Coast", "portrait", 2], ["Mist", "square", 1],
@@ -277,27 +226,21 @@ export const SERVICE_CONTENT: Record<ServiceKey, Record<Locale, ServiceContent>>
       ),
     },
     ca: {
-      seoTitle: "Fotografia de Paisatge i Còpies d'Autor · Satori Arts",
+      seoTitle: "Fotografia de Paisatge i Natura · Satori Arts",
       seoDescription:
-        "Fotografia de paisatge fine-art de Satori Arts. Còpies d'autor numerades per col·leccionar o vestir espais amb caràcter.",
-      h1: "Paisatge per mirar cada dia",
+        "Fotografia i vídeo de paisatge, el nostre treball més personal. També per encàrrec, des de terra o amb dron, per a hotels, finques o destinacions.",
+      h1: "El paisatge, el nostre treball més personal",
       heroIntro:
-        "El nostre costat més personal: paisatge fine-art. Còpies d'autor, numerades i cuidades al detall, per col·leccionar o donar ànima a un espai.",
+        "Fotografia i vídeo de paisatge: és el que fem quan viatgem pel nostre compte, sense encàrrec ni pressa. Per això també ho oferim, amb la mateixa cura, a hotels, finques o destinacions que volen mostrar el seu entorn.",
+      ctaTitle: "Vols mostrar el teu entorn?",
+      ctaLabel: "Escriu-nos",
       bodyHtml: `
-        <h2>Còpies d'autor</h2>
-        <p>Cada imatge s'edita i s'imprimeix amb cura en papers de qualitat museu. Tiratges limitats i numerats, a punt per emmarcar.</p>
-        <ul>
-          <li>Diverses mides i acabats a triar.</li>
-          <li>Impressió giclée en paper fine-art.</li>
-          <li>Encàrrecs i projectes a mida per a interiorisme i hostaleria.</li>
-        </ul>
-        <h2>Per a espais amb caràcter</h2>
-        <p>Treballem amb estudis d'interiorisme, hotels i particulars que volen peces úniques, no pòsters de catàleg. Explica'ns l'espai i busquem la imatge.</p>
+        <h2>Per què triar Satori Arts per al teu entorn</h2>
+        <p>Sabem esperar l'hora adequada, tornar si cal, buscar l'angle que ningú no ha fotografiat. Des de terra o amb dron, mostrem les muntanyes, la costa, les vinyes que envolten el teu hotel o la teva finca, perquè també formen part del que vens.</p>
       `,
       faqs: [
-        { q: "Veneu còpies?", a: "Sí, còpies d'autor numerades en diverses mides. Escriu-nos i t'enviem opcions i preus." },
-        { q: "Feu encàrrecs a mida?", a: "Sí, per a interiorisme, hostaleria i particulars. Podem crear una sèrie per a un espai concret." },
-        { q: "Com s'envia?", a: "Embalatge protegit i enviament assegurat. Concretem terminis segons mida i acabat." },
+        { q: "Satori Arts fa encàrrecs de fotografia de paisatge?", a: "Sí. Ens expliques quin lloc vols mostrar i organitzem la producció." },
+        { q: "El dron compleix la normativa?", a: "Sí. Volem amb certificació AESA." },
       ],
       gallery: g(
         ["Muntanya", "landscape", 3], ["Costa", "portrait", 2], ["Boira", "square", 1],

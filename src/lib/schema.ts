@@ -31,7 +31,7 @@ export function businessSchema(locale: Locale): Record<string, unknown> {
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Wedding photography & film" } },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Event photography & film" } },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Hotel & hospitality photography" } },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Landscape fine-art photography" } },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Landscape & nature photography" } },
     ],
   };
 }

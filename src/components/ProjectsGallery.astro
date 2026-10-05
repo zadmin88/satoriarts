@@ -34,9 +34,12 @@ interface Props {
    *  páginas de servicio, cuyo h1 (con la keyword) va en el bloque de
    *  texto SEO bajo la galería. Mismas clases → aspecto idéntico. */
   titleAs?: "h1" | "p";
+  /** Segunda galería de una página de servicio: solo la cuadrícula. */
+  showTitle?: boolean;
+  showBar?: boolean;
 }
 
-const { locale, blocks, withGridId = false, titleAs = "h1" } = Astro.props;
+const { locale, blocks, withGridId = false, titleAs = "h1", showTitle = true, showBar = true } = Astro.props;
 const TitleTag = titleAs;
 const t = useT(locale);
 ---
@@ -56,9 +59,9 @@ const t = useT(locale);
        natural, sin colapso, sin salto y sin oscilación. Sigue siendo el
        h1 de /proyectos/; en las páginas de servicio se renderiza como <p>
        (titleAs="p") y el h1 vive en el texto SEO bajo la galería. -->
-  <div class="container-tight pt-5 pb-4 md:pt-6 md:pb-5">
+  {showTitle && <div class="container-tight pt-5 pb-4 md:pt-6 md:pb-5">
     <TitleTag class="font-heading text-3xl font-normal uppercase text-foreground sm:text-5xl">{t("nav.portfolio")}</TitleTag>
-  </div>
+  </div>}
 
   <!-- SOLO la barra de categorías es sticky, pegada justo bajo el header
        (fixed, 6rem móvil / 7rem desktop). top-[calc(...-1px)]: 1px de
@@ -67,7 +70,7 @@ const t = useT(locale);
        pasa por debajo del header. bg-black: cubre las fotos que pasan por
        debajo al hacer scroll. Sticky (no fixed): se libera solo al
        terminar la cuadrícula (fin de .filter-gallery), sin spacer. -->
-  <div data-fixed-header class="projects-sticky-bar sticky z-40 bg-black">
+  {showBar && <div data-fixed-header class="projects-sticky-bar sticky z-40 bg-black">
     <!-- Bug de WebKit/Safari (iOS): si el propio elemento con
          "overflow-x: auto" tiene padding-inline, Safari lo ignora al
          calcular el reposo del scroll y el contenido queda pegado al
@@ -95,7 +98,11 @@ const t = useT(locale);
         </div>
       </div>
     </div>
-  </div>
+  </div>}
+
+  <!-- Texto opcional entre la barra de categorías y la cuadrícula
+       (eyebrow + h1 + intro en las páginas de servicio). -->
+  <slot name="intro" />
 
   <!-- CUADRÍCULA: masonry con 2 columnas EXPLÍCITAS (no CSS "columns-2").
        Mobile: una sola lista secuencial; desde "sm:", dos columnas
@@ -105,7 +112,7 @@ const t = useT(locale);
       blocks.map((block) => (
         <div>
           {/* Fotos: 1 columna en mobile, 2 en desktop */}
-          <div class="mb-6 flex flex-col gap-6 sm:mb-10 sm:hidden">
+          <div class="mb-3 flex flex-col gap-1 sm:mb-10 sm:hidden">
             {block.photos.map((item) => (
               <GridMediaItem item={item} />
             ))}
@@ -123,4 +130,7 @@ const t = useT(locale);
       ))
     }
   </div>
+  <!-- Contenido que sigue a la cuadrícula DENTRO del mismo contenedor, para que
+       la barra de categorías (sticky) siga pegada hasta el final de todo. -->
+  <slot name="after" />
 </div>

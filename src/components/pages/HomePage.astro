@@ -116,7 +116,7 @@ const preview = previewByCategory
 
     <!-- Flecha de scroll: solo el triángulo de las flechas del sitio, en blanco,
          girado hacia abajo. -->
-    <div class="absolute inset-x-0 bottom-6 z-10 flex justify-center sm:bottom-8">
+    <div class="absolute inset-x-0 bottom-1 z-10 flex justify-center sm:bottom-2">
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="scroll-cue size-4 rotate-90 text-white"><path d="M8 5v14l11-7z" /></svg>
     </div>
   </section>
@@ -130,27 +130,26 @@ const preview = previewByCategory
        alto visible real, que sin este solape se ve como una línea justo
        en el límite. Al superponerse con el mismo fondo (bg-background
        en ambas), un solape de 1px es invisible pase lo que pase. -->
-  <section class="section-space container-tight relative -mt-px flex flex-col items-start justify-center bg-background text-left sm:items-center sm:text-center">
-    <h1 class="font-heading font-medium leading-[1.15] text-foreground">
+  <section class="container-tight relative -mt-px flex flex-col items-start justify-center bg-background py-32 text-left sm:min-h-[70svh] sm:py-16 sm:items-center sm:text-center">
+    <h1 class="reveal font-heading leading-tight text-foreground">
+      <span class="block max-w-5xl text-balance text-4xl font-medium leading-tight sm:mx-auto sm:text-5xl md:text-6xl lg:text-7xl">{t("hero.brandTagline")} <span class="font-light text-foreground/80">{t("hero.weddings")}</span></span>
       {
-        t("hero.brandTagline")
+        t("hero.categories")
           .split("\n")
           .map((line) => (
-            <span data-reveal-words class="block text-6xl sm:text-8xl md:text-9xl lg:text-[10rem]">
-              {line}
-            </span>
+            <span class="block text-balance text-4xl font-light leading-tight text-foreground/80 sm:text-5xl md:text-6xl lg:text-7xl">{line}</span>
           ))
       }
     </h1>
   </section>
 
   <!-- MANIFIESTO: declaración de criterio + CTA, en su propia sección -->
-  <section aria-labelledby="manifesto-titulo" class="section-space container-prose text-left sm:text-center">
-    <h2 id="manifesto-titulo" data-reveal-words class="font-heading text-3xl font-medium text-balance text-foreground sm:text-5xl">
+  <section aria-labelledby="manifesto-titulo" class="section-space container-prose pt-0 pb-20 text-left sm:pb-16 sm:text-center md:pb-20">
+    <h2 id="manifesto-titulo" data-reveal-words class="font-heading text-3xl font-medium leading-tight text-balance text-foreground sm:text-5xl">
       {t("section.manifesto.title")}
     </h2>
-    <p class="reveal mt-3 text-lg leading-relaxed text-muted-foreground">{t("section.manifesto.text")}</p>
-    <div class="reveal mt-6 flex flex-wrap items-center justify-start gap-4 sm:justify-center">
+    <p class="reveal mt-5 text-lg leading-relaxed text-muted-foreground sm:mt-4">{t("section.manifesto.text")}</p>
+    <div class="reveal mt-10 flex flex-wrap items-center justify-start gap-4 sm:justify-center">
       <WhatsAppButton size="lg" message={waDefaultMessage(locale)} label={t("cta.book")} />
     </div>
   </section>
@@ -252,12 +251,11 @@ const preview = previewByCategory
   <section aria-labelledby="clientes-titulo" class="reveal bg-background">
     <div class="section-space container-tight">
       <p id="clientes-titulo" data-reveal-words class="mb-12 font-heading text-3xl font-normal uppercase text-foreground sm:mb-16 sm:text-5xl">{t("section.clients")}</p>
-      <!-- Móvil: dos filas con pase continuo (marquee CSS, sin JS), la segunda
-           en sentido contrario; cada fila lleva su lista duplicada para que el
+      <!-- Móvil: tres filas con pase continuo (marquee CSS, sin JS), cada fila lleva su lista duplicada para que el
            bucle sea invisible. Desde sm: una sola cuadrícula centrada estática. -->
       <div class="flex flex-col gap-8 [--client-h:2.25rem] sm:hidden">
         {
-          [CLIENTS.slice(0, Math.ceil(CLIENTS.length / 2)), CLIENTS.slice(Math.ceil(CLIENTS.length / 2))].map((row) => (
+          [0, 1, 2].map((r) => CLIENTS.slice(Math.round((CLIENTS.length * r) / 3), Math.round((CLIENTS.length * (r + 1)) / 3))).map((row) => (
             <div class="clients-marquee overflow-hidden [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]">
               <div class="clients-track flex w-max items-center">
                 {[false, true].map((copy) =>

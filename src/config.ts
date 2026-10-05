@@ -218,6 +218,14 @@ export const CLIENTS: Client[] = [
   { name: "The Society of Art", logo: "/clients/society-of-art.svg", scale: 1.37 },
   { name: "Barcelona Open Banc Sabadell", logo: "/clients/open-banc-sabadell.webp", scale: 1.03 },
   { name: "Reial Acadèmia de Medicina de Catalunya", logo: "/clients/academia-medicina-catalunya.webp", scale: 1.5 },
+  { name: "Bridal Style", logo: "/clients/bridal-style.webp", scale: 1 },
+  { name: "Casa de Vivi", logo: "/clients/casa-de-vivi.webp", scale: 1.6 },
+  { name: "Casa Serras", logo: "/clients/casa-serras.webp", scale: 1.7 },
+  { name: "Clínica Dental Carlos Ribó", logo: "/clients/clinica-carlos-ribo.webp", scale: 1.7 },
+  { name: "Derby Hotels Collection", logo: "/clients/derby-hotels.webp", scale: 1.4 },
+  { name: "Serras Andorra", logo: "/clients/serras-andorra.webp", scale: 1.1 },
+  { name: "Clínicas W Red", logo: "/clients/clinicas-w-red-clinicas-dentales-dentistas-de-confianza.svg", scale: 0.9 },
+  { name: "Can Marial", logo: "/clients/logo-canmarial-20-02.png", scale: 1.6 },
 ];
 
 /* ---------------------------------------------------------- */
@@ -308,21 +316,21 @@ export const SERVICES: Service[] = [
         title: "Paisaje",
         menuLabel: "Paisaje",
         short:
-          "El instante en que un lugar no necesita nada más. Fine-art en copias de autor, numeradas.",
+          "El instante en que un lugar no necesita nada más. Nuestro trabajo más personal, también por encargo.",
       },
       en: {
         slug: "landscape",
         title: "Landscape",
         menuLabel: "Landscape",
         short:
-          "Fine-art landscape photography and signed prints to collect or dress a space.",
+          "Landscape photography and video, our most personal work, also on commission.",
       },
       ca: {
         slug: "paisatge",
         title: "Paisatge",
         menuLabel: "Paisatge",
         short:
-          "Fotografia de paisatge fine-art i còpies d'autor per col·leccionar o vestir espais.",
+          "Fotografia de paisatge, el nostre treball més personal, també per encàrrec.",
       },
     },
   },
