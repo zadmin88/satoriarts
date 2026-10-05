@@ -62,7 +62,9 @@ const jsonLd = [
        margen izquierdo que el header/CTA de esta misma página (ambos
        en container-tight) en vez de quedar centrado de forma
        independiente en pantallas anchas. -->
-  <div class="reveal prose-body section-space container-prose-left" set:html={copy.bodyHtml}></div>
+  <div class="section-space container-tight">
+    <div class="reveal prose-body max-w-3xl" set:html={copy.bodyHtml}></div>
+  </div>
 
   <section class="section-space container-tight">
     <div class="mb-10 border-b border-border" />
