@@ -1,7 +1,8 @@
 ---
-import { SITE } from "@/config";
+import { SITE, SERVICES, CITIES } from "@/config";
 import type { Locale } from "@/config";
 import { routePath } from "@/i18n/routes";
+import { cityServicePath, cityServiceLabel } from "@/i18n/city-service";
 import { useT } from "@/i18n/ui";
 
 interface Props {
@@ -20,7 +21,18 @@ const nav = [
   { href: routePath(locale, "about"), label: t("nav.aboutMenu").toLocaleUpperCase(locale) },
   { href: routePath(locale, "portfolio"), label: t("nav.portfolio").toLocaleUpperCase(locale) },
   { href: routePath(locale, "journal"), label: t("nav.journal").toLocaleUpperCase(locale) },
+  { href: routePath(locale, "contact"), label: t("nav.contact").toLocaleUpperCase(locale) },
 ];
+// SEO: único acceso con enlaces reales a las páginas servicio×ciudad
+// ("Fotógrafo de Bodas en Barcelona"…). Sin estos enlaces Google no
+// llega a ellas navegando (ver skill satori-seo, "páginas huérfanas").
+const cityLinks = SERVICES.flatMap((s) =>
+  CITIES.map((city) => ({
+    href: cityServicePath(locale, s.key, city),
+    label: cityServiceLabel(locale, s.key, city).toLocaleUpperCase(locale),
+  })),
+);
+const citiesLabel = t("service.citiesTitle").toLocaleUpperCase(locale);
 const navLabel = t("footer.navLabel").toLocaleUpperCase(locale);
 const contactLabel = t("footer.contactLabel").toLocaleUpperCase(locale);
 const followLabel = t("footer.follow").toLocaleUpperCase(locale);
@@ -55,6 +67,18 @@ const credits = t("footer.credits").toLocaleUpperCase(locale);
         <p class="font-heading text-sm font-medium text-black">{navLabel}</p>
         {
           nav.map((link) => (
+            <a href={link.href} class="hover-flip inline-block text-xs font-medium tracking-wide text-neutral-500 hover:text-black">
+              <span class="flip-a block">{link.label}</span>
+              <span aria-hidden="true" class="flip-b block">{link.label}</span>
+            </a>
+          ))
+        }
+      </nav>
+
+      <nav aria-label={t("service.citiesTitle")} class="reveal flex flex-col gap-3">
+        <p class="font-heading text-sm font-medium text-black">{citiesLabel}</p>
+        {
+          cityLinks.map((link) => (
             <a href={link.href} class="hover-flip inline-block text-xs font-medium tracking-wide text-neutral-500 hover:text-black">
               <span class="flip-a block">{link.label}</span>
               <span aria-hidden="true" class="flip-b block">{link.label}</span>
