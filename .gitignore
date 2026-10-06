@@ -20,3 +20,6 @@ pnpm-debug.log*
 
 # originales sin optimizar (no se despliegan)
 _originals-fotossatori/
+
+# fotos exportadas para Google Business (no se despliegan)
+_google-business/
