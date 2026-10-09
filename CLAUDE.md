@@ -1,7 +1,7 @@
 # Guía del proyecto — Satori Arts
 
 Web estática de **Satori Arts**, un dúo de **fotografía y film** (Manu + Tefi)
-para **bodas, eventos, hoteles y paisaje** en Barcelona, Madrid y destino.
+para **bodas, hoteles y paisaje** en Barcelona, Madrid y destino.
 Objetivo del sitio: **que la gente lo encuentre en Google y contacte por
 WhatsApp**. Trilingüe: **español (raíz), inglés (`/en/`) y catalán (`/ca/`)**.
 
@@ -82,10 +82,10 @@ npm run seo:check    # build + comprobación SEO automática (falla si hay error
   React con `client:*` salvo necesidad real. Interactividad simple con CSS o
   `<details>` (menú móvil, dropdown de servicios, FAQ, galería).
 - **Imágenes**: son **fotos reales** en WebP en `src/assets/photos/<carpeta>/`
-  (`bodas`, `eventos`, `hoteles`, `paisaje`, `team`), cargadas con `astro:assets`
+  (`bodas`, `hoteles`, `paisaje`, `team`), cargadas con `astro:assets`
   vía `src/lib/photos.ts` (`import.meta.glob`). Se muestran con `Photo.astro`
   (duotono + revelado) y `EditorialGallery.astro` (retícula rota). `alt` SIEMPRE.
-  Los originales sin optimizar están en `_originals-fotossatori/` (gitignored, no
+  Los originales sin optimizar están en `_originals/fotos/` (gitignored, no
   se despliegan). (Quedan sin uso `Placeholder.astro`/`Gallery.astro`, borrables.)
 
 ### SEO (no tocar sin entender)

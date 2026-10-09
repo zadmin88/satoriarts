@@ -817,7 +817,7 @@ details.menu[open] .word-reveal > span {
    ya un "pop" visual de opacidad, deja de sentirse como un salto. */
 /* [Fix] Esta regla asumía que los radios de filtro ("#pf-all",
    "#pf-filter-*") SIEMPRE existen como hermanos — cierto solo en
-   /proyectos/. En cada página de servicio (/bodas/, /eventos/...) no
+   /proyectos/. En cada página de servicio (/bodas/, /hoteles/...) no
    hay ningún radio (las pestañas son enlaces reales, no filtro CSS en
    la misma página), así que ninguna de las reglas ":has(...:checked)"
    de abajo llegaba nunca a cumplirse, y el grid de fotos se quedaba en
@@ -842,10 +842,6 @@ details.menu[open] .word-reveal > span {
   display: block;
   opacity: 1;
 }
-.filter-gallery:has(#pf-filter-eventos:checked) [data-service="eventos"] {
-  display: block;
-  opacity: 1;
-}
 .filter-gallery:has(#pf-filter-hoteles:checked) [data-service="hoteles"] {
   display: block;
   opacity: 1;
@@ -857,7 +853,6 @@ details.menu[open] .word-reveal > span {
 @starting-style {
   .filter-gallery:has(#pf-all:checked) [data-service],
   .filter-gallery:has(#pf-filter-bodas:checked) [data-service="bodas"],
-  .filter-gallery:has(#pf-filter-eventos:checked) [data-service="eventos"],
   .filter-gallery:has(#pf-filter-hoteles:checked) [data-service="hoteles"],
   .filter-gallery:has(#pf-filter-paisaje:checked) [data-service="paisaje"] {
     opacity: 0;

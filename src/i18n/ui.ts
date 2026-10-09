@@ -115,7 +115,7 @@ export const UI = {
     "hero.eyebrow": "Photography & Film · Barcelona · Madrid",
     "hero.title": "Stories worth looking at a thousand times",
     "hero.subtitle":
-      "We are Satori Arts, a photography and film duo for weddings, events, hotels and landscape. We capture the real with an editorial eye.",
+      "We are Satori Arts, a photography and film duo for weddings, hotels and landscape. We capture the real with an editorial eye.",
     "hero.brandTagline": "Photography & film",
     "hero.weddings": "for weddings,",
     "hero.categories": "hotels and restaurants in\nBarcelona and Madrid",
@@ -194,7 +194,7 @@ export const UI = {
     "hero.eyebrow": "Fotografia & Film · Barcelona · Madrid",
     "hero.title": "Històries que mereixen mirar-se mil vegades",
     "hero.subtitle":
-      "Som Satori Arts, un duo de fotografia i film de casaments, esdeveniments, hotels i paisatge. Capturem el real amb una mirada editorial.",
+      "Som Satori Arts, un duo de fotografia i film de casaments, hotels i paisatge. Capturem el real amb una mirada editorial.",
     "hero.brandTagline": "Fotografia & vídeo",
     "hero.weddings": "de casaments,",
     "hero.categories": "hotels i restaurants a\nBarcelona i Madrid",

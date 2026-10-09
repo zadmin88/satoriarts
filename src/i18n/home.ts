@@ -58,18 +58,18 @@ export const TESTIMONIALS: Record<Locale, Testimonial[]> = {
 
 export const HOME_SEO: Record<Locale, { title: string; description: string }> = {
   es: {
-    title: "Satori Arts · Fotografía y Film de Bodas, Eventos y Hoteles",
+    title: "Satori Arts · Fotografía y Film de Bodas y Hoteles",
     description:
       "Fotografía y film de autor para bodas, hoteles y marcas de hostelería. Barcelona, Madrid y a destino. Consulta disponibilidad por WhatsApp.",
   },
   en: {
-    title: "Satori Arts · Wedding, Event & Hotel Photography and Film",
+    title: "Satori Arts · Wedding & Hotel Photography and Film",
     description:
-      "Photography and film duo in Barcelona and Madrid. Weddings, events, hotels and landscape with an editorial eye. Message us on WhatsApp.",
+      "Photography and film duo in Barcelona and Madrid. Weddings, hotels and landscape with an editorial eye. Message us on WhatsApp.",
   },
   ca: {
     title: "Fotografia i Film de Casaments i Hotels · Satori Arts",
     description:
-      "Duo de fotografia i vídeo a Barcelona i Madrid. Casaments, esdeveniments, hotels i paisatge amb mirada editorial. Escriu-nos per WhatsApp.",
+      "Duo de fotografia i vídeo a Barcelona i Madrid. Casaments, hotels i paisatge amb mirada editorial. Escriu-nos per WhatsApp.",
   },
 };
