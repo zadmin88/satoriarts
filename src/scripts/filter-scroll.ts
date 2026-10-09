@@ -34,7 +34,7 @@ function scrollPillIntoView(pill: HTMLElement, behavior: ScrollBehavior) {
 // "restoreScrollFromCategoryNav" que guardaba la posición de scroll en
 // sessionStorage al pulsar una pestaña y la restauraba en la página
 // siguiente — pensado para que cambiar de categoría (una navegación
-// real en /bodas/, /eventos/...) no hiciera "saltar" el título
+// real en /bodas/, /hoteles/...) no hiciera "saltar" el título
 // "PROYECTOS", que entonces vivía DENTRO del bloque sticky y se
 // colapsaba por JS. Ese colapso ya no existe (el título va en flujo
 // normal, ver ProjectsGallery.astro), así que ese mecanismo ya no

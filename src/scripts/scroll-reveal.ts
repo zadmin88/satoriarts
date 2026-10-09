@@ -155,7 +155,7 @@ function cleanup() {
 // dimensiones reales (evento "loadedmetadata"), ocupan un alto
 // provisional y el cálculo de ScrollTrigger vuelve a quedar
 // desactualizado — el mismo problema que con las fotos, solo que con
-// otro tipo de elemento (por eso categorías con vídeo, como "Eventos",
+// otro tipo de elemento (por eso categorías con vídeo,
 // podían quedarse con el CTA/footer invisibles aunque las fotos ya
 // hubiesen cargado bien).
 function refreshAfterImagesLoad() {

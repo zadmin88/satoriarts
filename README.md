@@ -1,6 +1,6 @@
 # Satori Arts — web + estrategia para ser un imán de clientes
 
-Web estática (Astro, cero JS) de un dúo de **fotografía y film**: bodas, eventos,
+Web estática (Astro, cero JS) de un dúo de **fotografía y film**: bodas,
 hoteles y paisaje. Trilingüe **ES / EN / CA**. Contacto por **WhatsApp**.
 
 ```

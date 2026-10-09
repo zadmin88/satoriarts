@@ -6,7 +6,7 @@
  *   node scripts/convert-photos.mjs --src <carpeta_origen> --out <carpeta_destino> [--max 1900] [--q 82]
  *
  * Ejemplo (lo usado para las fotos reales):
- *   node scripts/convert-photos.mjs --src _originals-fotossatori --out src/assets/photos/_incoming
+ *   node scripts/convert-photos.mjs --src _originals/fotos --out src/assets/photos/_incoming
  *   # luego repartir los .webp en src/assets/photos/{bodas,hoteles,paisaje,team}/
  *
  * Nota: astro:assets vuelve a optimizar en el build, pero convertir a WebP aquí

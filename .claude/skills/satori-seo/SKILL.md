@@ -152,7 +152,7 @@ choca con una regla, avisa antes de romperla.
 ## 9. Rendimiento (también es SEO)
 
 - No subir originales pesados a `public/` (⚠ 294 MB de JPG se movieron a
-  `_originals-fotossatori/`, gitignored).
+  `_originals/fotos/`, gitignored).
 - Vídeo del hero sin póster (decisión de diseño: solo vídeo); fuentes autoalojadas con `preload`.
 - Ojo con el scroll horizontal en móvil (⚠ un `-mx-5` sobre un contenedor a
   ancho completo desbordaba la página). `body` tiene `overflow-x: clip`; no lo
