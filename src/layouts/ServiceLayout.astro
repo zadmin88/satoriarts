@@ -13,6 +13,7 @@ import {
 } from "@/config";
 import type { Locale, Service } from "@/config";
 import { serviceAlternates, routePath } from "@/i18n/routes";
+import { cityServicePath, cityServiceLabel } from "@/i18n/city-service";
 import { useT } from "@/i18n/ui";
 import { servicePhotos, photoAlt } from "@/lib/photos";
 
@@ -182,6 +183,19 @@ const jsonLd = [
         <section class="container-tight pt-0 pb-[7.25rem] sm:pb-[9.5rem]">
           <div class="reveal prose-body max-w-3xl sm:mx-auto sm:text-center md:max-w-4xl lg:max-w-6xl [&>p]:mx-auto [&>p]:max-w-3xl [&>p:last-child]:mb-0 [&_h2]:!mt-0">
             <Fragment set:html={bodyHtml} />
+            {/* SEO: única vía de enlace a las páginas servicio×ciudad (sin
+                ellas Google no llega a esas páginas navegando). Una línea
+                discreta al final del texto, con el estilo del propio bloque. */}
+            <p>
+              {CITIES.map((city, i) => (
+                <>
+                  {i > 0 && <span aria-hidden="true"> · </span>}
+                  <a href={cityServicePath(locale, service.key, city)} class="underline underline-offset-4">
+                    {cityServiceLabel(locale, service.key, city)}
+                  </a>
+                </>
+              ))}
+            </p>
           </div>
         </section>
 

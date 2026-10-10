@@ -9,6 +9,7 @@ import Footer from "@/components/Footer.astro";
 import BackToTop from "@/components/BackToTop.astro";
 import JsonLd from "@/components/JsonLd.astro";
 import ComingSoon from "@/components/ComingSoon.astro";
+import Analytics from "@vercel/analytics/astro";
 import { useT } from "@/i18n/ui";
 
 interface Props {
@@ -127,6 +128,13 @@ const allSchema = [businessSchema(locale), ...pageSchema];
       import "@/scripts/grayscale-tap";
       import "@/scripts/back-to-top";
     </script>
+    <!-- Vercel Web Analytics: visitas por página, origen (referrer, UTM),
+         país y dispositivo. Al estar en BaseLayout cubre TODAS las páginas.
+         Con las View Transitions (ClientRouter) cada página trae su propio
+         elemento de analítica con su ruta, que registra la visita al
+         insertarse: la navegación interna también se cuenta. Sin cookies.
+         Requiere activar "Analytics" en el proyecto de Vercel. -->
+    <Analytics />
   </head>
   <!-- min-h-svh (no dvh): dvh se recalcula cuando la barra de
        direcciones/UI del navegador móvil se oculta o aparece; si el

@@ -20,6 +20,8 @@ const nav = [
   { href: routePath(locale, "about"), label: t("nav.aboutMenu").toLocaleUpperCase(locale) },
   { href: routePath(locale, "portfolio"), label: t("nav.portfolio").toLocaleUpperCase(locale) },
   { href: routePath(locale, "journal"), label: t("nav.journal").toLocaleUpperCase(locale) },
+  // Única vía de enlace a /contacto/ (el "Contacto" del header abre WhatsApp).
+  { href: routePath(locale, "contact"), label: t("nav.contact").toLocaleUpperCase(locale) },
 ];
 const navLabel = t("footer.navLabel").toLocaleUpperCase(locale);
 const contactLabel = t("footer.contactLabel").toLocaleUpperCase(locale);
