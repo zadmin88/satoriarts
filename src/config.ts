@@ -82,7 +82,7 @@ export function localizePath(locale: Locale, path: string): string {
  * Para trabajar en el sitio real: ponlo en `false` (lo verás en
  * `npm run dev`). Para LANZAR: `false` + `npm run build` + desplegar.
  */
-export const COMING_SOON = false;
+export const COMING_SOON = true;
 
 /* ---------------------------------------------------------- */
 /*  Datos del negocio                                          */

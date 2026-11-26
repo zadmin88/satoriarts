@@ -6,6 +6,8 @@ import sitemap from '@astrojs/sitemap';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import { COMING_SOON } from './src/config.ts';
+
 // https://astro.build/config
 export default defineConfig({
   // Dominio definitivo. Debe coincidir con SITE.url en src/config.ts
@@ -34,7 +36,10 @@ export default defineConfig({
         },
       },
       // Las páginas noindex no deben aparecer en el sitemap
+      // En modo "Próximamente" (COMING_SOON) todas las páginas son
+      // noindex: el sitemap va vacío.
       filter: (page) =>
+        !COMING_SOON &&
         !page.includes('/aviso-legal') &&
         !page.includes('/privacidad') &&
         !page.includes('/legal-notice') &&
