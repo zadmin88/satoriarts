@@ -222,7 +222,6 @@ export const CLIENTS: Client[] = [
   { name: "Mas de Torrent", logo: "/clients/mas-de-torrent.webp", scale: 1.5 },
   { name: "Torre del Remei", logo: "/clients/torre-del-remei.webp", scale: 1.5 },
   { name: "The Lodge Mallorca", logo: "/clients/the-lodge.webp", scale: 1.17 },
-  { name: "St-Germain", logo: "/clients/st-germain.png", scale: 0.78 },
   { name: "Serras Barcelona", logo: "/clients/serras-barcelona.webp", scale: 0.96 },
   { name: "IC Moda", logo: "/clients/icmoda.webp", scale: 0.85 },
   { name: "Soldatal", logo: "/clients/soldatal.svg", scale: 0.62 },
