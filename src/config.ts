@@ -82,7 +82,7 @@ export function localizePath(locale: Locale, path: string): string {
  * Para trabajar en el sitio real: ponlo en `false` (lo verás en
  * `npm run dev`). Para LANZAR: `false` + `npm run build` + desplegar.
  */
-export const COMING_SOON = true;
+export const COMING_SOON = false;
 
 /* ---------------------------------------------------------- */
 /*  Datos del negocio                                          */
@@ -109,6 +109,17 @@ export const SITE = {
   /** Enlace para llamar (tel:) */
   get phoneHref() {
     return `tel:+${this.whatsappNumber}`;
+  },
+
+  /**
+   * Titular legal de la web (aviso legal y privacidad: LSSI art. 10,
+   * RGPD art. 13). Satori Arts es la marca comercial; la titular es
+   * una autónoma. `address` vacío = se muestra "[PENDIENTE]".
+   */
+  legal: {
+    holderName: "Stephanie Reyes Escobar",
+    nif: "61456373M",
+    address: "Carrer Andreu Guri 65, 08350 Arenys de Mar (Barcelona)",
   },
 
   /** Email de contacto (footer y legales) */
@@ -142,9 +153,9 @@ export const SITE = {
    */
   url: "https://satoriarts.es",
 
-  /** Nota media y nº de reseñas de la ficha de Google Business (5,0 · 6 reseñas). */
+  /** Nota media y nº de reseñas de la ficha de Google Business (5,0 · 15 reseñas, nov. 2026). */
   googleRating: 5.0,
-  googleReviewCount: 6,
+  googleReviewCount: 15,
   /**
    * Nombre de la ficha de Google Business ("Satori Arts - Fotografia y video"). Sin Place ID confirmado, se enlaza a una
    * búsqueda de Google Maps por nombre: abre directamente la ficha con sus
@@ -216,8 +227,6 @@ export const CLIENTS: Client[] = [
   { name: "IC Moda", logo: "/clients/icmoda.webp", scale: 0.85 },
   { name: "Soldatal", logo: "/clients/soldatal.svg", scale: 0.62 },
   { name: "The Society of Art", logo: "/clients/society-of-art.svg", scale: 1.37 },
-  { name: "Barcelona Open Banc Sabadell", logo: "/clients/open-banc-sabadell.webp", scale: 1.03 },
-  { name: "Reial Acadèmia de Medicina de Catalunya", logo: "/clients/academia-medicina-catalunya.webp", scale: 1.5 },
   { name: "Bridal Style", logo: "/clients/bridal-style.webp", scale: 1 },
   { name: "Casa de Vivi", logo: "/clients/casa-de-vivi.webp", scale: 1.6 },
   { name: "Casa Serras", logo: "/clients/casa-serras.webp", scale: 1.7 },

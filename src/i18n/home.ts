@@ -1,6 +1,11 @@
 /**
  * Contenido de la home por idioma (puntos "por qué", testimonios, ciudades).
- * [PLACEHOLDER] Los testimonios son de ejemplo hasta tener reseñas reales.
+ *
+ * TESTIMONIOS = reseñas REALES de la ficha de Google Business, copiadas
+ * literalmente (los "…" marcan fragmentos omitidos, sin cambiar el
+ * sentido) y en su idioma original en los 3 idiomas: traducir una reseña
+ * es alterarla. Nunca inventes ni retoques una reseña (Ley de Competencia
+ * Desleal, art. 27). Antes de añadir una, pide permiso a su autor.
  */
 import type { Locale } from "@/config";
 
@@ -35,26 +40,27 @@ export const WHY: Record<Locale, WhyPoint[]> = {
   ],
 };
 
-export const TESTIMONIALS: Record<Locale, Testimonial[]> = {
-  es: [
-    { quote: "Cada vez que abrimos la galería volvemos a emocionarnos. Captaron momentos que nosotros mismos no vimos ese día.", author: "Laura & Jordi", context: "Boda · Empordà" },
-    { quote: "Desde que usamos su material, las reservas directas han subido. Un equipo profesional de principio a fin.", author: "Dirección", context: "Hotel boutique · Barcelona" },
-    { quote: "Discreción, agilidad y un ojo excepcional para el detalle. Ya son nuestro proveedor de confianza.", author: "Marta R.", context: "Evento corporativo · Madrid" },
-    { quote: "Llegaron, se hicieron invisibles y el resultado fue el mejor recuerdo de la boda. Recomendados al cien por cien.", author: "Clara & Pol", context: "Boda · Costa Brava" },
-  ],
-  en: [
-    { quote: "We look at the photos and cry again. They caught things we didn't even see that day.", author: "Laura & Jordi", context: "Wedding · Empordà" },
-    { quote: "The hotel film boosted our direct bookings. Professional from start to finish.", author: "Management", context: "Boutique hotel · Barcelona" },
-    { quote: "Discreet, fast and with an incredible eye. We'll definitely book again.", author: "Marta R.", context: "Corporate event · Madrid" },
-    { quote: "They showed up, blended in and delivered the best memory of the wedding. We'd recommend them to anyone.", author: "Clara & Pol", context: "Wedding · Costa Brava" },
-  ],
-  ca: [
-    { quote: "Mirem les fotos i tornem a plorar. Van captar coses que ni vam veure aquell dia.", author: "Laura & Jordi", context: "Casament · Empordà" },
-    { quote: "El vídeo de l'hotel va disparar les reserves directes. Professionals de cap a peus.", author: "Direcció", context: "Hotel boutique · Barcelona" },
-    { quote: "Discrets, ràpids i amb un ull increïble. Repetim segur.", author: "Marta R.", context: "Esdeveniment corporatiu · Madrid" },
-    { quote: "Van arribar, es van fer invisibles i el resultat va ser el millor record del casament. Els recomanem al cent per cent.", author: "Clara & Pol", context: "Casament · Costa Brava" },
-  ],
+/** Reseñas reales de Google (texto original, ver cabecera). */
+const GOOGLE_REVIEWS: { quote: string; author: string; ctx: "wedding" | "pro" }[] = [
+  { quote: "Desde el primer momento Manu y Stephanie fueron muy cercanos, atentos y profesionales, haciéndonos sentir muy cómodos durante todo el día. … Los vídeos han superado nuestras expectativas y nos han permitido revivir uno de los días más especiales de nuestra vida.", author: "Judith A.", ctx: "wedding" },
+  { quote: "Nos acompañaron desde los preparativos de los novios hasta aproximadamente una hora después de empezar la fiesta, … consiguiendo que en ningún momento nos sintiéramos incómodos o demasiado pendientes de la cámara. … Y el resultado final, para nosotros, ha sido increíble.", author: "Raquel G.", ctx: "wedding" },
+  { quote: "Son unos chicos muy profesionales, atentos y cercanos. Desde el primer momento nos hicieron sentir muy cómodos y tranquilos, algo que valoramos muchísimo en un día tan especial como nuestra boda.", author: "Isis S.", ctx: "wedding" },
+  { quote: "Always a pleasure to work with Manu and Satori ARTS!! Great attitude, punctual, super pro … Don't hesitate one second!", author: "Frederic S.", ctx: "pro" },
+  { quote: "Tefi nos acompañó el día de nuestra boda y todo fue genial! Amabilidad y profesionalidad, siempre con una sonrisa! El vídeo ha quedado precioso, súper emotivo.", author: "Ana M.", ctx: "wedding" },
+];
+
+const REVIEW_CONTEXT: Record<Locale, Record<"wedding" | "pro", string>> = {
+  es: { wedding: "Boda · Reseña de Google", pro: "Cliente profesional · Reseña de Google" },
+  en: { wedding: "Wedding · Google review", pro: "Business client · Google review" },
+  ca: { wedding: "Casament · Ressenya de Google", pro: "Client professional · Ressenya de Google" },
 };
+
+export const TESTIMONIALS: Record<Locale, Testimonial[]> = Object.fromEntries(
+  (["es", "en", "ca"] as const).map((l) => [
+    l,
+    GOOGLE_REVIEWS.map((r) => ({ quote: r.quote, author: r.author, context: REVIEW_CONTEXT[l][r.ctx] })),
+  ]),
+) as Record<Locale, Testimonial[]>;
 
 export const HOME_SEO: Record<Locale, { title: string; description: string }> = {
   es: {

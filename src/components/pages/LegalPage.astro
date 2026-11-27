@@ -11,59 +11,121 @@ interface Props {
 }
 const { locale, kind } = Astro.props;
 
+// Datos del titular: SOLO en SITE.legal (src/config.ts).
+const { holderName, nif } = SITE.legal;
+const PENDING: Record<Locale, string> = { es: "[PENDIENTE]", en: "[PENDING]", ca: "[PENDENT]" };
+const address = SITE.legal.address || PENDING[locale];
+const email = `<a href="mailto:${SITE.email}">${SITE.email}</a>`;
+const aepd = `<a href="https://www.aepd.es/" target="_blank" rel="noopener">www.aepd.es</a>`;
+const domain = SITE.url.replace(/^https?:\/\//, "");
+
 const T: Record<Locale, Record<"legalNotice" | "privacy", { title: string; h1: string; body: string }>> = {
   es: {
     legalNotice: {
       title: "Aviso legal · Satori Arts",
       h1: "Aviso legal",
-      body: `<p>Titular: ${SITE.brand} (Satori Arts). NIF: [PENDIENTE]. Domicilio: [PENDIENTE]. Contacto: ${SITE.email}.</p>
-        <h2>Objeto</h2><p>Este sitio web tiene carácter informativo y presenta los servicios de fotografía y vídeo de Satori Arts.</p>
-        <h2>Propiedad intelectual</h2><p>Todas las imágenes y textos son propiedad de sus autores. No está permitido su uso sin autorización.</p>
-        <h2>Responsabilidad</h2><p>Nos esforzamos por mantener la información actualizada, pero no garantizamos la ausencia de errores.</p>`,
+      body: `<h2>Titular del sitio web</h2>
+        <p>En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI), se informa de que el sitio web ${domain} es titularidad de:</p>
+        <ul>
+          <li>Titular: ${holderName}, profesional autónoma, que opera bajo la marca comercial ${SITE.brand}.</li>
+          <li>NIF: ${nif}</li>
+          <li>Domicilio: ${address}</li>
+          <li>Email: ${email}</li>
+          <li>Teléfono / WhatsApp: ${SITE.phoneDisplay}</li>
+        </ul>
+        <h2>Objeto</h2><p>Este sitio web tiene carácter informativo y presenta los servicios de fotografía y vídeo de ${SITE.brand}. La contratación no se realiza a través de la web: se formaliza aparte, con presupuesto y contrato.</p>
+        <h2>Propiedad intelectual e industrial</h2><p>Las fotografías, vídeos, textos, logotipos y diseño de este sitio son propiedad de ${SITE.brand} o de sus autores y están protegidos por la legislación de propiedad intelectual. No está permitida su reproducción, distribución ni transformación sin autorización expresa. Las marcas de terceros que puedan aparecer pertenecen a sus respectivos titulares.</p>
+        <h2>Responsabilidad</h2><p>Nos esforzamos por mantener la información actualizada y correcta, pero no garantizamos la ausencia de errores. Los enlaces a sitios de terceros (Instagram, WhatsApp, Google…) se ofrecen como referencia; no somos responsables de su contenido.</p>
+        <h2>Legislación aplicable</h2><p>Este aviso legal se rige por la legislación española. Si eres consumidor, podrás acudir a los juzgados de tu domicilio.</p>`,
     },
     privacy: {
       title: "Política de privacidad · Satori Arts",
       h1: "Política de privacidad",
-      body: `<p>Responsable: ${SITE.brand}. Contacto: ${SITE.email}. NIF: [PENDIENTE].</p>
-        <h2>Qué datos tratamos</h2><p>Este sitio no incluye formularios: el contacto se realiza por WhatsApp o email, donde tratamos únicamente los datos que nos facilites para responder a tu consulta.</p>
-        <h2>Finalidad y base legal</h2><p>Responder a tu solicitud y, en su caso, prestar el servicio contratado. Base: tu consentimiento y la ejecución de un contrato.</p>
-        <h2>Tus derechos</h2><p>Puedes ejercer tus derechos de acceso, rectificación y supresión escribiendo a ${SITE.email}.</p>`,
+      body: `<h2>Responsable del tratamiento</h2>
+        <p>${holderName} (${SITE.brand}), NIF ${nif}, domicilio en ${address}. Email: ${email}.</p>
+        <h2>Qué datos tratamos y para qué</h2>
+        <ul>
+          <li><strong>Consultas:</strong> este sitio no tiene formularios. Si nos escribes por WhatsApp o email, tratamos los datos que nos facilites (nombre, teléfono, email, fecha y detalles del evento) para responderte y prepararte un presupuesto.</li>
+          <li><strong>Clientes:</strong> si contratas un servicio, tratamos tus datos para prestarlo, facturarlo y cumplir nuestras obligaciones legales.</li>
+          <li><strong>Imágenes:</strong> solo publicamos en esta web o en redes fotografías y vídeos en los que aparezcan personas reconocibles si contamos con su consentimiento expreso, que puede retirarse en cualquier momento.</li>
+        </ul>
+        <h2>Base legal</h2><p>La aplicación de medidas precontractuales a petición tuya y la ejecución del contrato (art. 6.1.b RGPD); el cumplimiento de obligaciones legales, como las fiscales (art. 6.1.c); y tu consentimiento para la publicación de imágenes (art. 6.1.a).</p>
+        <h2>Cuánto tiempo conservamos los datos</h2><p>Las consultas que no terminan en contratación se eliminan como máximo un año después del último contacto. Los datos de clientes se conservan mientras dure la relación y, después, durante los plazos legales (por ejemplo, seis años para la documentación contable y fiscal).</p>
+        <h2>Destinatarios y proveedores</h2><p>No cedemos tus datos a terceros salvo obligación legal. Para comunicarnos y alojar la web usamos proveedores que tratan datos por nuestra cuenta: WhatsApp (Meta Platforms Ireland), Gmail (Google Ireland) y Vercel Inc. (alojamiento y estadísticas de la web). Algunos pueden transferir datos a EE. UU., amparados por el Marco de Privacidad de Datos UE-EE. UU. o por cláusulas contractuales tipo de la Comisión Europea.</p>
+        <h2>Cookies y estadísticas</h2><p>Esta web no utiliza cookies ni guarda información en tu dispositivo. Para conocer cuántas visitas recibe usamos Vercel Web Analytics, que mide visitas por página, país, dispositivo y página de origen de forma agregada y anónima, sin cookies y sin almacenar tu dirección IP.</p>
+        <h2>Tus derechos</h2><p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad, y retirar tu consentimiento en cualquier momento, escribiendo a ${email}. Si consideras que no hemos atendido correctamente tu solicitud, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (${aepd}).</p>`,
     },
   },
   en: {
     legalNotice: {
       title: "Legal notice · Satori Arts",
       h1: "Legal notice",
-      body: `<p>Owner: ${SITE.brand} (Satori Arts). Tax ID: [PENDING]. Address: [PENDING]. Contact: ${SITE.email}.</p>
-        <h2>Purpose</h2><p>This website is informational and presents Satori Arts' photography and film services.</p>
-        <h2>Intellectual property</h2><p>All images and texts are the property of their authors. Use without authorisation is not permitted.</p>
-        <h2>Liability</h2><p>We strive to keep the information up to date but do not guarantee it is error-free.</p>`,
+      body: `<h2>Website owner</h2>
+        <p>In accordance with article 10 of Spanish Law 34/2002 on information society services and e-commerce (LSSI), the website ${domain} is owned by:</p>
+        <ul>
+          <li>Owner: ${holderName}, self-employed professional trading under the brand ${SITE.brand}.</li>
+          <li>Tax ID (NIF): ${nif}</li>
+          <li>Address: ${address}</li>
+          <li>Email: ${email}</li>
+          <li>Phone / WhatsApp: ${SITE.phoneDisplay}</li>
+        </ul>
+        <h2>Purpose</h2><p>This website is informational and presents ${SITE.brand}' photography and film services. Services are not booked through the website; bookings are formalised separately with a quote and a contract.</p>
+        <h2>Intellectual and industrial property</h2><p>The photographs, videos, texts, logos and design of this site belong to ${SITE.brand} or their authors and are protected by intellectual property law. Reproduction, distribution or transformation without express permission is not allowed. Any third-party trademarks shown belong to their respective owners.</p>
+        <h2>Liability</h2><p>We strive to keep the information accurate and up to date but do not guarantee it is error-free. Links to third-party sites (Instagram, WhatsApp, Google…) are provided for reference; we are not responsible for their content.</p>
+        <h2>Governing law</h2><p>This legal notice is governed by Spanish law. If you are a consumer, you may go to the courts of your place of residence.</p>`,
     },
     privacy: {
       title: "Privacy policy · Satori Arts",
       h1: "Privacy policy",
-      body: `<p>Controller: ${SITE.brand}. Contact: ${SITE.email}. Tax ID: [PENDING].</p>
-        <h2>What data we process</h2><p>This site has no forms: contact happens via WhatsApp or email, where we only process the data you provide to answer your enquiry.</p>
-        <h2>Purpose and legal basis</h2><p>To respond to your request and, where applicable, provide the contracted service. Basis: your consent and the performance of a contract.</p>
-        <h2>Your rights</h2><p>You can exercise your rights of access, rectification and erasure by writing to ${SITE.email}.</p>`,
+      body: `<h2>Data controller</h2>
+        <p>${holderName} (${SITE.brand}), Tax ID ${nif}, address: ${address}. Email: ${email}.</p>
+        <h2>What data we process and why</h2>
+        <ul>
+          <li><strong>Enquiries:</strong> this site has no forms. If you write to us via WhatsApp or email, we process the data you give us (name, phone, email, date and details of your event) to reply and prepare a quote.</li>
+          <li><strong>Clients:</strong> if you book a service, we process your data to provide and invoice it and to meet our legal obligations.</li>
+          <li><strong>Images:</strong> we only publish photos and videos showing identifiable people on this website or on social media with their express consent, which can be withdrawn at any time.</li>
+        </ul>
+        <h2>Legal basis</h2><p>Taking steps at your request prior to a contract and performing the contract (art. 6.1.b GDPR); compliance with legal obligations, such as tax obligations (art. 6.1.c); and your consent for publishing images (art. 6.1.a).</p>
+        <h2>How long we keep your data</h2><p>Enquiries that do not lead to a booking are deleted no later than one year after the last contact. Client data is kept for the duration of the relationship and then for the legally required periods (for example, six years for accounting and tax records).</p>
+        <h2>Recipients and providers</h2><p>We do not share your data with third parties unless required by law. To communicate and host the website we use providers that process data on our behalf: WhatsApp (Meta Platforms Ireland), Gmail (Google Ireland) and Vercel Inc. (website hosting and statistics). Some may transfer data to the USA, covered by the EU-US Data Privacy Framework or the European Commission's standard contractual clauses.</p>
+        <h2>Cookies and statistics</h2><p>This website does not use cookies or store any information on your device. To know how many visits it receives we use Vercel Web Analytics, which measures visits per page, country, device and referring page in an aggregated, anonymous way, without cookies and without storing your IP address.</p>
+        <h2>Your rights</h2><p>You can exercise your rights of access, rectification, erasure, objection, restriction of processing and portability, and withdraw your consent at any time, by writing to ${email}. If you believe we have not handled your request properly, you can lodge a complaint with the Spanish Data Protection Agency (${aepd}).</p>`,
     },
   },
   ca: {
     legalNotice: {
       title: "Avís legal · Satori Arts",
       h1: "Avís legal",
-      body: `<p>Titular: ${SITE.brand} (Satori Arts). NIF: [PENDENT]. Domicili: [PENDENT]. Contacte: ${SITE.email}.</p>
-        <h2>Objecte</h2><p>Aquest lloc web té caràcter informatiu i presenta els serveis de fotografia i vídeo de Satori Arts.</p>
-        <h2>Propietat intel·lectual</h2><p>Totes les imatges i textos són propietat dels seus autors. No se'n permet l'ús sense autorització.</p>
-        <h2>Responsabilitat</h2><p>Ens esforcem per mantenir la informació actualitzada, però no garantim l'absència d'errors.</p>`,
+      body: `<h2>Titular del lloc web</h2>
+        <p>En compliment de l'article 10 de la Llei 34/2002, de serveis de la societat de la informació i de comerç electrònic (LSSI), s'informa que el lloc web ${domain} és titularitat de:</p>
+        <ul>
+          <li>Titular: ${holderName}, professional autònoma, que opera sota la marca comercial ${SITE.brand}.</li>
+          <li>NIF: ${nif}</li>
+          <li>Domicili: ${address}</li>
+          <li>Email: ${email}</li>
+          <li>Telèfon / WhatsApp: ${SITE.phoneDisplay}</li>
+        </ul>
+        <h2>Objecte</h2><p>Aquest lloc web té caràcter informatiu i presenta els serveis de fotografia i vídeo de ${SITE.brand}. La contractació no es fa a través del web: es formalitza a part, amb pressupost i contracte.</p>
+        <h2>Propietat intel·lectual i industrial</h2><p>Les fotografies, vídeos, textos, logotips i disseny d'aquest lloc són propietat de ${SITE.brand} o dels seus autors i estan protegits per la legislació de propietat intel·lectual. No se'n permet la reproducció, distribució ni transformació sense autorització expressa. Les marques de tercers que hi puguin aparèixer pertanyen als seus respectius titulars.</p>
+        <h2>Responsabilitat</h2><p>Ens esforcem per mantenir la informació actualitzada i correcta, però no garantim l'absència d'errors. Els enllaços a llocs de tercers (Instagram, WhatsApp, Google…) s'ofereixen com a referència; no som responsables del seu contingut.</p>
+        <h2>Legislació aplicable</h2><p>Aquest avís legal es regeix per la legislació espanyola. Si ets consumidor, pots acudir als jutjats del teu domicili.</p>`,
     },
     privacy: {
       title: "Política de privacitat · Satori Arts",
       h1: "Política de privacitat",
-      body: `<p>Responsable: ${SITE.brand}. Contacte: ${SITE.email}. NIF: [PENDENT].</p>
-        <h2>Quines dades tractem</h2><p>Aquest lloc no inclou formularis: el contacte es fa per WhatsApp o email, on tractem únicament les dades que ens facilitis per respondre la teva consulta.</p>
-        <h2>Finalitat i base legal</h2><p>Respondre la teva sol·licitud i, si escau, prestar el servei contractat. Base: el teu consentiment i l'execució d'un contracte.</p>
-        <h2>Els teus drets</h2><p>Pots exercir els drets d'accés, rectificació i supressió escrivint a ${SITE.email}.</p>`,
+      body: `<h2>Responsable del tractament</h2>
+        <p>${holderName} (${SITE.brand}), NIF ${nif}, domicili a ${address}. Email: ${email}.</p>
+        <h2>Quines dades tractem i per a què</h2>
+        <ul>
+          <li><strong>Consultes:</strong> aquest lloc no té formularis. Si ens escrius per WhatsApp o email, tractem les dades que ens facilitis (nom, telèfon, email, data i detalls de l'esdeveniment) per respondre't i preparar-te un pressupost.</li>
+          <li><strong>Clients:</strong> si contractes un servei, tractem les teves dades per prestar-lo, facturar-lo i complir les nostres obligacions legals.</li>
+          <li><strong>Imatges:</strong> només publiquem en aquest web o a les xarxes fotografies i vídeos on surtin persones identificables si en tenim el consentiment exprés, que es pot retirar en qualsevol moment.</li>
+        </ul>
+        <h2>Base legal</h2><p>L'aplicació de mesures precontractuals a petició teva i l'execució del contracte (art. 6.1.b RGPD); el compliment d'obligacions legals, com les fiscals (art. 6.1.c); i el teu consentiment per a la publicació d'imatges (art. 6.1.a).</p>
+        <h2>Quant de temps conservem les dades</h2><p>Les consultes que no acaben en contractació s'eliminen com a màxim un any després de l'últim contacte. Les dades de clients es conserven mentre duri la relació i, després, durant els terminis legals (per exemple, sis anys per a la documentació comptable i fiscal).</p>
+        <h2>Destinataris i proveïdors</h2><p>No cedim les teves dades a tercers llevat d'obligació legal. Per comunicar-nos i allotjar el web fem servir proveïdors que tracten dades per compte nostre: WhatsApp (Meta Platforms Ireland), Gmail (Google Ireland) i Vercel Inc. (allotjament i estadístiques del web). Alguns poden transferir dades als EUA, emparats pel Marc de Privacitat de Dades UE-EUA o per clàusules contractuals tipus de la Comissió Europea.</p>
+        <h2>Galetes i estadístiques</h2><p>Aquest web no utilitza galetes ni desa informació al teu dispositiu. Per saber quantes visites rep fem servir Vercel Web Analytics, que mesura visites per pàgina, país, dispositiu i pàgina d'origen de manera agregada i anònima, sense galetes i sense desar la teva adreça IP.</p>
+        <h2>Els teus drets</h2><p>Pots exercir els drets d'accés, rectificació, supressió, oposició, limitació del tractament i portabilitat, i retirar el teu consentiment en qualsevol moment, escrivint a ${email}. Si consideres que no hem atès correctament la teva sol·licitud, pots presentar una reclamació davant l'Agència Espanyola de Protecció de Dades (${aepd}).</p>`,
     },
   },
 };
